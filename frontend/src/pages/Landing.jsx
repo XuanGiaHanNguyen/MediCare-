@@ -2,26 +2,27 @@ import {
   Users, 
   Calendar, 
   Activity, 
-  FileText, 
-  Shield, 
-  Stethoscope, 
-  CheckCircle 
+  CheckCircle,
+  Star
 } from 'lucide-react';
+import { useState } from 'react';
+
 const FeatureCard = ({ icon: Icon, title, description, features }) => {
+
   return (
     <div className="group bg-white rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-300 p-6">
       <div className="mb-6">
         <div className="mb-4">
-          <Icon className="h-12 w-12 text-blue-600 group-hover:text-blue-700 transition-colors" />
+          <Icon className="h-12 w-12 text-sky-700 group-hover:text-sky-800 transition-colors" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-3">{title}</h3>
+        <h3 className="text-xl font-bold text-gray-700 mb-3">{title}</h3>
         <p className="text-gray-600 leading-relaxed">{description}</p>
       </div>
       
       <div className="space-y-3">
         {features.map((feature, index) => (
           <div key={index} className="flex items-center gap-3">
-            <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+            <CheckCircle className="h-4 w-4 text-sky-600 flex-shrink-0" />
             <span className="text-sm text-gray-700">{feature}</span>
           </div>
         ))}
@@ -30,7 +31,43 @@ const FeatureCard = ({ icon: Icon, title, description, features }) => {
   );
 };
 
+const Card = ({ children, className = "" }) => (
+  <div className={`bg-white h-full rounded-lg border shadow-sm ${className}`}>
+    {children}
+  </div>
+);
+
+const CardContent = ({ children, className = "" }) => (
+  <div className={`p-6 ${className}`}>
+    {children}
+  </div>
+);
+
+// Input component
+const Input = ({ className = "", ...props }) => (
+  <input 
+    className={`flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+    {...props}
+  />
+);
+
+// Button component
+const Button = ({ children, variant = "primary", className = "", ...props }) => {
+  const baseClasses = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2";
+  const variantClasses = variant === "secondary" 
+    ? "bg-white text-blue-600 hover:bg-gray-50" 
+    : "bg-blue-600 text-white hover:bg-blue-700";
+  
+  return (
+    <button className={`${baseClasses} ${variantClasses} ${className}`} {...props}>
+      {children}
+    </button>
+  );
+};
+
 function Landing () {
+
+    const [email, setEmail] = useState('');
 
     const features = [
     {
@@ -62,39 +99,10 @@ function Landing () {
         "Financial Reports",
         "Quality Indicators"
       ]
-    },
-    {
-      icon: FileText,
-      title: "Billing & Insurance",
-      description: "Automated billing processes with insurance claim management and payment tracking.",
-      features: [
-        "Insurance Processing",
-        "Payment Gateway",
-        "Financial Analytics"
-      ]
-    },
-    {
-      icon: Shield,
-      title: "Security & Compliance",
-      description: "Enterprise-grade security with HIPAA compliance and data protection protocols.",
-      features: [
-        "HIPAA Compliant",
-        "Data Encryption",
-        "Access Controls"
-      ]
-    },
-    {
-      icon: Stethoscope,
-      title: "Staff Management",
-      description: "Comprehensive staff scheduling, payroll, and performance management system.",
-      features: [
-        "Shift Scheduling",
-        "Payroll Integration",
-        "Performance Tracking"
-      ]
     }
   ];
   
+  //fix later since 2 function are using the same ...
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission here
@@ -103,7 +111,7 @@ function Landing () {
     return(
         <div className="flex flex-col">
             {/* Hero Section  */}
-            <div className="w-full h-[60vh] bg-blue-100 flex flex-row">
+            <div className="w-full h-[75vh] bg-blue-100 flex flex-row">
                 <div className="flex-[1.25] px-10 flex justify-center align-center items-center">
                     <div className="flex flex-col gap-2">
                         <div className="flex">
@@ -185,15 +193,15 @@ function Landing () {
                 </div>
 
                 {/* Features Section  */}
-                <section id="features" className="w-full py-14 bg-gray-100">
+                <section id="features" className="w-full py-24 bg-gray-100">
                     <div className="container mx-auto px-4 md:px-6 max-w-7xl">
                         {/* Header Section */}
-                        <div className="text-center mb-16">
-                        <div className="space-y-3">
-                            <h2 className="text-4xl font-bold tracking-tight text-gray-900">
+                        <div className="text-center mb-10">
+                        <div className="space-y-2">
+                            <h2 className="text-4xl font-bold tracking-tight text-gray-700">
                                 Comprehensive Healthcare Management
                             </h2>
-                            <p className="max-w-4xl mx-auto text-lg md:text-xl text-gray-600 leading-relaxed">
+                            <p className="max-w-4xl mx-auto text-lg text-gray-500 leading-relaxed">
                                 Everything you need to run a modern healthcare facility efficiently and provide exceptional patient care.
                             </p>
                         </div>
@@ -211,20 +219,125 @@ function Landing () {
                             />
                         ))}
                         </div>
-
-                        {/* Call-to-Action */}
-                        <div className="text-center mt-16">
-                        <div className="inline-flex flex-col sm:flex-row gap-4">
-                            <button className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors focus:ring-4 focus:ring-blue-200 focus:outline-none">
-                            Start Free Trial
-                            </button>
-                            <button className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-900 font-semibold border-2 border-gray-200 hover:border-gray-300 rounded-lg transition-colors focus:ring-4 focus:ring-gray-200 focus:outline-none">
-                            Schedule Demo
-                            </button>
-                        </div>
-                        </div>
                     </div>
-                    </section>
+                  </section>
+
+                  {/* Testimonials */}
+              <section className="w-full py-24">
+                <div className="container mx-auto px-4 ">
+                  <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                    <div className="space-y-2">
+                      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-gray-900">
+                        Trusted by Healthcare Professionals
+                      </h2>
+                      <p className="max-w-[900px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                        See what healthcare providers are saying about our platform.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mx-auto grid items-start gap-6 py-12 lg:grid-cols-3 lg:gap-12">
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="flex items-center gap-1 mb-4">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          ))}
+                        </div>
+                        <p className="text-gray-600 mb-4">
+                          "MediCare Pro has transformed how we manage our clinic. The patient portal has significantly reduced
+                          our administrative workload."
+                        </p>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-blue-600 font-semibold">DR</span>
+                          </div>
+                          <div>
+                            <p className="font-semibold">Dr. Sarah Johnson</p>
+                            <p className="text-sm text-gray-600">Family Medicine Clinic</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="flex items-center gap-1 mb-4">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                          ))}
+                        </div>
+                        <p className="text-gray-600 mb-4">
+                          "The analytics dashboard gives us insights we never had before. We've improved our patient
+                          satisfaction scores by 40%."
+                        </p>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-blue-600 font-semibold">MR</span>
+                          </div>
+                          <div>
+                            <p className="font-semibold">Michael Rodriguez</p>
+                            <p className="text-sm text-gray-600">Hospital Administrator</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="flex items-center gap-1 mb-4">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                          ))}
+                        </div>
+                        <p className="text-gray-600 mb-4">
+                          "Implementation was smooth and the support team is exceptional. Our staff adapted to the system
+                          within days."
+                        </p>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-blue-600 font-semibold">LC</span>
+                          </div>
+                          <div>
+                            <p className="font-semibold">Lisa Chen</p>
+                            <p className="text-sm text-gray-600">Pediatric Clinic Director</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </section>
+
+              {/* CTA Section */}
+              <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-600">
+                <div className="container mx-auto px-4 md:px-6">
+                  <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                    <div className="space-y-2">
+                      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-white">
+                        Ready to Transform Your Healthcare Practice?
+                      </h2>
+                      <p className="max-w-[600px] text-blue-100 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                        Join thousands of healthcare providers who trust MediCare Pro to streamline their operations.
+                      </p>
+                    </div>
+                    <div className="w-full max-w-sm space-y-2">
+                      <div className="flex gap-2">
+                        <Input 
+                          type="email" 
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="Enter your email" 
+                          className="max-w-lg flex-1 bg-white" 
+                        />
+                        <Button onClick={handleSubmit} variant="secondary">
+                          Get Started
+                        </Button>
+                      </div>
+                      <p className="text-xs text-blue-100">Start your 30-day free trial. No credit card required.</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
             </div>
 
     )
