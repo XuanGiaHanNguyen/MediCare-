@@ -1,7 +1,19 @@
+import { useState } from "react";
 import { UserIcon } from "../assets/icon"
 
-
 function SignUp (){
+    const [selectedRole, setSelectedRole] = useState("");
+
+    const handleRoleSelect = (role) => {
+        setSelectedRole(role);
+    };
+
+    const getRoleButtonClass = (role) => {
+        const baseClass = "border-2 border-sky-600 text-sky-800 font-medium w-full flex text-center justify-center py-3 rounded-md hover:bg-sky-600 hover:text-white cursor-pointer";
+        const selectedClass = "bg-sky-600 text-white";
+        
+        return selectedRole === role ? `${baseClass} ${selectedClass}` : baseClass;
+    };
 
     return(
         <div className="w-full h-screen bg-sky-100 flex items-center justify-center">
@@ -16,20 +28,29 @@ function SignUp (){
                 <p className="text-sm text-sky-900 mb-4">Step 1 of 4</p>
                 <h2 className="text-lg font-medium flex w-full text-gray-600">Please Select Your Role</h2>
 
-                <div className="border-2 border-sky-600 text-sky-800 font-medium w-full flex text-center justify-center py-2 rounded-md hover:bg-sky-600 hover:text-white">
+                <div 
+                    className={getRoleButtonClass("healthcare")}
+                    onClick={() => handleRoleSelect("healthcare")}
+                >
                     Healthcare Professional
                 </div>
 
-                <div className="border-2 border-sky-600 text-sky-800 font-medium w-full flex text-center justify-center py-2 rounded-md hover:bg-sky-600 hover:text-white">
+                <div 
+                    className={getRoleButtonClass("patient")}
+                    onClick={() => handleRoleSelect("patient")}
+                >
                     Medical Patient
                 </div>
                
-                <div className="border-2 border-sky-600 text-sky-800 font-medium w-full flex text-center justify-center py-2 rounded-md hover:bg-sky-600 hover:text-white">
+                <div 
+                    className={getRoleButtonClass("others")}
+                    onClick={() => handleRoleSelect("others")}
+                >
                     Others
                 </div>
 
                 <div className="flex w-full justify-end pt-2">
-                    <div className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700">
+                    <div className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer">
                         Continue
                     </div>
                 </div>
