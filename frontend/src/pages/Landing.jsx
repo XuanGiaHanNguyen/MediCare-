@@ -213,7 +213,7 @@ function Landing () {
             `}</style>
             
             {/* Hero Section  */}
-            <div className="w-full bg-gradient-to-br from-blue-50 to-blue-100 flex flex-row overflow-hidden">
+            <div className="w-full bg-sky-100 flex flex-row overflow-hidden">
                 <div className="flex-[1.25] px-10 flex justify-center align-center items-center">
                     <div className={`flex flex-col gap-4 transform transition-all duration-1000 ease-out ${
                       heroVisible ? 'translate-x-0 opacity-100' : '-translate-x-16 opacity-0'

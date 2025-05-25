@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 const Header = (props) => {
     return(
         <div className="py-3 px-10 flex flex-row justify-between bg-sky-800 shadow-b-xl">
-            <h1 className="font-bold text-2xl text-white">MEDICARE+</h1>
+            <Link to="/" className="font-bold text-2xl text-white">MEDICARE+</Link>
             <div className="pt-1 text-white font-medium flex flex-row gap-8">
                 <Link className="group">
                     Featured

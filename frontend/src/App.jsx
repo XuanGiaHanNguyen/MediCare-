@@ -1,6 +1,8 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom"
 
 import Landing from "./pages/Landing"
+import SignUp from "./pages/SignUp"
+
 import Header from "./component/header"
 
 
@@ -11,6 +13,7 @@ function App() {
       <Header/>
       <Routes>
         <Route path="/" element={<Landing/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
       </Routes>
     </BrowserRouter>
   )
