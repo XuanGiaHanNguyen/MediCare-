@@ -3,10 +3,7 @@ import {
   Calendar, 
   Activity, 
   CheckCircle,
-  Star,
-  Phone,
-  Mail,
-  MapPin
+  Star
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -141,7 +138,6 @@ function Landing () {
     e.preventDefault();
     // Handle form submission here
   };
-
 
     return(
         <div className="flex flex-col">
