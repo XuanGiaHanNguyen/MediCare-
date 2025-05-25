@@ -148,7 +148,7 @@ function Landing () {
                         <div className="flex">
                             <p className="px-4 py-1 rounded-full bg-gray-50 text-gray-600 font-medium">Trusted by 500+ Healthcare Facilities</p>
                         </div>
-                        <h1 className="text-6xl text-gray-700 font-semibold px-2">Streamline Your Hospital Operations</h1>
+                        <h1 className="text-7xl text-gray-700 font-semibold px-2">Streamline Your Hospital Operations</h1>
                         <h2 className="text-lg px-2 pt-2 text-gray-600">
                             Complete hospital management solution that digitizes patient records, schedules appointments, manages staff, and optimizes healthcare delivery for better patient outcomes.
                         </h2>
@@ -229,7 +229,7 @@ function Landing () {
                         {/* Header Section */}
                         <div className="text-center mb-10">
                         <div className="space-y-2">
-                            <h2 className="text-4xl font-bold tracking-tight text-gray-700">
+                            <h2 className="text-5xl font-bold tracking-tight text-gray-700">
                                 Comprehensive Healthcare Management
                             </h2>
                             <p className="max-w-4xl mx-auto text-lg text-gray-500 leading-relaxed">
@@ -258,7 +258,7 @@ function Landing () {
                 <div className="container mx-auto px-4 ">
                   <div className="flex flex-col items-center justify-center space-y-4 text-center">
                     <div className="space-y-2">
-                      <h2 className="text-4xl font-bold tracking-tighter text-gray-700">
+                      <h2 className="text-5xl font-bold tracking-tighter text-gray-700">
                         Trusted by Healthcare Professionals
                       </h2>
                       <p className="max-w-[900px] text-gray-600 text-lg">
