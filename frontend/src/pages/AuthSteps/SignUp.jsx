@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { UserIcon, GoogleIcon } from "../../assets/icon"
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
-    
+
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
         password: "",
         confirmPassword: ""
     });
+
+    const navigate = useNavigate()
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -22,6 +24,7 @@ function SignUp() {
     const handleSubmit = () => {
         // Handle form submission logic here
         console.log("Form submitted:", formData);
+        navigate("/medprofile")
     };
 
     const getRoleButtonClass = (role) => {
@@ -126,7 +129,7 @@ function SignUp() {
                 >
                     <p className="text-center w-full">Continue</p>
                 </button>
-                <button className="border-2 w-full flex text-center items-center px-6 py-2 rounded-md font-medium text-sky-700 border-sky-700 cursor-pointer hover:bg-sky-50">
+                <button onClick={(e)=> navigate("/role")} className="border-2 w-full flex text-center items-center px-6 py-2 rounded-md font-medium text-sky-700 border-sky-700 cursor-pointer hover:bg-sky-50">
                     <p className="text-center w-full">Back</p>
                 </button>
             </div>
