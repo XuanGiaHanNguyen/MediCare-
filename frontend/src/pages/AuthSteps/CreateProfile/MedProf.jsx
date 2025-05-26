@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UserIcon } from "../../assets/icon"
+import { UserIcon } from "../../../assets/icon"
 import { Link } from "react-router-dom";
 
 function MedProf (){

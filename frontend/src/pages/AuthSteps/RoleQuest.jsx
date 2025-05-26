@@ -42,15 +42,9 @@ function RoleQuestionaire (){
                     Medical Patient
                 </div>
                
-                <div 
-                    className={getRoleButtonClass("others")}
-                    onClick={() => handleRoleSelect("others")}
-                >
-                    Others
-                </div>
 
                 <div className="flex w-full justify-end pt-2">
-                    <Link  className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer">
+                    <Link to="/signup" className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer">
                         Continue
                     </Link >
                 </div>

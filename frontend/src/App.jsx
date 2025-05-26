@@ -2,6 +2,9 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 
 import Landing from "./pages/Landing"
 import RoleQuestionaire from "./pages/AuthSteps/RoleQuest"
+import SignUp from "./pages/AuthSteps/SignUp"
+import MedProf from "./pages/AuthSteps/CreateProfile/MedProf"
+import Patient from "./pages/AuthSteps/CreateProfile/Patient"
 
 import Header from "./component/header"
 
@@ -13,7 +16,14 @@ function App() {
       <Header/>
       <Routes>
         <Route path="/" element={<Landing/>}/>
+        
         <Route path="/role" element={<RoleQuestionaire/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
+        <Route path="/medprofile" element={<MedProf/>}/>
+        <Route path="/patprofile" element={<Patient/>}/>
+
+        
+
       </Routes>
     </BrowserRouter>
   )
