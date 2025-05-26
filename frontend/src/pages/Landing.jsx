@@ -180,7 +180,7 @@ function Landing () {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
+    navigate("/loading")
   };
 
     return(
@@ -216,26 +216,26 @@ function Landing () {
             `}</style>
             
             {/* Hero Section  */}
-            <div className="w-full bg-sky-100 flex flex-row overflow-hidden">
+            <div className="w-full bg-sky-800 flex flex-row overflow-hidden">
                 <div className="flex-[1.25] px-10 flex justify-center align-center items-center">
                     <div className={`flex flex-col gap-4 transform transition-all duration-1000 ease-out ${
                       heroVisible ? 'translate-x-0 opacity-100' : '-translate-x-16 opacity-0'
                     }`}
                     style={{ transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}>
                         <div className={`flex transform transition-all duration-800 ease-out delay-300 ${
-                          heroVisible ? 'translate-y-0 opacity-100' : '-translate-y-6 opacity-0'
+                          heroVisible ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'
                         }`}>
-                            <p className="px-4 py-2 rounded-full bg-white/70 backdrop-blur-sm text-gray-600 font-medium hover:bg-white/90 transition-all duration-400 ease-out animate-float hover:animate-none shadow-sm">
+                            <p className="px-4 py-2 rounded-full bg-sky-100 backdrop-blur-sm text-gray-800 font-medium hover:bg-white/90 transition-all duration-400 ease-out animate-float hover:animate-none shadow-sm">
                               Trusted by 500+ Healthcare Facilities
                             </p>
                         </div>
-                        <h1 className={`text-7xl text-gray-700 font-semibold px-2 leading-tight transform transition-all duration-1000 ease-out delay-500 ${
+                        <h1 className={`text-7xl text-gray-200 font-semibold px-2 leading-tight transform transition-all duration-1000 ease-out delay-500 ${
                           heroVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
                         }`}
                         style={{ transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}>
                           Streamline Your Hospital Operations
                         </h1>
-                        <h2 className={`text-lg px-2 pt-2 text-gray-600 leading-relaxed transform transition-all duration-800 ease-out delay-700 ${
+                        <h2 className={`text-lg px-2 pt-2 text-gray-400 leading-relaxed transform transition-all duration-800 ease-out delay-700 ${
                           heroVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                         }`}
                         style={{ transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}>

@@ -23,7 +23,7 @@ function MedProf (){
     const handleSubmit = () => {
         // Handle form submission logic here
         console.log("Form submitted:", formData);
-        navigate("/medprofile")
+        navigate("/loading")
     };
 
 

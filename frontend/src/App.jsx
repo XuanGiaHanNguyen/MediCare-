@@ -7,6 +7,7 @@ import MedProf from "./pages/AuthSteps/CreateProfile/MedProf"
 import Patient from "./pages/AuthSteps/CreateProfile/Patient"
 
 import Header from "./component/header"
+import Component from "./pages/loading"
 
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="/medprofile" element={<MedProf/>}/>
         <Route path="/patprofile" element={<Patient/>}/>
+
+        <Route path="/loading" element={<Component/>}/>
 
       </Routes>
     </BrowserRouter>
