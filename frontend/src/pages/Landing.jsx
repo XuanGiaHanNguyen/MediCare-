@@ -6,6 +6,7 @@ import {
   Star
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const FeatureCard = ({ icon: Icon, title, description, features, index }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -116,6 +117,8 @@ function Landing () {
       email: '',
       facilityType: ''
     });
+
+    const navigate = useNavigate()
 
     const [heroVisible, setHeroVisible] = useState(false);
     const [formVisible, setFormVisible] = useState(false);
@@ -311,6 +314,7 @@ function Landing () {
                             <p className="text-sm text-gray-600">
                             Don't have an account?{" "}
                             <button 
+                                onClick={(e) => navigate("/role")}
                                 type="button"
                                 className="text-sky-600 hover:text-sky-700 hover:underline font-medium transition-all duration-300 ease-out transform hover:scale-105"
                             >

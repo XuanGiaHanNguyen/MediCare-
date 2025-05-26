@@ -22,8 +22,6 @@ function App() {
         <Route path="/medprofile" element={<MedProf/>}/>
         <Route path="/patprofile" element={<Patient/>}/>
 
-        
-
       </Routes>
     </BrowserRouter>
   )
