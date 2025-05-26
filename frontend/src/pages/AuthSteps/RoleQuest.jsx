@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { UserIcon } from "../assets/icon"
+import { UserIcon } from "../../assets/icon"
+import { Link } from "react-router-dom";
 
-function SignUp (){
+function RoleQuestionaire (){
     const [selectedRole, setSelectedRole] = useState("");
 
     const handleRoleSelect = (role) => {
@@ -20,12 +21,11 @@ function SignUp (){
             <div className="bg-white p-5 rounded-md flex flex-col items-center w-1/2 gap-3 py-8 px-10">
                 <h1 className="text-3xl text-sky-800 font-semibold flex flex-row"><span>{UserIcon}</span>Create an Account </h1>
                 <div className="flex items-center justify-center space-x-2">
-                    <div className="w-10 h-2 bg-sky-600 rounded-full"></div>
-                    <div className="w-10 h-2 bg-sky-200 rounded-full"></div>
-                    <div className="w-10 h-2 bg-sky-200 rounded-full"></div>
-                    <div className="w-10 h-2 bg-sky-200 rounded-full"></div>
+                    <div className="w-15 h-2 bg-sky-600 rounded-full"></div>
+                    <div className="w-15 h-2 bg-sky-200 rounded-full"></div>
+                    <div className="w-15 h-2 bg-sky-200 rounded-full"></div>
                 </div>
-                <p className="text-sm text-sky-900 mb-4">Step 1 of 4</p>
+                <p className="text-sm text-sky-900 mb-4">Step 1 of 3</p>
                 <h2 className="text-lg font-medium flex w-full text-gray-600">Please Select Your Role</h2>
 
                 <div 
@@ -60,4 +60,4 @@ function SignUp (){
     )
 }
 
-export default SignUp
+export default RoleQuestionaire
