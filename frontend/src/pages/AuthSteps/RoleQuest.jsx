@@ -50,9 +50,9 @@ function RoleQuestionaire (){
                 </div>
 
                 <div className="flex w-full justify-end pt-2">
-                    <div className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer">
+                    <Link  className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer">
                         Continue
-                    </div>
+                    </Link >
                 </div>
 
             </div>
