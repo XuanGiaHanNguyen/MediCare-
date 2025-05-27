@@ -37,7 +37,7 @@ export default function Component() {
             <motion.img
               src={Ambulance}
               alt="Ambulance"
-              className="w-[380px] h-[380px] object-contain z-10 flex items-center justify-center"
+              className="w-[360px] h-[360px] object-contain z-10 flex items-center justify-center"
               animate={{
                 scale: [1, 1.1, 1],
               }}

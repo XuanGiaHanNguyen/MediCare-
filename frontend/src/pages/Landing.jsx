@@ -289,6 +289,7 @@ function Landing () {
                             </div>
                             <button 
                             type="button"
+                            onClick = {(e)=> navigate("/enteremail")}
                             className="text-sm text-sky-600 hover:text-sky-700 hover:underline transition-all duration-300 ease-out transform hover:scale-105"
                             >
                             Forgot password?

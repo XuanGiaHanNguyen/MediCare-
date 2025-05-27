@@ -7,6 +7,11 @@ import MedProf from "./pages/AuthSteps/CreateProfile/MedProf"
 import Patient from "./pages/AuthSteps/CreateProfile/Patient"
 import Dock from "./pages/Dock"
 
+import BackToLogin from "./pages/PassReset/BackToLogin"
+import LinkSent from "./pages/PassReset/LinkSent"
+import NewPass from "./pages/PassReset/NewPass"
+import EnterEmail from "./pages/PassReset/EnterEmail"
+
 import Component from "./pages/loading"
 
 function App() {
@@ -21,6 +26,11 @@ function App() {
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="/medprofile" element={<MedProf/>}/>
         <Route path="/patprofile" element={<Patient/>}/>
+
+        <Route path="/enteremail" element={<EnterEmail/>}/>
+        <Route path="/linksent" element={<LinkSent/>}/>
+        <Route path="/newpass" element={<NewPass/>}/>
+        <Route path="/back" element={<BackToLogin/>}/>
 
         <Route path="/loading" element={<Component/>}/>
 

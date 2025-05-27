@@ -9,19 +9,19 @@ const Header = (props) => {
             <div className="pt-1 text-white font-medium flex flex-row gap-8">
                 <Link className="group">
                     Featured
-                    <div class="bg-sky-600 h-[2px] w-0 group-hover:w-full transition-all duration-500"></div>
+                    <div class="bg-neutral-200 h-[2px] w-0 group-hover:w-full transition-all duration-500"></div>
                 </Link>
                 <Link className="group">
                     Services
-                    <div class="bg-sky-600 h-[2px] w-0 group-hover:w-full transition-all duration-500"></div>
+                    <div class="bg-neutral-200 h-[2px] w-0 group-hover:w-full transition-all duration-500"></div>
                 </Link>
                 <Link className="group">
                     Blog
-                    <div class="bg-sky-600 h-[2px] w-0 group-hover:w-full transition-all duration-500"></div>
+                    <div class="bg-neutral-200 h-[2px] w-0 group-hover:w-full transition-all duration-500"></div>
                 </Link>
                 <Link className="group">
                     Contact Us
-                    <div class="bg-sky-600 h-[2px] w-0 group-hover:w-full transition-all duration-500"></div>
+                    <div class="bg-neutral-200 h-[2px] w-0 group-hover:w-full transition-all duration-500"></div>
                 </Link>
             </div>
         </div>

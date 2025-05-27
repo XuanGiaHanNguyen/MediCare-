@@ -12,15 +12,15 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { UsersIcon, CalendarIcon, BedIcon } from "../assets/icon";
+import { UsersIcon, CalendarIcon, BedIcon, MeetingIcon } from "../assets/icon";
 import DockHeader from "../component/DockHeader"
 
 // Mock data
 const statsCards = [
-  { title: "Total Patients", value: "1,234", icon: UsersIcon , bgColor: "bg-blue-100" },
-  { title: "Appointments", value: "89", icon: CalendarIcon , bgColor: "bg-blue-100" },
-  { title: "Available Beds", value: "45", icon: BedIcon , bgColor: "bg-blue-100" },
-  { title: "Staff on Duty", value: "67", icon: "👨‍⚕️", bgColor: "bg-blue-100" }
+  { title: "Total Patients", value: "1,234", icon: UsersIcon , bgColor: "bg-sky-700" },
+  { title: "Appointments", value: "89", icon: CalendarIcon , bgColor: "bg-sky-700" },
+  { title: "Available Beds", value: "45", icon: BedIcon , bgColor: "bg-sky-700" },
+  { title: "Meeting", value: "7", icon: MeetingIcon, bgColor: "bg-sky-700" }
 ];
 
 const patientData = [
@@ -103,7 +103,7 @@ export default function Dashboard() {
       <div className="w-full min-h-screen bg-gray-50 flex flex-row">
         {/* Sidebar */}
         <div className="w-20 bg-white border-r border-gray-200 flex flex-col items-center gap-4 py-6">
-          <button className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors">
+          <button className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors">
             <Home className="w-5 h-5" />
           </button>
           <button className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
@@ -196,7 +196,7 @@ export default function Dashboard() {
                         ${
                           day.isCurrentMonth
                             ? day.isToday
-                              ? "bg-blue-600 text-white shadow-lg"
+                              ? "bg-sky-600 text-white shadow-lg"
                               : "text-gray-900 hover:bg-gray-100"
                             : "text-gray-400"
                         }
@@ -213,27 +213,27 @@ export default function Dashboard() {
             <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-6">Recent Activity</h3>
               <div className="space-y-4">
-                <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl">
-                  <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white">
-                    👨‍⚕️
+                <div className="flex items-center gap-4 p-4 bg-sky-50 rounded-xl">
+                  <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center text-white">
+                    {UsersIcon}
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">New patient registered</p>
                     <p className="text-sm text-gray-600">John Doe - 5 minutes ago</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 p-4 bg-green-50 rounded-xl">
-                  <div className="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center text-white">
-                    📅
+                <div className="flex items-center gap-4 p-4 bg-sky-50 rounded-xl">
+                  <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center text-white">
+                    {CalendarIcon}
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">Appointment scheduled</p>
                     <p className="text-sm text-gray-600">Jane Smith - 15 minutes ago</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 p-4 bg-orange-50 rounded-xl">
-                  <div className="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center text-white">
-                    🛏️
+                <div className="flex items-center gap-4 p-4 bg-sky-50 rounded-xl">
+                  <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center text-white">
+                    {BedIcon}
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">Bed assignment updated</p>
@@ -249,7 +249,7 @@ export default function Dashboard() {
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-semibold text-gray-900">Patient List</h3>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
+                <button className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors">
                   View All
                 </button>
               </div>
@@ -273,7 +273,7 @@ export default function Dashboard() {
                     <tr key={patient.no} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.no}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{patient.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 hover:text-blue-800 cursor-pointer">{patient.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-sky-800 hover:text-blue-800 cursor-pointer">{patient.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.date}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.age}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.country}</td>
