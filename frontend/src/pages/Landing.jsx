@@ -229,7 +229,7 @@ function Landing () {
                               Trusted by 500+ Healthcare Facilities
                             </p>
                         </div>
-                        <h1 className={`text-7xl text-gray-200 font-semibold px-2 leading-tight transform transition-all duration-1000 ease-out delay-500 ${
+                        <h1 className={`text-6xl text-gray-200 font-semibold px-2 leading-tight transform transition-all duration-1000 ease-out delay-500 ${
                           heroVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
                         }`}
                         style={{ transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}>
