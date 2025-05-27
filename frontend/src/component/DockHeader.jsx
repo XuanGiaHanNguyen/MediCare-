@@ -1,12 +1,13 @@
 import { Search, Calendar, Bell, Menu } from "lucide-react"
+import { Link } from "react-router-dom"
 
 const HospitalHeader = (props) => {
   return (
     <header className="bg-sky-800 text-white px-10 py-2 flex items-center justify-between shadow-xl">
       {/* Left side - Logo and Title */}
-      <div className="flex items-center gap-3">
+      <Link to="/" className="flex items-center gap-3">
         <h1 className="text-2xl font-bold">MEDICARE+</h1>
-      </div>
+      </Link>
 
       {/* Center - Search Bar */}
       <div className="flex-1 max-w-md mx-8">
