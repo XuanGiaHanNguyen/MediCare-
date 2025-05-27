@@ -2,6 +2,8 @@ import { useState } from "react";
 import { UserIcon, GoogleIcon } from "../../assets/icon"
 import { useNavigate } from "react-router-dom";
 
+import Header from "../../component/header";
+
 function SignUp() {
 
     const [formData, setFormData] = useState({
@@ -27,14 +29,9 @@ function SignUp() {
         navigate("/medprofile")
     };
 
-    const getRoleButtonClass = (role) => {
-        const baseClass = "border-2 border-sky-600 text-sky-800 font-medium w-full flex text-center justify-center py-3 rounded-md hover:bg-sky-600 hover:text-white cursor-pointer";
-        const selectedClass = "bg-sky-600 text-white";
-        
-        return selectedRole === role ? `${baseClass} ${selectedClass}` : baseClass;
-    };
-
     return(
+    <div>
+        <Header></Header>
         <div className="w-full py-10 bg-sky-100 flex items-center justify-center">
             <div className="bg-white p-5 rounded-md flex flex-col items-center w-1/2 gap-3 py-8 px-10">
                 <h1 className="text-3xl text-sky-800 font-semibold flex flex-row items-center">
@@ -134,6 +131,7 @@ function SignUp() {
                 </button>
             </div>
         </div>
+    </div>
     )
 }
 

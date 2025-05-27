@@ -2,6 +2,8 @@ import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import Ambulance from "../assets/ambulance.png"
 
+import Header from "../component/header"
+
 export default function Component() {
 
   useEffect(() => {
@@ -19,6 +21,8 @@ export default function Component() {
   }, [])
 
   return (
+    <div>
+    <Header></Header>
     <div className="min-h-screen bg-sky-100 flex items-center justify-center ">
       <div className="text-center pb-32">
        {/* Animated Circle and Ambulance */}
@@ -71,6 +75,7 @@ export default function Component() {
           ))}
         </div>
       </div>
+    </div>
     </div>
   )
 }

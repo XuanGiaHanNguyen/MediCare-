@@ -5,16 +5,14 @@ import RoleQuestionaire from "./pages/AuthSteps/RoleQuest"
 import SignUp from "./pages/AuthSteps/SignUp"
 import MedProf from "./pages/AuthSteps/CreateProfile/MedProf"
 import Patient from "./pages/AuthSteps/CreateProfile/Patient"
+import Dock from "./pages/Dock"
 
-import Header from "./component/header"
 import Component from "./pages/loading"
-
 
 function App() {
 
   return (
     <BrowserRouter>
-      <Header/>
       <Routes>
         <Route path="/" element={<Landing/>}/>
         

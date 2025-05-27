@@ -8,6 +8,8 @@ import {
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import Header from "../component/header"
+
 const FeatureCard = ({ icon: Icon, title, description, features, index }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -111,13 +113,7 @@ const Link = ({ children, href, className = "", ...props }) => (
 
 function Landing () {
     const [email, setEmail] = useState('');
-    const [formData, setFormData] = useState({
-      firstName: '',
-      lastName: '',
-      email: '',
-      facilityType: ''
-    });
-
+ 
     const navigate = useNavigate()
 
     const [heroVisible, setHeroVisible] = useState(false);
@@ -185,6 +181,7 @@ function Landing () {
 
     return(
         <div className="flex flex-col">
+            <Header/>
             <style jsx>{`
               @keyframes fade-in-up {
                 from {
