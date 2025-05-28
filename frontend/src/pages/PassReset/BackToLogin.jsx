@@ -1,56 +1,51 @@
-import { useState } from "react";
-import { UserIcon } from "../../assets/icon"
-import { Link } from "react-router-dom";
-
 import Header from "../../component/header";
 
-function BackToLogin (){
-    const [selectedRole, setSelectedRole] = useState("");
-
-    const handleRoleSelect = (role) => {
-        setSelectedRole(role);
-    };
-
-    const getRoleButtonClass = (role) => {
-        const baseClass = "border-2 border-sky-600 text-sky-800 font-medium w-full flex text-center justify-center py-3 rounded-md hover:bg-sky-600 hover:text-white cursor-pointer";
-        const selectedClass = "bg-sky-600 text-white";
-        
-        return selectedRole === role ? `${baseClass} ${selectedClass}` : baseClass;
-    };
+function PasswordResetSuccess() {
+    // Success check icon component
+    const SuccessIcon = (
+        <svg 
+            className="w-16 h-16 text-sky-600" 
+            fill="currentColor" 
+            viewBox="0 0 20 20" 
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path 
+                fillRule="evenodd" 
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" 
+                clipRule="evenodd"
+            />
+        </svg>
+    );
 
     return(
         <div>
-            <Header></Header>
+           <Header></Header>     
             <div className="w-full h-screen bg-sky-100 flex items-center justify-center">
-                <div className="bg-white p-5 rounded-md flex flex-col items-center w-1/2 gap-3 py-8 px-10">
-                    <h1 className="text-3xl text-sky-800 font-semibold flex flex-row"><span>{UserIcon}</span>Create an Account </h1>
-                    <div className="flex items-center justify-center space-x-2">
-                        <div className="w-15 h-2 bg-sky-600 rounded-full"></div>
-                        <div className="w-15 h-2 bg-sky-200 rounded-full"></div>
-                        <div className="w-15 h-2 bg-sky-200 rounded-full"></div>
-                    </div>
-                    <p className="text-sm text-sky-900 mb-4">Step 1 of 3</p>
-                    <h2 className="text-lg font-medium flex w-full text-gray-600">Please Select Your Role</h2>
-
-                    <div 
-                        className={getRoleButtonClass("healthcare")}
-                        onClick={() => handleRoleSelect("healthcare")}
-                    >
-                        Healthcare Professional
+                <div className="bg-white p-5 rounded-md flex flex-col items-center w-1/2 gap-6 py-12 px-10">
+                    
+                    {/* Success Icon */}
+                    <div className="">
+                        {SuccessIcon}
                     </div>
 
-                    <div 
-                        className={getRoleButtonClass("patient")}
-                        onClick={() => handleRoleSelect("patient")}
-                    >
-                        Medical Patient
-                    </div>
-                
+                    {/* Success Title */}
+                    <h1 className="text-3xl text-sky-800 font-semibold text-center">
+                        Password Reset Successful!
+                    </h1>
 
-                    <div className="flex w-full justify-end pt-2">
-                        <Link to="" className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer">
-                            Continue
-                        </Link >
+                    {/* Success Message */}
+                    <p className="text-gray-600 text-center text-lg leading-relaxed max-w-md">
+                        Your password has been successfully reset. You can now log in with your new password.
+                    </p>
+
+                    {/* Return to Homepage Button */}
+                    <div className="flex w-full justify-center pt-4">
+                        <button 
+                            onClick={() => window.location.href = "/"} 
+                            className="border-2 px-8 py-3 rounded-md font-medium text-white bg-sky-700 hover:bg-sky-800 transition-colors cursor-pointer text-center"
+                        >
+                            Return to Homepage
+                        </button>
                     </div>
 
                 </div>
@@ -59,4 +54,4 @@ function BackToLogin (){
     )
 }
 
-export default BackToLogin
+export default PasswordResetSuccess
