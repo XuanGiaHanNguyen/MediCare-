@@ -141,9 +141,9 @@ function MedProf (){
                     onClick={handleSubmit}
                     className="border-2 w-full flex text-center items-center px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer hover:bg-sky-800 mt-4"
                 >
-                    <p className="text-center w-full">Continue</p>
+                    <p className="text-center w-full">Finish</p>
                 </button>
-                <button onClick={(e)=> navigate("/role")} className="border-2 w-full flex text-center items-center px-6 py-2 rounded-md font-medium text-sky-700 border-sky-700 cursor-pointer hover:bg-sky-50">
+                <button onClick={(e)=> navigate("/signup")} className="border-2 w-full flex text-center items-center px-6 py-2 rounded-md font-medium text-sky-700 border-sky-700 cursor-pointer hover:bg-sky-50">
                     <p className="text-center w-full">Back</p>
                 </button>
             </div>
