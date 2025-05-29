@@ -113,6 +113,7 @@ const Link = ({ children, href, className = "", ...props }) => (
 
 function Landing () {
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('')
  
     const navigate = useNavigate()
 
@@ -176,6 +177,7 @@ function Landing () {
   
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(email)
     navigate("/loading")
   };
 
@@ -254,7 +256,8 @@ function Landing () {
                                 Email Address
                             </label>
                             <input 
-                                type="email" 
+                                type="email"
+                                onChange = {(e)=>setEmail(e.target.value)}
                                 placeholder="doctor@hospital.com"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-400 ease-out placeholder-gray-400 transform focus:scale-105 bg-white/90"
                             />
@@ -268,6 +271,7 @@ function Landing () {
                             </label>
                             <input 
                                 type="password" 
+                                onChange={(e)=>setPassword(e.target.value)}
                                 placeholder="••••••••"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-400 ease-out placeholder-gray-400 transform focus:scale-105 bg-white/90"
                             />
