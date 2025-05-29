@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { UserIcon } from "../../assets/icon"
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Header from "../../component/header";
 
 function RoleQuestionaire (){
     const [selectedRole, setSelectedRole] = useState("");
+    const navigate = useNavigate()
 
     const handleRoleSelect = (role) => {
         setSelectedRole(role);
@@ -17,6 +18,11 @@ function RoleQuestionaire (){
         
         return selectedRole === role ? `${baseClass} ${selectedClass}` : baseClass;
     };
+
+    const handleSubmit = ()=> {
+        sessionStorage.setItem("Role", selectedRole)
+        navigate("/signup")
+    }
 
     return(
         <div>
@@ -48,9 +54,9 @@ function RoleQuestionaire (){
                 
 
                     <div className="flex w-full justify-end pt-2">
-                        <Link to="/signup" className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer">
+                        <button onClick={(e)=> handleSubmit()} className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer">
                             Continue
-                        </Link >
+                        </button >
                     </div>
 
                 </div>

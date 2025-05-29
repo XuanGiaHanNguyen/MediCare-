@@ -24,9 +24,14 @@ function SignUp() {
     };
 
     const handleSubmit = () => {
-        // Handle form submission logic here
-        console.log("Form submitted:", formData);
-        navigate("/medprofile")
+        const given = sessionStorage.getItem("Role")
+        if (given === "healthcare"){
+            sessionStorage.clear
+            navigate("/medprofile")
+        }else{
+            sessionStorage.clear
+            navigate("/patprofile")
+        }
     };
 
     return(

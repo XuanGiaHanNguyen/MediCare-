@@ -51,10 +51,10 @@ function Patient (){
                     </div>
                     <div>
                        <p className="font-bold text-lg text-gray-700">Xuan Gia Han Nguyen  </p>
-                       <p className="font-normal text-xs pb-1 text-gray-700"> Medical Professional</p>
+                       <p className="font-normal text-xs pb-1 text-gray-700"> Patient</p>
                        <div className="flex flex-row gap-1">
                             <p className="border-2 bg-sky-900 text-white text-sm rounded-full px-4">
-                                Research Assistant
+                               Cancer 
                             </p>
                             <p className="border-2 bg-sky-900 text-white text-sm rounded-full px-4">
                                 English
@@ -74,7 +74,7 @@ function Patient (){
                 <div className="w-full space-y-4">
                     <div>
                         <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-                            Current Hospital Role
+                            Current Medical Diagnosis
                         </label>
                         <input
                             type="text"
