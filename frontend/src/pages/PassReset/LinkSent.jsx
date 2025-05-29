@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import Header from "../../component/header";
 
 function LinkSent (){
+
+    const email = sessionStorage.getItem("Email")
       
     return(
         <div>
@@ -22,7 +24,7 @@ function LinkSent (){
 
                 
                     <div className="w-full text-gray-600 flex text-center justify-center px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600">
-                        Your Email Address
+                        {email}
                     </div>
 
                     <Link to="/enteremail"

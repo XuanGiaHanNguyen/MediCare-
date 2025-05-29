@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { LockIcon } from "../../assets/icon"
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Header from "../../component/header";
 
 function EnterEmail (){
+
+    const [email, setEmail] = useState("")
+    const navigate = useNavigate()
+
+    const handleSubmit = ()=>{
+        sessionStorage.setItem("Email", email)
+        navigate("/linksent")
+    }
     
     return(
         <div>
@@ -20,21 +28,19 @@ function EnterEmail (){
                     <p className="text-sm text-sky-900 mb-4">Step 1 of 3</p>
                     <h2 className="text-lg font-medium flex w-full text-gray-600">Please Enter Your Email</h2>
 
-                
                     <input
                             type="text"
-                            id="fullName"
-                            name="fullName"
+                            id="email"
+                            name="email"
+                            onChange = {(e)=> setEmail(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                             placeholder="example@gmail.com"
                     />
           
-
-
                     <div className="flex w-full justify-end pt-2">
-                        <Link to="/linksent" className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer">
+                        <button onClick={(e)=> handleSubmit()} className="border-2 px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer">
                             Continue
-                        </Link >
+                        </button >
                     </div>
 
                 </div>
