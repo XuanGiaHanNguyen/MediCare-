@@ -6,30 +6,20 @@ import Header from "../../component/header";
 
 function SignUp() {
 
-    const [formData, setFormData] = useState({
-        fullName: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-    });
+    const [name, setName] = useState("")
+    const [email, setEmail]= useState("")
+    const [password, setPassword] = useState("")
 
     const navigate = useNavigate()
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
     const handleSubmit = () => {
         const given = sessionStorage.getItem("Role")
+        sessionStorage.setItem("Name", name)
+
         if (given === "healthcare"){
-            sessionStorage.clear
+
             navigate("/medprofile")
         }else{
-            sessionStorage.clear
             navigate("/patprofile")
         }
     };
@@ -72,8 +62,7 @@ function SignUp() {
                             type="text"
                             id="fullName"
                             name="fullName"
-                            value={formData.fullName}
-                            onChange={handleInputChange}
+                            onChange={(e)=>setName(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                             placeholder="Enter your full name"
                         />
@@ -87,8 +76,7 @@ function SignUp() {
                             type="email"
                             id="email"
                             name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
+                            onChange={(e)=> setEmail(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                             placeholder="Enter your email address"
                         />
@@ -102,8 +90,7 @@ function SignUp() {
                             type="password"
                             id="password"
                             name="password"
-                            value={formData.password}
-                            onChange={handleInputChange}
+                            onChange={(e)=>setPassword(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                             placeholder="Create a password"
                         />
@@ -117,8 +104,6 @@ function SignUp() {
                             type="password"
                             id="confirmPassword"
                             name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleInputChange}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                             placeholder="Confirm your password"
                         />
