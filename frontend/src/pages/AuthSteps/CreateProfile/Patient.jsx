@@ -6,7 +6,7 @@ import Header from "../../../component/header";
 
 function Patient (){
 
-    const [StaffRole, setStaffRole] = useState('')
+    const [Diagnosis, setDiagnosis] = useState('')
     const [Language, setLanguage] = useState('')
     const [Tele, setTele] = useState()
     const [Bio, setBio] = useState("")
@@ -46,7 +46,7 @@ function Patient (){
                        <div className="flex flex-row gap-1">
                             <p className="border-2 bg-sky-800 text-white text-sm rounded-full px-4">
                                 {/* ternary operator: || */}
-                                {StaffRole || "Research Assistant"}
+                                {Diagnosis || "High blood pressure"}
                             </p>
                             <p className="border-2 bg-sky-800 text-white text-sm rounded-full px-4">
                                 {Language || "English"}
@@ -66,13 +66,13 @@ function Patient (){
                 <div className="w-full space-y-4">
                     <div>
                         <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-                            Current Hospital Role
+                            Current Diagnosis
                         </label>
                         <input
                             type="text"
                             id="role"
                             name="role"
-                            onChange={(e)=> setStaffRole(e.target.value)}
+                            onChange={(e)=> setDiagnosis(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                             placeholder="Enter your Hospital Role"
                         />
