@@ -1,35 +1,26 @@
-// Needs some change from the med professional copy paste :)))
-
 import { useState } from "react";
 import { UserIcon, UserDisplayIcon } from "../../../assets/icon"
 import { useNavigate } from "react-router-dom";
 
+import Header from "../../../component/header";
+
 function Patient (){
-    const [formData, setFormData] = useState({
-        role: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-    });
+
+    const [StaffRole, setStaffRole] = useState('')
+    const [Language, setLanguage] = useState('')
+    const [Tele, setTele] = useState()
+    const [Bio, setBio] = useState("")
 
     const navigate = useNavigate()
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
     const handleSubmit = () => {
-        // Handle form submission logic here
-        console.log("Form submitted:", formData);
-        navigate("/medprofile")
+        navigate("/loading")
     };
 
 
     return(
+    <div>
+        <Header></Header>
         <div className="w-full py-10 bg-sky-100 flex items-center justify-center">
             <div className="bg-white p-5 rounded-md flex flex-col items-center w-1/2 gap-3 py-8 px-10">
                 <h1 className="text-3xl text-sky-800 font-semibold flex flex-row items-center">
@@ -53,14 +44,15 @@ function Patient (){
                        <p className="font-bold text-lg text-gray-700">Xuan Gia Han Nguyen  </p>
                        <p className="font-normal text-xs pb-1 text-gray-700"> Patient</p>
                        <div className="flex flex-row gap-1">
-                            <p className="border-2 bg-sky-900 text-white text-sm rounded-full px-4">
-                               Cancer 
+                            <p className="border-2 bg-sky-800 text-white text-sm rounded-full px-4">
+                                {/* ternary operator: || */}
+                                {StaffRole || "Research Assistant"}
                             </p>
-                            <p className="border-2 bg-sky-900 text-white text-sm rounded-full px-4">
-                                English
+                            <p className="border-2 bg-sky-800 text-white text-sm rounded-full px-4">
+                                {Language || "English"}
                             </p>
-                            <p className="border-2 bg-sky-900 text-white text-sm rounded-full px-4">
-                                Telegraph: Yes
+                            <p className="border-2 bg-sky-800 text-white text-sm rounded-full px-4">
+                                Telegraph: { Tele || "Yes"}
                             </p>
                        </div>
                     </div>
@@ -74,31 +66,29 @@ function Patient (){
                 <div className="w-full space-y-4">
                     <div>
                         <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-                            Current Medical Diagnosis
+                            Current Hospital Role
                         </label>
                         <input
                             type="text"
                             id="role"
                             name="role"
-                            value={formData.role}
-                            onChange={handleInputChange}
+                            onChange={(e)=> setStaffRole(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
-                            placeholder="Enter your full name"
+                            placeholder="Enter your Hospital Role"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="language" className="block text-sm font-medium text-gray-700 mb-1">
                             Primary Language 
                         </label>
                         <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
+                            type="language"
+                            id="language"
+                            name="language"
+                            onChange={(e)=> setLanguage(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
-                            placeholder="Enter your email address"
+                            placeholder="Enter your Primary Language"
                         />
                     </div>
 
@@ -109,13 +99,12 @@ function Patient (){
                         <select
                             id="telehealth"
                             name="telehealth"
-                            value={formData.telehealth}
-                            onChange={handleInputChange}
+                            onChange={(e)=> setTele(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                         >
                             <option value="">Select an option</option>
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
                         </select>
                     </div>
 
@@ -126,8 +115,7 @@ function Patient (){
                         <textarea
                             id="shortBio"
                             name="shortBio"
-                            value={formData.shortBio}
-                            onChange={handleInputChange}
+                            onChange={(e)=> setBio(e.target.value)}
                             rows={4}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                             placeholder="Write a short biography..."
@@ -139,14 +127,15 @@ function Patient (){
                     onClick={handleSubmit}
                     className="border-2 w-full flex text-center items-center px-6 py-2 rounded-md font-medium text-white bg-sky-700 cursor-pointer hover:bg-sky-800 mt-4"
                 >
-                    <p className="text-center w-full">Continue</p>
+                    <p className="text-center w-full">Finish</p>
                 </button>
-                <button onClick={(e)=> navigate("/role")} className="border-2 w-full flex text-center items-center px-6 py-2 rounded-md font-medium text-sky-700 border-sky-700 cursor-pointer hover:bg-sky-50">
+                <button onClick={(e)=> navigate("/signup")} className="border-2 w-full flex text-center items-center px-6 py-2 rounded-md font-medium text-sky-700 border-sky-700 cursor-pointer hover:bg-sky-50">
                     <p className="text-center w-full">Back</p>
                 </button>
             </div>
         </div>
+    </div>
     )
 }
 
-export default Patient 
+export default Patient

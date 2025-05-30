@@ -5,26 +5,15 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../../component/header";
 
 function MedProf (){
-    const [formData, setFormData] = useState({
-        role: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-    });
+
+    const [StaffRole, setStaffRole] = useState('')
+    const [Language, setLanguage] = useState('')
+    const [Tele, setTele] = useState()
+    const [Bio, setBio] = useState("")
 
     const navigate = useNavigate()
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
     const handleSubmit = () => {
-        // Handle form submission logic here
-        console.log("Form submitted:", formData);
         navigate("/loading")
     };
 
@@ -56,13 +45,14 @@ function MedProf (){
                        <p className="font-normal text-xs pb-1 text-gray-700"> Medical Professional</p>
                        <div className="flex flex-row gap-1">
                             <p className="border-2 bg-sky-800 text-white text-sm rounded-full px-4">
-                                Research Assistant
+                                {/* ternary operator: || */}
+                                {StaffRole || "Research Assistant"}
                             </p>
                             <p className="border-2 bg-sky-800 text-white text-sm rounded-full px-4">
-                                English
+                                {Language || "English"}
                             </p>
                             <p className="border-2 bg-sky-800 text-white text-sm rounded-full px-4">
-                                Telegraph: Yes
+                                Telegraph: { Tele || "Yes"}
                             </p>
                        </div>
                     </div>
@@ -82,25 +72,23 @@ function MedProf (){
                             type="text"
                             id="role"
                             name="role"
-                            value={formData.role}
-                            onChange={handleInputChange}
+                            onChange={(e)=> setStaffRole(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
-                            placeholder="Enter your full name"
+                            placeholder="Enter your Hospital Role"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="language" className="block text-sm font-medium text-gray-700 mb-1">
                             Primary Language 
                         </label>
                         <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
+                            type="language"
+                            id="language"
+                            name="language"
+                            onChange={(e)=> setLanguage(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
-                            placeholder="Enter your email address"
+                            placeholder="Enter your Primary Language"
                         />
                     </div>
 
@@ -111,13 +99,12 @@ function MedProf (){
                         <select
                             id="telehealth"
                             name="telehealth"
-                            value={formData.telehealth}
-                            onChange={handleInputChange}
+                            onChange={(e)=> setTele(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                         >
                             <option value="">Select an option</option>
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
                         </select>
                     </div>
 
@@ -128,8 +115,7 @@ function MedProf (){
                         <textarea
                             id="shortBio"
                             name="shortBio"
-                            value={formData.shortBio}
-                            onChange={handleInputChange}
+                            onChange={(e)=> setBio(e.target.value)}
                             rows={4}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                             placeholder="Write a short biography..."
