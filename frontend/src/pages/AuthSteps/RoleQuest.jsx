@@ -28,7 +28,7 @@ function RoleQuestionaire (){
         <div>
             <Header></Header>
             <div className="w-full h-screen bg-sky-100 flex items-center justify-center">
-                <div className="bg-white p-5 rounded-md flex flex-col items-center w-1/2 gap-3 py-8 px-10">
+                <div className="bg-white shadow-md p-5 rounded-md flex flex-col items-center w-1/2 gap-3 py-8 px-10">
                     <h1 className="text-3xl text-sky-800 font-semibold flex flex-row"><span>{UserIcon}</span>Create an Account </h1>
                     <div className="flex items-center justify-center space-x-2">
                         <div className="w-15 h-2 bg-sky-600 rounded-full"></div>

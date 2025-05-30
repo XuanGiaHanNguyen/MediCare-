@@ -3,12 +3,9 @@ import Header from "../../component/header";
 import { useState, useEffect } from "react";
 
 function PasswordResetSuccess() {
-    const [isVisible, setIsVisible] = useState(false);
     const [showCheckmark, setShowCheckmark] = useState(false);
 
     useEffect(() => {
-        // Trigger animations on mount
-        setTimeout(() => setIsVisible(true), 100);
         setTimeout(() => setShowCheckmark(true), 800);
     }, []);
     // Success check icon component with animation
@@ -39,7 +36,7 @@ function PasswordResetSuccess() {
         <div>
             <Header></Header>
             <div className="w-full h-screen bg-sky-100 flex items-center justify-center">
-                <div className={`bg-white p-5 rounded-md flex flex-col items-center w-1/2 gap-6 py-12 px-10 shadow-lg transition-all duration-1000 transform ${isVisible ? 'translate-y-0 scale-100' : 'translate-y-8 scale-95'}`}>
+                <div className={`bg-white p-5 rounded-md flex flex-col items-center w-1/2 gap-6 py-12 px-10 shadow-md transition-all duration-1000 transform `}>
                     
                     {/* Success Icon */}
                     <div className="mb-4">
@@ -47,17 +44,17 @@ function PasswordResetSuccess() {
                     </div>
 
                     {/* Success Title */}
-                    <h1 className={`text-3xl text-sky-800 font-semibold text-center transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                    <h1 className={`text-3xl text-sky-800 font-semibold text-center transition-all duration-1000 delay-300`}>
                         Password Reset Successful!
                     </h1>
 
                     {/* Success Message */}
-                    <p className={`text-gray-600 text-center text-lg leading-relaxed max-w-md transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                    <p className={`text-gray-600 text-center text-lg leading-relaxed max-w-md transition-all duration-1000 delay-500`}>
                         Your password has been successfully reset. You can now log in with your new password.
                     </p>
 
                     {/* Return to Homepage Button */}
-                    <div className={`flex w-full justify-center pt-4 transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                    <div className={`flex w-full justify-center pt-4 transition-all duration-1000 delay-700`}>
                         <button 
                             onClick={() => window.location.href = "/"} 
                             className="border-2 px-8 py-3 rounded-md font-medium text-white bg-sky-700 hover:bg-sky-800 hover:scale-105 transition-all duration-300 cursor-pointer text-center transform hover:shadow-lg"

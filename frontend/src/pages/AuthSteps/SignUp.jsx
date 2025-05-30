@@ -28,7 +28,7 @@ function SignUp() {
     <div>
         <Header></Header>
         <div className="w-full py-10 bg-sky-100 flex items-center justify-center">
-            <div className="bg-white p-5 rounded-md flex flex-col items-center w-1/2 gap-3 py-8 px-10">
+            <div className="bg-white shadow-md p-5 rounded-md flex flex-col items-center w-1/2 gap-3 py-8 px-10">
                 <h1 className="text-3xl text-sky-800 font-semibold flex flex-row items-center">
                     <span>{UserIcon}</span>Create an Account 
                 </h1>

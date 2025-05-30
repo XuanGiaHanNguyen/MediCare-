@@ -6,8 +6,6 @@ import Header from "../../component/header";
 
 function NewPass (){
     const [formData, setFormData] = useState({
-        fullName: "",
-        email: "",
         password: "",
         confirmPassword: ""
     });
@@ -32,7 +30,7 @@ function NewPass (){
     <div>
         <Header></Header>
         <div className="w-full min-h-screen py-10 bg-sky-100 flex items-center justify-center">
-            <div className="bg-white p-5 rounded-md flex flex-col items-center w-1/2 py-8 px-10">
+            <div className="bg-white p-5 shadow-md rounded-md flex flex-col items-center w-1/2 py-8 px-10">
                 <h1 className="text-3xl text-sky-800 font-semibold flex flex-row items-center mb-3">
                     <span className="pr-2">{UnlockIcon}</span>Set New Password 
                 </h1>
