@@ -11,6 +11,8 @@ function MedProf (){
     const [Tele, setTele] = useState()
     const [Bio, setBio] = useState("")
 
+    const name = sessionStorage.getItem("Name")
+
     const navigate = useNavigate()
 
     const handleSubmit = () => {
@@ -41,7 +43,7 @@ function MedProf (){
                         {UserDisplayIcon}
                     </div>
                     <div>
-                       <p className="font-bold text-lg text-gray-700">Xuan Gia Han Nguyen  </p>
+                       <p className="font-bold text-lg text-gray-700">{name}</p>
                        <p className="font-normal text-xs pb-1 text-gray-700"> Medical Professional</p>
                        <div className="flex flex-row gap-1">
                             <p className="border-2 bg-sky-800 text-white text-sm rounded-full px-4">
