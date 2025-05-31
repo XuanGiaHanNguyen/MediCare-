@@ -18,36 +18,32 @@ export default function CalendarDock() {
 
   // Mock events data
   const mockEvents = {
-    '2025-05-31': [
-      { id: 1, title: 'WEB102 Orientation', time: '03:00', color: 'bg-blue-500', url: 'https://us06web.zoom.us/...' },
-      { id: 2, title: 'Summer 2025 Student Orient...', time: '03:00', color: 'bg-gray-500' }
-    ],
     '2025-05-01': [
-      { id: 3, title: 'Connect', time: '21:00', color: 'bg-blue-500' },
-      { id: 4, title: 'Synced', time: '21:00', color: 'bg-blue-500' }
+      { id: 3, title: 'Connect', time: '21:00', color: 'bg-sky-500' },
+      { id: 4, title: 'Synced', time: '21:00', color: 'bg-sky-500' }
     ],
     '2025-05-02': [
-      { id: 5, title: 'Connect', time: '21:00', color: 'bg-blue-500' }
+      { id: 5, title: 'Connect', time: '21:00', color: 'bg-sky-500' }
     ],
     '2025-05-03': [
-      { id: 6, title: 'Connect', time: '21:00', color: 'bg-blue-500' }
+      { id: 6, title: 'Connect', time: '21:00', color: 'bg-sky-500' }
     ],
     '2025-05-04': [
-      { id: 7, title: 'Cancelled', time: '21:00', color: 'bg-red-500' }
+      { id: 7, title: 'Cancelled', time: '21:00', color: 'bg-amber-500' }
     ],
     '2025-05-05': [
-      { id: 8, title: 'Connect', time: '21:00', color: 'bg-blue-500' }
+      { id: 8, title: 'Connect', time: '21:00', color: 'bg-sky-500' }
     ],
     '2025-05-08': [
-      { id: 9, title: 'PHY2048 Final', time: '21:00', color: 'bg-cyan-500' },
-      { id: 10, title: 'PHY2048 Final', time: '21:00', color: 'bg-cyan-500' }
+      { id: 9, title: 'PHY2048 Final', time: '21:00', color: 'bg-cyan-600' },
+      { id: 10, title: 'PHY2048 Final', time: '21:00', color: 'bg-cyan-600' }
     ],
     '2025-05-21': [
-      { id: 11, title: 'Xuan Gia Ha', time: '4:00', color: 'bg-blue-500' }
+      { id: 11, title: 'Meeting', time: '4:00', color: 'bg-sky-500' }
     ],
     '2025-05-27': [
-      { id: 12, title: 'Tech Lead Interview', time: '3:30', color: 'bg-cyan-500' },
-      { id: 13, title: 'Xuan Gia Ha', time: '4:30', color: 'bg-blue-500' }
+      { id: 12, title: 'Tech Lead Interview', time: '3:30', color: 'bg-cyan-600' },
+      { id: 13, title: 'Meeting', time: '4:30', color: 'bg-sky-500' }
     ]
   };
 
