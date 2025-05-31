@@ -5,7 +5,9 @@ import RoleQuestionaire from "./pages/AuthSteps/RoleQuest"
 import SignUp from "./pages/AuthSteps/SignUp"
 import MedProf from "./pages/AuthSteps/CreateProfile/MedProf"
 import Patient from "./pages/AuthSteps/CreateProfile/Patient"
+
 import Dock from "./pages/Dock"
+import CalendarDock from "./pages/Main/Calendar"
 
 import BackToLogin from "./pages/PassReset/BackToLogin"
 import LinkSent from "./pages/PassReset/LinkSent"
@@ -21,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing/>}/>
         <Route path="/dock" element={<Dock/>}/>
+        <Route path="/calendar" element={<CalendarDock/>}/>
         
         <Route path="/role" element={<RoleQuestionaire/>}/>
         <Route path="/signup" element={<SignUp/>}/>
