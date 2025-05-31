@@ -142,7 +142,7 @@ export default function CalendarDock() {
               </button>
               <button className="px-6 py-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm">
                 <Settings className="w-5 h-5" />
-                Add events
+                Settings
               </button>
             </div>
           </div>
