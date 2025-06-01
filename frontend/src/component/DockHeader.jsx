@@ -42,7 +42,7 @@ const HospitalHeader = (props) => {
         <div className="h-8 w-px bg-white/20" />
 
         {/* User Profile */}
-        <div className="flex items-center gap-3">
+        <Link to="/profile" className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white font-medium">
             D
           </div>
@@ -50,7 +50,7 @@ const HospitalHeader = (props) => {
             <div className="font-medium">Han</div>
             <div className="text-white/80 text-xs">Admin</div>
           </div>
-        </div>
+        </Link>
       </div>
     </header>
   )
