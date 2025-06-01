@@ -1,8 +1,6 @@
 import { useState } from "react";
 import {
   Calendar,
-  Plus,
-  Settings,
   FileText,
   Home,
   Bed,
@@ -13,15 +11,13 @@ import {
   Phone,
   Mail,
   MapPin,
-  Heart,
-  Activity,
   Clock,
-  AlertCircle,
   Camera,
-  Save
+  Save, GraduationCap, Stethoscope, Globe
 } from "lucide-react";
 import { profileIcon } from "../../assets/icon";
 import HospitalHeader from "../../component/DockHeader";
+import { useNavigate } from "react-router-dom";
 
 // Mock profile data
 const profileData = {
@@ -60,8 +56,43 @@ export default function MedicalProfile() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isEditing, setIsEditing] = useState(false);
 
-  const navigate = (path) => {
-    console.log(`Navigating to ${path}`);
+  const navigate = useNavigate()
+
+   const userProfile = {
+    education: [
+      {
+        degree: "Doctor of Medicine (MD)",
+        institution: "Harvard Medical School",
+        year: "2018",
+        specialization: "Internal Medicine"
+      },
+      {
+        degree: "Bachelor of Science",
+        institution: "Stanford University",
+        year: "2014",
+        specialization: "Biology & Pre-Med"
+      }
+    ],
+    experience: [
+      {
+        position: "Senior Internal Medicine Physician",
+        hospital: "Massachusetts General Hospital",
+        duration: "2021 - Present",
+        department: "Internal Medicine"
+      },
+      {
+        position: "Resident Physician",
+        hospital: "Johns Hopkins Hospital",
+        duration: "2018 - 2021",
+        department: "Internal Medicine Residency"
+      }
+    ],
+    languages: [
+      { language: "English", proficiency: "Native" },
+      { language: "Spanish", proficiency: "Fluent" },
+      { language: "French", proficiency: "Conversational" }
+    ],
+    bio: "Dedicated internal medicine physician with over 6 years of experience in comprehensive patient care. Passionate about preventive medicine and building strong doctor-patient relationships. Committed to staying current with medical advances and providing evidence-based treatment plans."
   };
 
   const navigateMonth = (direction) => {
@@ -167,7 +198,7 @@ export default function MedicalProfile() {
                   >
                     {profileIcon}
                   </div>
-                  <button className="absolute bottom-2 right-2 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+                  <button className="absolute bottom-2 right-2 w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
                     <Camera className="w-4 h-4" />
                   </button>
                 </div>
@@ -179,18 +210,18 @@ export default function MedicalProfile() {
                       <h1 className="text-3xl font-bold text-gray-900 mb-2">{profileData.name}</h1>
                       <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
                         <span className="flex items-center gap-2">
-                          <Heart className="w-4 h-4 text-red-500" />
+                          <span>•</span>
                           {profileData.specialization}
                         </span>
                         <span className="flex items-center gap-2">
-                          <Activity className="w-4 h-4 text-green-500" />
+                           <span>•</span>
                           {profileData.experience} experience
                         </span>
                       </div>
                     </div>
                     <button
                       onClick={() => setIsEditing(!isEditing)}
-                      className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2"
+                      className="px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-colors flex items-center gap-2"
                     >
                       {isEditing ? <Save className="w-4 h-4" /> : <Edit className="w-4 h-4" />}
                       {isEditing ? "Save Profile" : "Edit Profile"}
@@ -211,8 +242,8 @@ export default function MedicalProfile() {
               <h3 className="text-xl font-semibold text-gray-900 mb-6">Contact Information</h3>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-blue-600" />
+                  <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center">
+                    <Mail className="w-5 h-5 text-sky-600" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Email</p>
@@ -220,8 +251,8 @@ export default function MedicalProfile() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                    <Phone className="w-5 h-5 text-green-600" />
+                  <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center">
+                    <Phone className="w-5 h-5 text-sky-600" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Phone</p>
@@ -229,8 +260,8 @@ export default function MedicalProfile() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-purple-600" />
+                  <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center">
+                    <MapPin className="w-5 h-5 text-sky-600" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Address</p>
@@ -244,26 +275,26 @@ export default function MedicalProfile() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-6">Statistics</h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
+                <div className="flex items-center justify-between p-4 bg-sky-50 rounded-xl">
                   <div className="flex items-center gap-3">
-                    <User className="w-5 h-5 text-blue-600" />
+                    <User className="w-5 h-5 text-sky-600" />
                     <span className="font-medium text-gray-900">Total Patients</span>
                   </div>
-                  <span className="text-2xl font-bold text-blue-600">{profileData.patients}</span>
+                  <span className="text-2xl font-bold text-sky-600">{profileData.patients}</span>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                <div className="flex items-center justify-between p-4 bg-sky-50 rounded-xl">
                   <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-green-600" />
+                    <Calendar className="w-5 h-5 text-sky-600" />
                     <span className="font-medium text-gray-900">This Month</span>
                   </div>
-                  <span className="text-2xl font-bold text-green-600">89</span>
+                  <span className="text-2xl font-bold text-sky-600">89</span>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-orange-50 rounded-xl">
+                <div className="flex items-center justify-between p-4 bg-sky-50 rounded-xl">
                   <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-orange-600" />
+                    <Clock className="w-5 h-5 text-sky-600" />
                     <span className="font-medium text-gray-900">Today</span>
                   </div>
-                  <span className="text-2xl font-bold text-orange-600">4</span>
+                  <span className="text-2xl font-bold text-sky-600">4</span>
                 </div>
               </div>
             </div>
@@ -271,6 +302,69 @@ export default function MedicalProfile() {
 
           {/* Right Column */}
           <div className="lg:col-span-2 space-y-6">
+
+            {/* Today's Appointments */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">User's Profile</h3>
+                <button className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors text-sm">
+                  View All
+                </button>
+              </div>
+              <div className="space-y-6">
+            {/* Bio Section */}
+            <div className="p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-2 mb-3">
+                <User className="w-5 h-5 text-sky-800" />
+                <h4 className="font-medium text-sky-800">About</h4>
+              </div>
+              <p className="text-gray-800 text-sm leading-relaxed">{userProfile.bio}</p>
+            </div>
+
+            {/* Education Section */}
+            <div className="p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-2 mb-4">
+                <GraduationCap className="w-5 h-5 text-sky-800" />
+                <h4 className="font-medium text-sky-800">Education</h4>
+              </div>
+              <div className="space-y-3">
+                {userProfile.education.map((edu, index) => (
+                  <div key={index} className="border-l-2 border-sky-500 pl-4">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-gray-900">{edu.degree}</p>
+                      <span className="text-sm text-sky-800 font-medium">{edu.year}</span>
+                    </div>
+                    <p className="text-sm text-gray-600">{edu.institution}</p>
+                    <p className="text-xs text-gray-500">{edu.specialization}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Medical Experience Section */}
+            <div className="p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-2 mb-4">
+                <Stethoscope className="w-5 h-5 text-sky-800" />
+                <h4 className="font-medium text-sky-800">Medical Experience</h4>
+              </div>
+              <div className="space-y-3">
+                {userProfile.experience.map((exp, index) => (
+                  <div key={index} className="border-l-2 border-sky-500 pl-4">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-gray-900">{exp.position}</p>
+                      <span className="text-sm text-sky-800 font-medium">{exp.duration}</span>
+                    </div>
+                    <p className="text-sm text-gray-600">{exp.hospital}</p>
+                    <p className="text-xs text-gray-500">{exp.department}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          
+
+              </div>
+            </div>
+
             {/* Calendar */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
               <div className="p-6 border-b border-gray-100">
@@ -312,9 +406,9 @@ export default function MedicalProfile() {
                         ${
                           day.isCurrentMonth
                             ? day.isToday
-                              ? "bg-blue-600 text-white shadow-lg"
+                              ? "bg-sky-600 text-white shadow-lg"
                               : day.hasAppointment
-                              ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                              ? "bg-sky-100 text-sky-800 hover:bg-sky-200"
                               : "text-gray-900 hover:bg-gray-100"
                             : "text-gray-400"
                         }
@@ -322,74 +416,18 @@ export default function MedicalProfile() {
                     >
                       {day.day}
                       {day.hasAppointment && day.isCurrentMonth && (
-                        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
+                        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-sky-600 rounded-full"></div>
                       )}
                     </div>
                   ))}
                 </div>
                 <div className="mt-4 text-sm text-gray-600 flex items-center gap-2">
-                  <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                  <div className="w-3 h-3 bg-sky-600 rounded-full"></div>
                   <span>Days with appointments</span>
                 </div>
               </div>
             </div>
 
-            {/* Today's Appointments */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-gray-900">Today's Schedule</h3>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors text-sm">
-                  View All
-                </button>
-              </div>
-              <div className="space-y-4">
-                {upcomingAppointments.map((appointment, index) => (
-                  <div key={index} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-blue-600">{appointment.time}</div>
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">{appointment.patient}</p>
-                      <p className="text-sm text-gray-600">{appointment.type}</p>
-                    </div>
-                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      appointment.status === 'confirmed' 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-yellow-100 text-yellow-700'
-                    }`}>
-                      {appointment.status}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Recent Activity */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-6">Recent Activity</h3>
-              <div className="space-y-4">
-                {recentActivity.map((activity, index) => (
-                  <div key={index} className="flex items-start gap-4 p-4 border-l-4 border-blue-200 bg-blue-50 rounded-r-xl">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs ${
-                      activity.type === 'surgery' ? 'bg-red-500' :
-                      activity.type === 'update' ? 'bg-blue-500' :
-                      activity.type === 'review' ? 'bg-green-500' : 'bg-purple-500'
-                    }`}>
-                      {activity.type === 'surgery' ? <AlertCircle className="w-4 h-4" /> :
-                       activity.type === 'update' ? <Edit className="w-4 h-4" /> :
-                       activity.type === 'review' ? <FileText className="w-4 h-4" /> : <Calendar className="w-4 h-4" />}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-gray-900">
-                        <span className="font-medium">{activity.action}</span>
-                        <span className="text-blue-600 font-medium"> {activity.patient}</span>
-                      </p>
-                      <p className="text-sm text-gray-600">{activity.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
