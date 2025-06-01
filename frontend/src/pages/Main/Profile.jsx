@@ -186,7 +186,7 @@ export default function MedicalProfile() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 mb-8">
           <div className="relative">
             {/* Cover Photo */}
-            <div className="h-20 bg-sky-600 rounded-t-2xl"></div>
+            <div className="h-20 bg-sky-700 rounded-t-2xl"></div>
             
             {/* Profile Info */}
             <div className="relative px-8 py-8">
@@ -221,7 +221,7 @@ export default function MedicalProfile() {
                     </div>
                     <button
                       onClick={() => setIsEditing(!isEditing)}
-                      className="px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-colors flex items-center gap-2"
+                      className="px-6 py-3 bg-white text-gray-800 border-1 border-gray-200 rounded-xl hover:bg-gray-50 transition-colors flex items-center gap-2"
                     >
                       {isEditing ? <Save className="w-4 h-4" /> : <Edit className="w-4 h-4" />}
                       {isEditing ? "Save Profile" : "Edit Profile"}
@@ -242,8 +242,8 @@ export default function MedicalProfile() {
               <h3 className="text-xl font-semibold text-gray-900 mb-6">Contact Information</h3>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-sky-600" />
+                  <div className="w-10 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
+                    <Mail className="w-5 h-5 text-gray-50" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Email</p>
@@ -251,8 +251,8 @@ export default function MedicalProfile() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center">
-                    <Phone className="w-5 h-5 text-sky-600" />
+                  <div className="w-10 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
+                    <Phone className="w-5 h-5 text-gray-50" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Phone</p>
@@ -260,8 +260,8 @@ export default function MedicalProfile() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-sky-600" />
+                  <div className="w-14 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
+                    <MapPin className="w-5 h-5 text-gray-50" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Address</p>
@@ -307,13 +307,13 @@ export default function MedicalProfile() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-gray-900">User's Profile</h3>
-                <button className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors text-sm">
+                <button className="px-4 py-2 bg-sky-700 text-white rounded-xl hover:bg-sky-700 transition-colors text-sm">
                   View All
                 </button>
               </div>
               <div className="space-y-6">
             {/* Bio Section */}
-            <div className="p-4 bg-gray-50 rounded-xl">
+            <div className="p-4 bg-sky-50 rounded-xl">
               <div className="flex items-center gap-2 mb-3">
                 <User className="w-5 h-5 text-sky-800" />
                 <h4 className="font-medium text-sky-800">About</h4>
