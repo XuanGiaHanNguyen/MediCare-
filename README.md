@@ -24,75 +24,26 @@ MediCare is a modern web-based hospital management solution that digitizes and a
 - Appointment booking and management
 - Prescription tracking
 - Lab results and reports access
-- Billing and payment history
-
-### 💬 **Communication System**
-- Secure messaging between doctors and patients
-- Appointment notifications and reminders
-- Medical consultation chat system
-- Emergency communication protocols
-- Staff coordination messaging
-
-### 🏥 **Hospital Administration**
-- Staff management and role assignment
-- Department and ward management
-- Resource allocation and inventory
-- Financial reporting and analytics
-- System configuration and settings
-- Data backup and security management
-
-### 📊 **Additional Features**
-- Real-time dashboard with key metrics
-- Appointment scheduling system
-- Medical records digitization
-- Billing and insurance management
-- Report generation and analytics
-- Mobile-responsive design
-
-## 🎯 Demo
-
-[Live Demo](https://your-demo-url.com) | [Admin Panel Demo](https://your-admin-demo.com)
-
-## 📸 Screenshots
-
-![Dashboard](./screenshots/dashboard.png)
-*Main dashboard showing system overview*
-
-![Patient Management](./screenshots/patients.png)
-*Patient management interface*
-
-![Doctor Portal](./screenshots/doctor-portal.png)
-*Doctor's dashboard and patient records*
-
-![Appointment System](./screenshots/appointments.png)
-*Appointment booking and scheduling system*
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework**: React.js / Vue.js / Angular (specify your choice)
-- **Styling**: CSS3, Bootstrap / Tailwind CSS
-- **State Management**: Redux / Vuex / NgRx
-- **UI Components**: Material-UI / Ant Design / Custom Components
+- **Framework**: React.js, HTML5, CSS3, TailwindCSS, JavaScript
+- **Styling**: CSS3, Tailwind CSS
 
 ### Backend
-- **Runtime**: Node.js / Python Django / PHP Laravel
-- **Database**: MySQL / PostgreSQL / MongoDB
-- **Authentication**: JWT / OAuth 2.0
-- **API**: RESTful API / GraphQL
+- **Runtime**: Node.js 
+- **Database**: MongoDB
+- **Authentication**: JWT
+- **API**: RESTful API
 
-### Additional Tools
-- **File Storage**: AWS S3 / Local Storage
-- **Email Service**: SendGrid / Nodemailer
-- **Real-time Communication**: Socket.io / WebRTC
-- **Deployment**: Docker / Heroku / AWS / Digital Ocean
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js (v14.0 or higher) / Python 3.8+ / PHP 7.4+
-- Database (MySQL/PostgreSQL/MongoDB)
+- Database (MongoDB)
 - npm/yarn or pip package manager
 - Modern web browser
 
