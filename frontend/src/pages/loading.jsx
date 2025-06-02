@@ -1,83 +1,37 @@
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom" // Add this import
-import Ambulance from "../assets/ambulance.png"
 import Header from "../component/header"
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
-export default function Component() {
+export default function SimpleLoadingScreen() {
   const [progress, setProgress] = useState(0)
-  const navigate = useNavigate() // Initialize navigation hook
+  const navigate = useNavigate()
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setProgress((prev) => {
+      setProgress(prev => {
         if (prev >= 100) {
           clearInterval(timer)
-          // Navigate to dashboard after loading completes
-          setTimeout(() => {
-            navigate('/dock') // Change this to your desired route
-          }, 500) // Small delay before navigation for better UX
+          navigate("/dock")
           return 100
         }
-        return prev + 1
+        return prev + 5
       })
-    }, 50) // This will take about 5 seconds to complete (100 * 50ms)
+    }, 100)
 
     return () => clearInterval(timer)
-  }, [navigate])
+  }, [])
 
   return (
     <div>
-      <Header></Header>
-      <div className="min-h-screen bg-sky-100 flex items-center justify-center ">
-        <div className="text-center pb-32">
-          {/* Animated Circle and Ambulance */}
-          <div className="relative mx-auto w-[480px] h-[480px] flex items-center justify-center">
-            {/* Ambulance Image - moved right */}
-            <motion.img
-              src={Ambulance}
-              alt="Ambulance"
-              className="w-[360px] h-[360px] object-contain z-10 flex items-center justify-center"
-              animate={{
-                scale: [1, 1.1, 1],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Number.POSITIVE_INFINITY,
-                ease: "easeInOut",
-              }}
-            />
-          </div>
-            <motion.div
-            className=""
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
-            <motion.p
-              className="text-sky-800 text-3xl font-bold"
-            >
-              Loading your health dashboard
-            </motion.p>
-          </motion.div>
-  
-          {/* Simple Pulse Dots */}
-          <div className="flex items-center justify-center space-x-2 pt-4">
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                className="w-3 h-3 bg-sky-700 rounded-full"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.7, 1, 0.7],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Number.POSITIVE_INFINITY,
-                  delay: i * 0.2,
-                }}
-              />
-            ))}
-          </div>
+      <Header />
+      <div className="min-h-screen bg-blue-50 flex items-center justify-center">
+        <div className="text-center">
+          {/* Simple spinning circle */}
+          <div className="w-40 h-40 border-10 border-sky-200 border-t-sky-700 rounded-full animate-spin mx-auto mb-10"></div>
+          
+          {/* Loading text */}
+          <h1 className="text-3xl font-bold text-sky-900 mb-4">Setting up your dashboard...</h1>
+
         </div>
       </div>
     </div>

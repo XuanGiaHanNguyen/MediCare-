@@ -316,7 +316,7 @@ export default function MedicalProfile() {
             <div className="p-4 bg-sky-50 rounded-xl">
               <div className="flex items-center gap-2 mb-3">
                 <User className="w-5 h-5 text-sky-800" />
-                <h4 className="font-medium text-sky-800">About</h4>
+                <h4 className="font-semibold text-sky-800">About</h4>
               </div>
               <p className="text-gray-800 text-sm leading-relaxed">{userProfile.bio}</p>
             </div>
@@ -325,7 +325,7 @@ export default function MedicalProfile() {
             <div className="p-4 bg-gray-50 rounded-xl">
               <div className="flex items-center gap-2 mb-4">
                 <GraduationCap className="w-5 h-5 text-sky-800" />
-                <h4 className="font-medium text-sky-800">Education</h4>
+                <h4 className="font-semibold text-sky-800">Education</h4>
               </div>
               <div className="space-y-3">
                 {userProfile.education.map((edu, index) => (
@@ -345,7 +345,7 @@ export default function MedicalProfile() {
             <div className="p-4 bg-gray-50 rounded-xl">
               <div className="flex items-center gap-2 mb-4">
                 <Stethoscope className="w-5 h-5 text-sky-800" />
-                <h4 className="font-medium text-sky-800">Medical Experience</h4>
+                <h4 className="font-semibold text-sky-800">Medical Experience</h4>
               </div>
               <div className="space-y-3">
                 {userProfile.experience.map((exp, index) => (
