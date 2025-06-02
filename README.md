@@ -1,4 +1,6 @@
-# MediCare 🏥
+# MediCare 
+
+![Medicare1](https://github.com/user-attachments/assets/fd910f00-76fe-4994-ba85-efbe04c96a9c)
 
 A comprehensive hospital management system designed to streamline healthcare operations, manage patient records, facilitate doctor-patient communication, and optimize hospital administration.
 
@@ -353,15 +355,6 @@ RATE_LIMIT_MAX_REQUESTS=100
 - **Storage**: 100 GB SSD
 - **Network**: High-speed internet connection
 
-## 📞 Support & Contact
-
-For technical support or questions about MediCare:
-
-- **Email**: support@medicare-system.com
-- **Documentation**: [Link to detailed docs]
-- **Issue Tracker**: [GitHub Issues](https://github.com/XuanGiaHanNguyen/MediCare-/issues)
-- **Community Forum**: [Link to community discussions]
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -370,26 +363,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Xuan Gia Han Nguyen**
 - GitHub: [@XuanGiaHanNguyen](https://github.com/XuanGiaHanNguyen)
-- LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
-
+- LinkedIn: [Han Nguyen](https://www.linkedin.com/in/xuangiahannguyen/)
+- 
 ## 🙏 Acknowledgments
 
 - Healthcare professionals who provided valuable insights
 - Open-source community for amazing tools and libraries
 - Beta testers and early adopters for their feedback
 - [Mention any specific healthcare organizations or advisors]
-
-## 📈 Project Statistics
-
-![GitHub stars](https://img.shields.io/github/stars/XuanGiaHanNguyen/MediCare-?style=social)
-![GitHub forks](https://img.shields.io/github/forks/XuanGiaHanNguyen/MediCare-?style=social)
-![GitHub issues](https://img.shields.io/github/issues/XuanGiaHanNguyen/MediCare-)
-![GitHub license](https://img.shields.io/github/license/XuanGiaHanNguyen/MediCare-)
-
+- 
 ## 🎯 Roadmap
-
-### Version 2.0 (Upcoming)
 - [ ] Mobile application (iOS/Android)
 - [ ] Telemedicine integration
 - [ ] AI-powered diagnostic assistance
@@ -398,16 +381,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Advanced analytics and reporting
 - [ ] Integration with medical devices
 - [ ] Voice-to-text for medical notes
-
-### Version 1.5 (Current)
-- [x] Real-time messaging system
-- [x] Appointment scheduling
-- [x] Basic reporting features
-- [x] User role management
-- [x] Patient portal
-
----
-
-💡 **MediCare: Revolutionizing Healthcare Management, One Click at a Time**
-
-⭐ **If this project helps you, please give it a star!**
