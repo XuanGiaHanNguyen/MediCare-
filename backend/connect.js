@@ -11,7 +11,7 @@ const client = new MongoClient(process.env.ATLAS_URL, {
   }
 });
 
-let database 
+let database
 
 module.exports = {
   // In module.exports: have functions or modules ONLY
