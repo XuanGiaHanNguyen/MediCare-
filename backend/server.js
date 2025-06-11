@@ -10,4 +10,5 @@ app.use(express.json())
 
 app.listen(PORT, ()=>{
     connect.connectToServer()
+    console.log("Server is running")
 })
