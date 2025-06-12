@@ -6,6 +6,7 @@ const cors = require("cors")
 //Routes 
 const appointment = require("./routes/appointRoute")
 const document = require("./routes/docRoute")
+const meeting = require("./routes/meetingRoute")
 
 const app = express()
 const PORT = 3000
@@ -15,6 +16,7 @@ app.use(express.json())
 
 app.use(appointment)
 app.use(document)
+app.use(meeting)
 
 app.listen(PORT, ()=>{
     connect.connectToServer()
