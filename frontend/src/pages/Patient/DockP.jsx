@@ -3,7 +3,9 @@ import {
   Calendar,
   Plus,
   Settings,
-  Users,
+  Contact,
+  Tablets, 
+  Stethoscope,
   FileText,
   Home,
   Bed,
@@ -106,16 +108,13 @@ export default function Dockboard() {
       <div className="w-full min-h-screen bg-gray-50 flex flex-row">
         {/* Sidebar */}
         <div className="w-20 bg-white border-r border-gray-200 flex flex-col items-center gap-4 py-6">
-          <button onClick={(e)=>navigate("/dock")} className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors">
+          <button onClick={(e)=>navigate("/dock/patient")} className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors">
             <Home className="w-5 h-5" />
           </button>
-          <button onClick={(e)=>navigate("/calendar")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+          <button onClick={(e)=>navigate("/calendar/patient")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
             <Calendar className="w-5 h-5" />
           </button>
-          <button onClick={(e)=>navigate("/docs")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
-            <FileText className="w-5 h-5" />
-          </button>
-          <button onClick={(e)=>navigate("/patinfo")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+          <button onClick={(e)=>navigate("/docs/patient")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
             <Bed className="w-5 h-5" />
           </button>
         </div>
@@ -198,29 +197,29 @@ export default function Dockboard() {
               <div className="space-y-4">
                 <div className="flex items-center gap-4 p-4 bg-sky-50 rounded-xl">
                   <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center text-white">
-                    {UsersIcon}
+                    <Contact/>
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">New patient registered</p>
-                    <p className="text-sm text-gray-600">John Doe - 5 minutes ago</p>
+                    <p className="font-medium text-gray-900">Stable Condition</p>
+                    <p className="text-sm text-gray-600">Next Appointment in 5 days</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 p-4 bg-sky-50 rounded-xl">
                   <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center text-white">
-                    {CalendarIcon}
+                    <Tablets/>
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">Appointment scheduled</p>
-                    <p className="text-sm text-gray-600">Jane Smith - 15 minutes ago</p>
+                    <p className="font-medium text-gray-900">Perscription</p>
+                    <p className="text-sm text-gray-600">Alprazolam - 3 times a day, before meals</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 p-4 bg-sky-50 rounded-xl">
                   <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center text-white">
-                    {BedIcon}
+                    <Stethoscope/>
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">Bed assignment updated</p>
-                    <p className="text-sm text-gray-600">Room 205 - 30 minutes ago</p>
+                    <p className="font-medium text-gray-900">Assigned Medical Professionals</p>
+                    <p className="text-sm text-gray-600">Ms. Jane Doe</p>
                   </div>
                 </div>
               </div>
@@ -231,7 +230,7 @@ export default function Dockboard() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-gray-900">Patient List</h3>
+                <h3 className="text-xl font-semibold text-gray-900">Appointments</h3>
                 <button className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors">
                   View All
                 </button>
