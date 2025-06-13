@@ -20,7 +20,7 @@ staffRoute.route("/staff").get(
 staffRoute.route("/staff/:id").get(
     async (request, response ) => {
         let db = database.getDB()
-        let data = db.collection("user_profile_staff").findOne({_id: new ObjectId(request.params.id)})
+        let data = await db.collection("user_profile_staff").findOne({_id: new ObjectId(request.params.id)})
         if (Object.keys(data).length > 0){
             response.json(data)
         } else {
@@ -40,7 +40,7 @@ staffRoute.route("/staff").post(
             role: request.body.role, 
             patient: request.body.patient
         }
-        let data = db.collection("user_profile_staff").insertOne(mongoObject)
+        let data = await db.collection("user_profile_staff").insertOne(mongoObject)
         response.json(data)
     }
 )
@@ -58,7 +58,7 @@ staffRoute.route("/staff/:id").put(
                 patient: request.body.patient
             }
         }
-        let data = db.collection("user_profile_staff").updateOne({_id: new ObjectId(request.params.id)}, mongoObject)
+        let data = await db.collection("user_profile_staff").updateOne({_id: new ObjectId(request.params.id)}, mongoObject)
         response.json(data)
     }
 )
@@ -68,7 +68,7 @@ staffRoute.route("/staff/:id").put(
 staffRoute.route("/staff/:id").delete(
     async (request, response) => {
         let db = database.getDB()
-        let data = db.collection("user_profile_staff").deleteOne({_id: new ObjectId(request.params.id)})
+        let data = await db.collection("user_profile_staff").deleteOne({_id: new ObjectId(request.params.id)})
         response.json(data)
     }
 )

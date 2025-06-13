@@ -1,6 +1,6 @@
 const express = require("express")
 const database = require("../connect")
-const ObjectId = require() 
+const ObjectId = require("mongodb").ObjectId
 
 let meetingRoute = express.Router()
 
