@@ -12,6 +12,8 @@ import DocumentDock from "./pages/Main/Documents"
 import PaDock from "./pages/Main/PaList"
 import Profile from "./pages/Main/Profile"
 
+import Dockboard from "./pages/Patient/DockP"
+
 import BackToLogin from "./pages/PassReset/BackToLogin"
 import LinkSent from "./pages/PassReset/LinkSent"
 import NewPass from "./pages/PassReset/NewPass"
@@ -25,7 +27,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing/>}/>
-        <Route path="/dock" element={<Dock/>}/>
+
+        <Route path="/dock/staff" element={<Dock/>}/>
+        <Route path="/dock/patient" element={<Dockboard/>}/>
+
+
         <Route path="/calendar" element={<CalendarDock/>}/>
         <Route path="/docs" element={<DocumentDock/>}/>
         <Route path="/patinfo" element={<PaDock/>}/>
