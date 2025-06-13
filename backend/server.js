@@ -8,6 +8,7 @@ const appointment = require("./routes/appointRoute")
 const document = require("./routes/docRoute")
 const meeting = require("./routes/meetingRoute")
 const patient = require("./routes/noneRoute")
+const staff = require("./routes/staffRoute")
 
 const app = express()
 const PORT = 3000
@@ -19,6 +20,7 @@ app.use(appointment)
 app.use(document)
 app.use(meeting)
 app.use(patient)
+app.use(staff)
 
 app.listen(PORT, ()=>{
     connect.connectToServer()
