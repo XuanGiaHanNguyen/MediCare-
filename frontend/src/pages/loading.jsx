@@ -5,13 +5,20 @@ import { useNavigate } from "react-router-dom"
 export default function SimpleLoadingScreen() {
   const [progress, setProgress] = useState(0)
   const navigate = useNavigate()
-
+  const role = sessionStorage.getItem("Role")
+  
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(timer)
-          navigate("/dock/staff")
+          console.log(role)
+          if(role === "patient"){
+            navigate("/dock/patient")
+          } else {
+            navigate("/dock/staff")
+          }
+          
           return 100
         }
         return prev + 5
