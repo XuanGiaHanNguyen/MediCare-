@@ -27,11 +27,11 @@ const statsCards = [
 ];
 
 const patientData = [
-  { no: 1, id: "P001", name: "John Doe", date: "2024-03-15", age: 45, country: "USA", gender: "Male" },
-  { no: 2, id: "P002", name: "Jane Smith", date: "2024-03-14", age: 32, country: "Canada", gender: "Female" },
-  { no: 3, id: "P003", name: "Bob Johnson", date: "2024-03-13", age: 58, country: "UK", gender: "Male" },
-  { no: 4, id: "P004", name: "Alice Brown", date: "2024-03-12", age: 29, country: "Australia", gender: "Female" },
-  { no: 5, id: "P005", name: "Charlie Wilson", date: "2024-03-11", age: 67, country: "Germany", gender: "Male" }
+  { no: 1, id: "P001", date: "2024-03-15", age: 45, country: "USA", gender: "Male" },
+  { no: 2, id: "P002", date: "2024-03-14", age: 32, country: "Canada", gender: "Female" },
+  { no: 3, id: "P003",  date: "2024-03-13", age: 58, country: "UK", gender: "Male" },
+  { no: 4, id: "P004", date: "2024-03-12", age: 29, country: "Australia", gender: "Female" },
+  { no: 5, id: "P005", date: "2024-03-11", age: 67, country: "Germany", gender: "Male" }
 ];
 
 const monthNames = [
@@ -241,12 +241,11 @@ export default function Dockboard() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appointment ID</th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Country</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Note</th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
@@ -255,7 +254,6 @@ export default function Dockboard() {
                     <tr key={patient.no} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.no}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{patient.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-sky-800 hover:text-blue-800 cursor-pointer">{patient.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.date}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.age}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.country}</td>

@@ -13,6 +13,8 @@ import PaDock from "./pages/Main/PaList"
 import Profile from "./pages/Main/Profile"
 
 import Dockboard from "./pages/Patient/DockP"
+import CalendarPDock from "./pages/Patient/CalendarP"
+import DocumentPDock from "./pages/Patient/DocumentP"
 
 import BackToLogin from "./pages/PassReset/BackToLogin"
 import LinkSent from "./pages/PassReset/LinkSent"
@@ -32,8 +34,13 @@ function App() {
         <Route path="/dock/patient" element={<Dockboard/>}/>
 
 
-        <Route path="/calendar" element={<CalendarDock/>}/>
-        <Route path="/docs" element={<DocumentDock/>}/>
+        <Route path="/calendar/staff" element={<CalendarDock/>}/>
+        <Route path="/calendar/patient" element={<CalendarPDock/>}/>
+        
+        <Route path="/docs/staff" element={<DocumentDock/>}/>
+        <Route path="/docs/patient" element={<DocumentPDock/>}/>
+
+
         <Route path="/patinfo" element={<PaDock/>}/>
         <Route path="/profile" element={<Profile/>}/>
         
