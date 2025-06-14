@@ -11,7 +11,7 @@ export default function SimpleLoadingScreen() {
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(timer)
-          navigate("/dock")
+          navigate("/dock/staff")
           return 100
         }
         return prev + 5

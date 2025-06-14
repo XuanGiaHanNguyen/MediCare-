@@ -6,7 +6,7 @@ import SignUp from "./pages/AuthSteps/SignUp"
 import MedProf from "./pages/AuthSteps/CreateProfile/MedProf"
 import Patient from "./pages/AuthSteps/CreateProfile/Patient"
 
-import Dock from "./pages/Dock"
+import Dock from "./pages/Main/Dock"
 import CalendarDock from "./pages/Main/Calendar"
 import DocumentDock from "./pages/Main/Documents"
 import PaDock from "./pages/Main/PaList"
