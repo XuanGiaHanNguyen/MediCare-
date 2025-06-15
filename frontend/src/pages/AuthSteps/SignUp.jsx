@@ -9,15 +9,24 @@ function SignUp() {
     const [name, setName] = useState("")
     const [email, setEmail]= useState("")
     const [password, setPassword] = useState("")
+    const [confirm, setConfirm] = useState("")
 
     const navigate = useNavigate()
 
     const handleSubmit = () => {
-        const given = sessionStorage.getItem("Role")
-        sessionStorage.setItem("Name", name)
+        // const given = sessionStorage.getItem("Role")
+        // sessionStorage.setItem("Name", name)
+
+        //1. Check if password match 
+        if (password === confirm){
+
+        } else {
+            console.error("Password doesn't match")
+        }
+
+
 
         if (given === "healthcare"){
-
             navigate("/medprofile")
         }else{
             navigate("/patprofile")
@@ -104,6 +113,7 @@ function SignUp() {
                             type="password"
                             id="confirmPassword"
                             name="confirmPassword"
+                            onChange={(e)=>setConfirm(e.target.value)}
                             className="w-full px-3 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
                             placeholder="Confirm your password"
                         />
