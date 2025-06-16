@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { UserIcon, GoogleIcon } from "../../assets/icon"
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
 import Header from "../../component/header";
+import toast from "react-hot-toast";
 
 function SignUp() {
 
@@ -22,6 +24,7 @@ function SignUp() {
 
         } else {
             console.error("Password doesn't match")
+            toast.error("Your password dont match")
         }
 
 

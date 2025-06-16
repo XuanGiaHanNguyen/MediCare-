@@ -1,5 +1,6 @@
 import { Search, Calendar, Bell, Menu } from "lucide-react"
 import { Link } from "react-router-dom"
+import React from "react";
 
 const HospitalHeader = (props) => {
   return (

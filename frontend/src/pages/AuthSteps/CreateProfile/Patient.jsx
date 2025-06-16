@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { UserIcon, UserDisplayIcon } from "../../../assets/icon"
 import { useNavigate } from "react-router-dom";
-
+import React from "react";
 import Header from "../../../component/header";
 
 function Patient (){
