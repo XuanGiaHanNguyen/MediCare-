@@ -23,11 +23,14 @@ import NewPass from "./pages/PassReset/NewPass"
 import EnterEmail from "./pages/PassReset/EnterEmail"
 
 import Component from "./pages/loading"
+import { Toaster } from 'react-hot-toast'
+import React from "react";
 
 function App() {
 
   return (
     <BrowserRouter>
+    <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Landing/>}/>
 
