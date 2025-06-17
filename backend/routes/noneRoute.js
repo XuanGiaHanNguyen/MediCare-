@@ -33,36 +33,34 @@ userNoneRoute.route("/patient/:id").get(
 // Create One 
 userNoneRoute.route("/patient").post(
     async (request, response) => {
-        let db = database.getDB()
-        let mongoObject = {
-            language: request.body.language, 
-            tele_avail: request.body.tele_avail, 
-            bio: request.body.bio, 
-            diagnosis: request.body.diagnosis, 
-            staff_in_charge: request.body.staff_in_charge, 
-            status: request.body.status
+        let db = database.getDB();
+
+        // List of all expected fields
+        const expectedFields = ["userId","language", "tele_avail", "bio", "diagnosis", "staff_in_charge", "status"];
+
+        // Create mongoObject with null as default
+        let mongoObject = {};
+        for (let field of expectedFields) {
+            mongoObject[field] = request.body[field] !== undefined ? request.body[field] : null;
         }
-        let data = await db.collection("user_profile_none").insertOne(mongoObject)
-        response.json(data)
+
+        let data = await db.collection("user_profile_none").insertOne(mongoObject);
+        response.json(data);
     }
 )
 
 // Edit One 
 userNoneRoute.route("/patient/:id").put(
     async (request,response) => {
-        let db = database.getDB()
-        let mongoObject = {
-            $set: {
-                language: request.body.language, 
-                tele_avail: request.body.tele_avail, 
-                bio: request.body.bio, 
-                diagnosis: request.body.diagnosis, 
-                staff_in_charge: request.body.staff_in_charge, 
-                status: request.body.status
-            }
-        }
-        let data = await db.collection("user_profile_none").updateOne({_id: new ObjectId(request.params.id)}, mongoObject)
-        response.json(data)
+       const { id, updates } = request.body;
+
+        // Update only provided fields
+        let result = await db.collection("user_profile_none").updateOne(
+            { _id: new ObjectId(id) },
+            { $set: updates }
+        );
+
+        response.json(result);
     }
 )
 
