@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserIcon, GoogleIcon } from "../../assets/icon"
 import { useNavigate } from "react-router-dom";
 import React from "react";
+import { API_ROUTES } from "../../constant/APIRoutes"
+import axios from "axios"
 
 import Header from "../../component/header";
 import toast from "react-hot-toast";
@@ -13,27 +15,50 @@ function SignUp() {
     const [password, setPassword] = useState("")
     const [confirm, setConfirm] = useState("")
 
+    const given = sessionStorage.getItem("Role")
+
+    let [ staff, setStaff ] = useState(false)
+
+    useEffect(()=> {
+        if (given === "healthcare"){
+            setStaff(true)
+        } else {
+            setStaff(false)
+        }
+    })
+
     const navigate = useNavigate()
 
-    const handleSubmit = () => {
-        // const given = sessionStorage.getItem("Role")
-        // sessionStorage.setItem("Name", name)
-
+    async function handleSubmit (){
+        
+        sessionStorage.setItem("Name", name)
+        
+        
         //1. Check if password match 
         if (password === confirm){
+            let SignUpObject = {
+                is_staff: staff, 
+                full_name: name, 
+                email: email,
+                password: password
+            }
+            const response = await axios.post(API_ROUTES.CREATE_USER, SignUpObject)
+            if (response.status === 200) {
+                
+                toast.success("User created successfully")
+                localStorage.setItem("Id", response.data.insertedId)
+                sessionStorage.removeItem("Role")
 
+                if (given === "healthcare"){
+                    navigate("/medprofile")
+                }else{
+                    navigate("/patprofile")
+        }
+            }
         } else {
-            console.error("Password doesn't match")
             toast.error("Your password dont match")
         }
 
-
-
-        if (given === "healthcare"){
-            navigate("/medprofile")
-        }else{
-            navigate("/patprofile")
-        }
     };
 
     return(

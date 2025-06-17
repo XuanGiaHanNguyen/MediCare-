@@ -1,6 +1,6 @@
-const BASE_API_URL = "http://127.0.0.1:8000"; 
+const BASE_API_URL = "http://127.0.0.1:3000"; 
 
-export default API_ROUTES = {
+export const API_ROUTES = {
 
     // Appointments
     GET_APPOINTMENTS: `${BASE_API_URL}/appointment`, 
@@ -39,5 +39,6 @@ export default API_ROUTES = {
     GET_USER: (user_id) => `${BASE_API_URL}/user/${user_id}`, 
     CREATE_USER: `${BASE_API_URL}/user`, 
     EDIT_USER: (user_id) => `${BASE_API_URL}/user/${user_id}`,
+    LOGIN: `${BASE_API_URL}/user/login`
 
 }

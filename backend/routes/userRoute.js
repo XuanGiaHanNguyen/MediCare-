@@ -36,15 +36,20 @@ userRoute.route("/user/:id").get(
 userRoute.route("/user").post(
     async (request, response) => {
         let db = database.getDB()
-        let hash = await bcrypt.hash(request.body.password, SALT_ROUNDS )
-        let mongoObject = {
-            is_staff: request.body.is_staff, 
-            full_name: request.body.full_name, 
-            email: request.body.email,
-            password: hash
+        let taken = await db.collection("user").findOne({email: request.body.email})
+        if (taken){
+            response.json({success: false, message: "email taken"})
+        } else {
+            let hash = await bcrypt.hash(request.body.password, SALT_ROUNDS )
+            let mongoObject = {
+                is_staff: request.body.is_staff, 
+                full_name: request.body.full_name, 
+                email: request.body.email,
+                password: hash
+            }
+            let data = await db.collection("user").insertOne(mongoObject)
+            response.json(data)
         }
-        let data = await db.collection("user").insertOne(mongoObject)
-        response.json(data)
     }
 )
 
