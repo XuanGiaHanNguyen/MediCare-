@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { UserIcon, UserDisplayIcon } from "../../../assets/icon"
 import { useNavigate } from "react-router-dom";
+import axios from "axios"
+
 import React from "react";
+import toast from "react-hot-toast";
+
 import Header from "../../../component/header";
+import API_ROUTES from "../../../constant/APIRoutes"
 
 function MedProf (){
 
@@ -10,13 +15,30 @@ function MedProf (){
     const [Language, setLanguage] = useState('')
     const [Tele, setTele] = useState()
     const [Bio, setBio] = useState("")
+    const id = localStorage.getItem("Id")
 
     const name = sessionStorage.getItem("Name")
 
     const navigate = useNavigate()
 
-    const handleSubmit = () => {
-        navigate("/loading")
+    async function handleSubmit (){
+
+        const Object = {
+            userId: id, 
+            language: Language, 
+            tele_avail: Tele, 
+            bio: Bio, 
+            role: StaffRole
+        }
+
+        const response = await axios.post(API_ROUTES.CREATE_STAFF, Object)
+        if (response.status === 200){
+            navigate("/loading")
+        } else {
+            toast.error("Cannot edit profile, try again later")
+        }
+
+        
     };
 
 

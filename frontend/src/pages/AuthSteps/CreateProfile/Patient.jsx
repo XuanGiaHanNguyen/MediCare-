@@ -2,6 +2,12 @@ import { useState } from "react";
 import { UserIcon, UserDisplayIcon } from "../../../assets/icon"
 import { useNavigate } from "react-router-dom";
 import React from "react";
+
+import API_ROUTES from "../../../constant/APIRoutes";
+
+import toast from "react-hot-toast"
+import axios from "axios";
+
 import Header from "../../../component/header";
 
 function Patient (){
@@ -11,10 +17,26 @@ function Patient (){
     const [Tele, setTele] = useState()
     const [Bio, setBio] = useState("")
 
+    const userId = localStorage.getItem()
+
     const navigate = useNavigate()
 
-    const handleSubmit = () => {
-        navigate("/loading")
+    async function handleSubmit () {
+        let Object = {
+            userId: userId, 
+            language: Language, 
+            tele_avail: Tele, 
+            bio: Bio, 
+            diagnosis: Diagnosis
+        }
+        const response = await axios.post(API_ROUTES.CREATE_PATIENT, Object)
+        if (response.status === 200){
+            navigate("/loading")
+        } else {
+            toast.error("Cannot submit changes")
+        }
+
+        
     };
 
 

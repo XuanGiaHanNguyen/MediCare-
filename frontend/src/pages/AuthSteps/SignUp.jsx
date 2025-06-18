@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { UserIcon, GoogleIcon } from "../../assets/icon"
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import { API_ROUTES } from "../../constant/APIRoutes"
+import  API_ROUTES from "../../constant/APIRoutes"
 import axios from "axios"
 
 import Header from "../../component/header";
