@@ -8,6 +8,10 @@ import {
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import axios from "axios"
+import toast from "react-hot-toast"
+import API_ROUTE from "../constant/APIRoutes"
+
 import Header from "../component/header"
 
 const FeatureCard = ({ icon: Icon, title, description, features, index }) => {
@@ -175,10 +179,20 @@ function Landing () {
     }
   ];
   
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(email)
-    navigate("/loading")
+  async function handleSubmit () {
+    let Object = {
+      email: email, 
+      password: password
+    }
+
+    let response = await axios.post(API_ROUTE.LOGIN, Object)
+    if (response.status === 200){
+      const userId = response.data.user._id.toString()
+      console.log(userId)
+    } else {
+      toast.error(`${response.message}`)
+    }
+
   };
 
     return(
@@ -501,12 +515,10 @@ function Landing () {
                       <div className="flex gap-3">
                         <Input 
                           type="email" 
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
                           placeholder="Enter your email" 
                           className="flex-1 bg-white/95 backdrop-blur-sm w-[450px] border-white/30" 
                         />
-                        <Button onClick={handleSubmit} variant="secondary" className="bg-white/95 backdrop-blur-sm hover:bg-white">
+                        <Button variant="secondary" className="bg-white/95 backdrop-blur-sm hover:bg-white">
                           Get Started
                         </Button>
                       </div>
