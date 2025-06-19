@@ -186,11 +186,13 @@ function Landing () {
     }
 
     let response = await axios.post(API_ROUTE.LOGIN, Object)
-    if (response.status === 200){
+    console.log(response.data.success)
+    if (response.data.success === true){
       const userId = response.data.user._id.toString()
-      console.log(userId)
+      localStorage.setItem("Id", userId)
+      navigate("/loading")
     } else {
-      toast.error(`${response.message}`)
+      toast.error(`Error in Login process - Try again later`)
     }
 
   };
