@@ -38,7 +38,7 @@ export default function SimpleLoadingScreen() {
           toast.error('API request failed')
         }
         
-        console.log('API data:', response.data.is_staff)
+  
         userRole = response.data.is_staff // Store in local variable
         setRole(response.data.is_staff)
         
@@ -67,7 +67,6 @@ export default function SimpleLoadingScreen() {
         
         // Small delay to show 100% progress
         setTimeout(() => {
-          console.log('User role:', userRole) // Use local variable
           if (userRole === false) {
             navigate("/dock/patient")
           } else if (userRole === true) {
