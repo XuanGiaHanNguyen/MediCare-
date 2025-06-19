@@ -67,14 +67,14 @@ export default function SimpleLoadingScreen() {
         
         // Small delay to show 100% progress
         setTimeout(() => {
+          let Id = localStorage.getItem("Id")
           if (userRole === false) {
-            navigate("/dock/patient")
+            navigate(`/dock/patient/${Id}`)
           } else if (userRole === true) {
-            navigate("/dock/staff")
+            navigate(`/dock/staff/${Id}`)
           } else {
-            // Handle case where role is null/undefined (API error)
-            console.error('Role is undefined, defaulting to patient')
-            navigate("/dock/patient")
+            toast.error("UserId Not Found")
+            navigate("/")
           }
         }, 500)
       }

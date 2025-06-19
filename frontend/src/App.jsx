@@ -34,21 +34,21 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing/>}/>
 
-        <Route path="/dock/staff" element={<Dock/>}/>
-        <Route path="/dock/patient" element={<Dockboard/>}/>
+        <Route path="/dock/staff/:id" element={<Dock/>}/>
+        <Route path="/dock/patient/:id" element={<Dockboard/>}/>
 
 
-        <Route path="/calendar/staff" element={<CalendarDock/>}/>
-        <Route path="/calendar/patient" element={<CalendarPDock/>}/>
+        <Route path="/calendar/staff/:id" element={<CalendarDock/>}/>
+        <Route path="/calendar/patient/:id" element={<CalendarPDock/>}/>
         
-        <Route path="/docs/staff" element={<DocumentDock/>}/>
-        <Route path="/docs/patient" element={<DocumentPDock/>}/>
+        <Route path="/docs/staff/:id" element={<DocumentDock/>}/>
+        <Route path="/docs/patient/:id" element={<DocumentPDock/>}/>
 
 
-        <Route path="/patinfo" element={<PaDock/>}/>
+        <Route path="/patinfo/:id" element={<PaDock/>}/>
 
-        <Route path="/profile/staff" element={<Profile/>}/>
-        <Route path="/profile/patient" element={<ProfileP/>}/>
+        <Route path="/profile/staff/:id" element={<Profile/>}/>
+        <Route path="/profile/patient/:id" element={<ProfileP/>}/>
         
         <Route path="/role" element={<RoleQuestionaire/>}/>
         <Route path="/signup" element={<SignUp/>}/>
