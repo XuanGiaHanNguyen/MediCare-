@@ -137,54 +137,6 @@ export default function DocumentDock() {
             </div>
           </div>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-4 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-sky-700 rounded-xl flex items-center justify-center">
-                  <FileText className="w-6 h-6 text-gray-50" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">148</p>
-                  <p className="text-sm text-gray-600">Total Documents</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-sky-700 rounded-xl flex items-center justify-center">
-                  <Folder className="w-6 h-6 text-gray-50" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">12</p>
-                  <p className="text-sm text-gray-600">Folders</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-sky-700 rounded-xl flex items-center justify-center">
-                  <Star className="w-6 h-6 text-gray-50" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">23</p>
-                  <p className="text-sm text-gray-600">Starred</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-sky-700 rounded-xl flex items-center justify-center">
-                  <Upload className="w-6 h-6 text-gray-50" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">2.4 GB</p>
-                  <p className="text-sm text-gray-600">Storage Used</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Folders Section */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Folders</h2>

@@ -3,7 +3,6 @@ import {
   Calendar,
   Plus,
   Settings,
-  Users,
   FileText,
   Home,
   Bed,
@@ -11,19 +10,14 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  Calendar1, 
+  Users, 
+  BedDouble
 } from "lucide-react";
 import { UsersIcon, CalendarIcon, BedIcon, MeetingIcon } from "../../assets/icon";
 import DockHeader from "../../component/DockHeader"
 
 import { useNavigate } from "react-router-dom";
-
-// Mock data
-const statsCards = [
-  { title: "Total Patients", value: "1,234", icon: UsersIcon , bgColor: "bg-sky-700" },
-  { title: "Appointments", value: "89", icon: CalendarIcon , bgColor: "bg-sky-700" },
-  { title: "Available Beds", value: "45", icon: BedIcon , bgColor: "bg-sky-700" },
-  { title: "Meeting", value: "7", icon: MeetingIcon, bgColor: "bg-sky-700" }
-];
 
 const patientData = [
   { no: 1, id: "P001", name: "John Doe", date: "2024-03-15", age: 45, country: "USA", gender: "Male" },
@@ -140,22 +134,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {statsCards.map((card, index) => (
-              <div key={index} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-2">{card.title}</p>
-                    <p className="text-3xl font-bold text-gray-900">{card.value}</p>
-                  </div>
-                  <div className={`w-14 h-14 ${card.bgColor} rounded-2xl flex items-center justify-center text-white text-2xl`}>
-                    {card.icon}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
@@ -215,8 +193,8 @@ export default function Dashboard() {
               <h3 className="text-xl font-semibold text-gray-900 mb-6">Recent Activity</h3>
               <div className="space-y-4">
                 <div className="flex items-center gap-4 p-4 bg-sky-50 rounded-xl">
-                  <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center text-white">
-                    {UsersIcon}
+                  <div className="w-11 h-11 bg-sky-600 rounded-xl flex items-center justify-center text-white">
+                    <Users/>
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">New patient registered</p>
@@ -224,8 +202,8 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 p-4 bg-sky-50 rounded-xl">
-                  <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center text-white">
-                    {CalendarIcon}
+                  <div className="w-11 h-11 bg-sky-600 rounded-xl flex items-center justify-center text-white">
+                    <Calendar1 />
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">Appointment scheduled</p>
@@ -233,8 +211,8 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 p-4 bg-sky-50 rounded-xl">
-                  <div className="w-12 h-12 bg-sky-600 rounded-xl flex items-center justify-center text-white">
-                    {BedIcon}
+                  <div className="w-11 h-11 bg-sky-600 rounded-xl flex items-center justify-center text-white">
+                    <BedDouble/>
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">Bed assignment updated</p>
