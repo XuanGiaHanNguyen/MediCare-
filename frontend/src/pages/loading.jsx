@@ -2,31 +2,94 @@ import Header from "../component/header"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
+import API_ROUTES from "../constant/APIRoutes"
+import axios from "axios"
+import toast from "react-hot-toast"
+
 export default function SimpleLoadingScreen() {
   const [progress, setProgress] = useState(0)
+  const [isComplete, setIsComplete] = useState(false)
   const navigate = useNavigate()
-  const role = sessionStorage.getItem("Role")
+  const [role, setRole] = useState(null)
   
   useEffect(() => {
-    const timer = setInterval(() => {
+    const startTime = Date.now()
+    let apiComplete = false
+    let minTimeComplete = false
+    let userRole = null // Store role locally in the effect
+    
+    // Progress animation
+    const progressTimer = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
-          clearInterval(timer)
-          console.log(role)
-          if(role === "patient"){
-            navigate("/dock/patient")
-          } else {
-            navigate("/dock/staff")
-          }
-          
           return 100
         }
-        return prev + 5
+        return prev + 2 // Slower progress to allow time for API
       })
-    }, 100)
+    }, 50)
 
-    return () => clearInterval(timer)
-  }, [])
+    // API fetch function
+    const fetchData = async () => {
+      try {
+        let Id = localStorage.getItem("Id")
+        const response = await axios.get(API_ROUTES.GET_USER(Id))
+        
+        if (response.status !== 200) {
+          toast.error('API request failed')
+        }
+        
+        console.log('API data:', response.data.is_staff)
+        userRole = response.data.is_staff // Store in local variable
+        setRole(response.data.is_staff)
+        
+        apiComplete = true
+        checkCompletion()
+
+      } catch (error) {
+        console.error('API fetch error:', error)
+        toast.error(error.message || 'An error occurred')
+        apiComplete = true 
+        checkCompletion()
+      }
+    }
+    
+    const minTimeTimer = setTimeout(() => {
+      minTimeComplete = true
+      checkCompletion()
+    }, 3000)
+
+    // Check if both conditions are met
+    const checkCompletion = () => {
+      if (apiComplete && minTimeComplete && !isComplete) {
+        setIsComplete(true)
+        setProgress(100)
+        clearInterval(progressTimer)
+        
+        // Small delay to show 100% progress
+        setTimeout(() => {
+          console.log('User role:', userRole) // Use local variable
+          if (userRole === false) {
+            navigate("/dock/patient")
+          } else if (userRole === true) {
+            navigate("/dock/staff")
+          } else {
+            // Handle case where role is null/undefined (API error)
+            console.error('Role is undefined, defaulting to patient')
+            navigate("/dock/patient")
+          }
+        }, 500)
+      }
+    }
+
+    // Start the API fetch
+    fetchData()
+
+    // Cleanup
+    return () => {
+      clearInterval(progressTimer)
+      clearTimeout(minTimeTimer)
+    }
+  }, [navigate, isComplete])
 
   return (
     <div>
