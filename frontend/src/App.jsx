@@ -26,6 +26,9 @@ import Component from "./pages/loading"
 import { Toaster } from 'react-hot-toast'
 import React from "react";
 
+import StaffRoute from "./component/Protected/StaffRoute"
+import PatientRoute from "./component/Protected/PatientRoute"
+
 function App() {
 
   return (
@@ -34,21 +37,87 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing/>}/>
 
-        <Route path="/dock/staff/:id" element={<Dock/>}/>
-        <Route path="/dock/patient/:id" element={<Dockboard/>}/>
+        <Route 
+          path="/dock/staff/:id" 
+          element={
+            <StaffRoute>
+                <Dock/>
+            </StaffRoute>
+          }
+        />
+
+        <Route 
+          path="/dock/patient/:id" 
+          element={
+            <PatientRoute>
+              <Dockboard/>
+            </PatientRoute>
+          }
+        />
 
 
-        <Route path="/calendar/staff/:id" element={<CalendarDock/>}/>
-        <Route path="/calendar/patient/:id" element={<CalendarPDock/>}/>
+        <Route 
+          path="/calendar/staff/:id" 
+          element={
+            <StaffRoute>
+              <CalendarDock/>
+            </StaffRoute>
+          }
+        />
+
+        <Route 
+          path="/calendar/patient/:id" 
+          element={
+            <PatientRoute>
+              <CalendarPDock/>
+            </PatientRoute>
+          }
+        />
         
-        <Route path="/docs/staff/:id" element={<DocumentDock/>}/>
-        <Route path="/docs/patient/:id" element={<DocumentPDock/>}/>
+        <Route 
+          path="/docs/staff/:id" 
+          element={
+            <StaffRoute>
+              <DocumentDock/>
+            </StaffRoute>
+          }
+        />
+
+        <Route 
+          path="/docs/patient/:id" 
+          element={
+            <PatientRoute>
+              <DocumentPDock/>
+            </PatientRoute>
+          }
+        />
 
 
-        <Route path="/patinfo/:id" element={<PaDock/>}/>
+        <Route 
+          path="/patinfo/:id" 
+          element={
+            <PatientRoute>
+              <PaDock/>
+            </PatientRoute>
+          }
+        />
 
-        <Route path="/profile/staff/:id" element={<Profile/>}/>
-        <Route path="/profile/patient/:id" element={<ProfileP/>}/>
+        <Route 
+          path="/profile/staff/:id" 
+          element={
+            <StaffRoute>
+              <Profile/>
+            </StaffRoute>
+          }
+        />
+        <Route 
+          path="/profile/patient/:id" 
+          element={
+            <PatientRoute>
+              <ProfileP/>
+            </PatientRoute>
+          }
+        />
         
         <Route path="/role" element={<RoleQuestionaire/>}/>
         <Route path="/signup" element={<SignUp/>}/>
