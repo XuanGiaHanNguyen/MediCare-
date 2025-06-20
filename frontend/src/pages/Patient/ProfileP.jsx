@@ -46,6 +46,7 @@ export default function ProfileP() {
   const [staff, setStaff] = useState("")
   const [diagnosis, setDiagnosis] = useState("")
   const [age, setAge] = useState("")
+  const [name, setName] =useState("")
 
   const Id = localStorage.getItem("Id")
 
@@ -60,10 +61,12 @@ export default function ProfileP() {
       const expanded = await axios.get(API_ROUTES.GET_PATIENT(Id))
 
       if (response.status === 200){
-        console.log(response)
+        setEmail(response.data.email)
+        setName(response.data.full_name)
       }
       if (expanded.status === 200){
-        console.log(expanded)
+        setDiagnosis(expanded.data.diagnosis)
+        setStaff(expanded.data.staff_in_charge)
       }
       
     }
@@ -179,15 +182,15 @@ export default function ProfileP() {
                   <div className="flex-1 mt-4 sm:mt-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                       <div>
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">{profileData.name}</h1>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">{name}</h1>
                         <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
                           <span className="flex items-center gap-2">
                             <span>•</span>
-                            {profileData.specialization}
+                            {diagnosis}
                           </span>
                           <span className="flex items-center gap-2">
                             <span>•</span>
-                            {profileData.experience}
+                            {age || "Not Found"}
                           </span>
                         </div>
                       </div>
@@ -219,7 +222,7 @@ export default function ProfileP() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Email</p>
-                      <p className="font-medium text-gray-900">{profileData.email}</p>
+                      <p className="font-medium text-gray-900">{email}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -228,7 +231,7 @@ export default function ProfileP() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Staff In Charge</p>
-                      <p className="font-medium text-gray-900">{profileData.phone}</p>
+                      <p className="font-medium text-gray-900">{staff || "None"}</p>
                     </div>
                   </div>
                 </div>
