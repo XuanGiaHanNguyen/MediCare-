@@ -26,6 +26,7 @@ export default function DocumentPDock() {
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name');
+  const Id = localStorage.getItem("Id")
 
   const navigate = useNavigate()
 
@@ -64,13 +65,13 @@ export default function DocumentPDock() {
       <div className="w-full min-h-screen bg-gray-50 flex flex-row">
         {/* Sidebar */}
         <div className="w-20 bg-white border-r border-gray-200 flex flex-col items-center gap-4 py-6">
-          <button onClick={(e)=>navigate("/dock/patient")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+          <button onClick={(e)=>navigate(`/dock/patient/${Id}`)} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
             <Home className="w-5 h-5" />
           </button>
-          <button onClick={(e)=>navigate("/calendar/patient")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+          <button onClick={(e)=>navigate(`/calendar/patient/${Id}`)} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
             <Calendar className="w-5 h-5" />
           </button>
-          <button onClick={(e)=>navigate("/docs/patient")} className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors">
+          <button onClick={(e)=>navigate(`/docs/patient/${Id}`)} className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors">
             <Bed className="w-5 h-5" />
           </button>
         </div>
