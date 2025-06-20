@@ -9,9 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   User,
-  Phone,
   Mail,
-  Clock,
   Camera,
   Save,
   Stethoscope, 
@@ -49,10 +47,28 @@ export default function ProfileP() {
   const [diagnosis, setDiagnosis] = useState("")
   const [age, setAge] = useState("")
 
-
   const Id = localStorage.getItem("Id")
 
   const navigate = useNavigate()
+
+  useEffect(()=>{
+    async function GetAllData (){
+
+      const Id = localStorage.getItem("Id")
+
+      const response = await axios.get(API_ROUTES.GET_USER(Id))
+      const expanded = await axios.get(API_ROUTES.GET_PATIENT(Id))
+
+      if (response.status === 200){
+        console.log(response)
+      }
+      if (expanded.status === 200){
+        console.log(expanded)
+      }
+      
+    }
+    GetAllData()
+  }, [])
 
   const navigateMonth = (direction) => {
     setCurrentDate(prev => {

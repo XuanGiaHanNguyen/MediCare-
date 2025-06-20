@@ -21,11 +21,11 @@ userNoneRoute.route("/patient").get(
 userNoneRoute.route("/patient/:id").get(
     async (request, response) => {
         let db = database.getDB()
-        let data = await db.collection("user_profile_none").findOne({_id: new ObjectId(request.params.id)})
-        if (Object.keys(data).length > 0 ){
+        let data = await db.collection("user_profile_none").findOne({userId: request.params.id})
+        if (data) {
             response.json(data)
         } else {
-            throw new Error ("Data not found.")
+            response.status(404).json({ error: "Data not found." })
         }
     }
 )
