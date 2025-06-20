@@ -17,8 +17,13 @@ const HospitalHeader = (props) => {
   useEffect( () => {
       async function Auth (){
         let userId = localStorage.getItem("Id")
-        console.log(userId)
+        if (!userId) {
+          toast.error("User ID not found. Please log in again");
+          navigate("/");
+          return;
+        }
         const response = await axios.get(API_ROUTES.GET_USER(userId))
+        
         
         if (response.data.is_staff === false){
             setStaff("Patient")
