@@ -2,8 +2,6 @@ import { useState } from "react";
 import {
   Calendar,
   Plus,
-  Users,
-  FileText,
   Home,
   Bed,
   Upload,
