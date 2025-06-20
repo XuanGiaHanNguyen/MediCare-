@@ -17,7 +17,8 @@ function Patient (){
     const [Tele, setTele] = useState()
     const [Bio, setBio] = useState("")
 
-    const userId = localStorage.getItem()
+    const userId = localStorage.getItem("Id")
+    const name = sessionStorage.getItem("Name")
 
     const navigate = useNavigate()
 
@@ -63,7 +64,7 @@ function Patient (){
                         {UserDisplayIcon}
                     </div>
                     <div>
-                       <p className="font-bold text-lg text-gray-700">Xuan Gia Han Nguyen  </p>
+                       <p className="font-bold text-lg text-gray-700">{name}</p>
                        <p className="font-normal text-xs pb-1 text-gray-700"> Patient</p>
                        <div className="flex flex-row gap-1">
                             <p className="border-2 bg-sky-800 text-white text-sm rounded-full px-4">

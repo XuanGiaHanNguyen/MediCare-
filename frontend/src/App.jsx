@@ -96,9 +96,9 @@ function App() {
         <Route 
           path="/patinfo/:id" 
           element={
-            <PatientRoute>
+            <StaffRoute>
               <PaDock/>
-            </PatientRoute>
+            </StaffRoute>
           }
         />
 

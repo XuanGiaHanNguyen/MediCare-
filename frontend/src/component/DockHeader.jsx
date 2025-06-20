@@ -1,8 +1,42 @@
 import { Search, Calendar, Bell, Menu } from "lucide-react"
 import { Link } from "react-router-dom"
 import React from "react";
+import { useState, useEffect } from "react"
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import API_ROUTES from "../constant/APIRoutes";
 
 const HospitalHeader = (props) => {
+  const [staff, setStaff] = useState("")
+  const [name, setName] = useState("")
+  const [role, setRole] = useState(null)
+  const navigate = useNavigate()
+  let userId = localStorage.getItem("Id")
+ 
+  useEffect( () => {
+      async function Auth (){
+        let userId = localStorage.getItem("Id")
+        console.log(userId)
+        const response = await axios.get(API_ROUTES.GET_USER(userId))
+        
+        if (response.data.is_staff === false){
+            setStaff("Patient")
+            setName(response.data.full_name)
+            setRole(false)
+        }else if(response.data.is_staff === true){
+            setStaff("Staff")
+            setName(response.data.full_name)
+            setRole(true)
+        }else{
+          toast.error("Cannot fetch UserId")
+          navigate("/")
+        }
+      }
+
+    Auth()
+    
+  }, []);
   return (
     <header className="bg-sky-800 text-white px-10 py-2 flex items-center justify-between shadow-xl">
       {/* Left side - Logo and Title */}
@@ -43,13 +77,13 @@ const HospitalHeader = (props) => {
         <div className="h-8 w-px bg-white/20" />
 
         {/* User Profile */}
-        <Link to="/profile" className="flex items-center gap-3">
+        <Link to={`/profile/${role ? "staff": "patient"}/${userId}`} className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white font-medium">
-            D
+            {name.charAt(0)}
           </div>
           <div className="text-sm">
-            <div className="font-medium">Han</div>
-            <div className="text-white/80 text-xs">Admin</div>
+            <div className="font-medium">{name}</div>
+            <div className="text-white/80 text-xs">{staff}</div>
           </div>
         </Link>
       </div>
