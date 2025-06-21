@@ -232,7 +232,7 @@ export default function MedicalProfile() {
                       <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
                         <span className="flex items-center gap-2">
                           <span>•</span>
-                          {profileData.specialization}
+                          {role}
                         </span>
                         <span className="flex items-center gap-2">
                            <span>•</span>
@@ -268,7 +268,7 @@ export default function MedicalProfile() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-medium text-gray-900">{profileData.email}</p>
+                    <p className="font-medium text-gray-900">{email}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -277,7 +277,7 @@ export default function MedicalProfile() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Phone</p>
-                    <p className="font-medium text-gray-900">{profileData.phone}</p>
+                    <p className="font-medium text-gray-900">{phone || "Not given"}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -286,7 +286,7 @@ export default function MedicalProfile() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Telegraph Availability</p>
-                    <p className="font-medium text-gray-900">Not given</p>
+                    <p className="font-medium text-gray-900">{tele}</p>
                   </div>
                 </div>
               </div>
@@ -339,7 +339,7 @@ export default function MedicalProfile() {
                 <User className="w-5 h-5 text-sky-800" />
                 <h4 className="font-semibold text-sky-800">About</h4>
               </div>
-              <p className="text-gray-800 text-sm leading-relaxed">{userProfile.bio}</p>
+              <p className="text-gray-800 text-sm leading-relaxed">{bio}</p>
             </div>
 
             {/* Education Section */}
