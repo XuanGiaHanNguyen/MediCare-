@@ -1,97 +1,37 @@
 import { useState, useEffect } from "react";
-import {
-  Calendar,
-  FileText,
-  Home,
-  Bed,
-  Edit,
-  ChevronLeft,
-  ChevronRight,
-  User,
-  Phone,
-  Mail,
-  MapPin,
-  Clock,
-  Camera,
-  Save, GraduationCap, Stethoscope, Headset
-} from "lucide-react";
-import { profileIcon } from "../../assets/icon";
-import HospitalHeader from "../../component/DockHeader";
 import { useNavigate } from "react-router-dom";
-
 import axios from "axios";
 import API_ROUTES from "../../constant/APIRoutes";
+import HospitalHeader from "../../component/DockHeader";
 
-// Mock profile data
-const profileData = {
-  name: "Dr. Sarah Johnson",
-  title: "Cardiologist",
-  email: "sarah.johnson@medicenter.com",
-  phone: "+1 (555) 123-4567",
-  address: "123 Medical Plaza, Suite 400, New York, NY 10001",
-  avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face",
-  specialization: "Interventional Cardiology",
-  experience: "12 years",
-  patients: "1,234",
-  department: "Cardiology Department"
-};
-
-const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+import SidebarNav from "./Profile/SidebarNav";
+import ProfileHeader from "./Profile/ProfileHeader";
+import ContactInfo from "./Profile/ContactInfo";
+import StatisticsCard from "./Profile/StatisticsCard";
+import UserProfileSection from "./Profile/UserProfileSection";
+import ScheduleCalendar from "./Profile/ScheduleCalendar";
 
 export default function MedicalProfile() {
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [isEditing, setIsEditing] = useState(false);
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
+  const [tele, setTele] = useState("");
+  const [language, setLanguage] = useState("");
+  const [phone, setPhone] = useState("");
+  const [bio, setBio] = useState("");
+  const [name, setName] = useState("");
+  
+  const Id = localStorage.getItem("Id");
+  const navigate = useNavigate();
 
-  const [email, setEmail] = useState("")
-  const [role, setRole] = useState("")
-  const [tele, setTele] = useState("")
-  const [language, setLanguage] = useState("")
-  const [phone, setPhone] = useState("")
-  const [bio, setBio] = useState("")
-
-  const [name, setName] = useState("")
-
-  useEffect(()=>{
-    async function GetAllData (){
-
-      const Id = localStorage.getItem("Id")
-
-      const response = await axios.get(API_ROUTES.GET_USER(Id))
-      const expanded = await axios.get(API_ROUTES.GET_STAFF(Id))
-
-      if (response.status === 200){
-        setEmail(response.data.email)
-        setName(response.data.full_name)
-      }
-      if (expanded.status === 200){
-        setTele(expanded.data.tele_avail)
-        setRole(expanded.data.role)
-        setLanguage(expanded.data.language)
-        setBio(expanded.data.bio)
-      }
-      
-    }
-    GetAllData()
-  }, [])
-
-  const navigate = useNavigate()
-
-   const userProfile = {
+  // Mock user profile data - replace with real data from API
+  const [userProfile, setUserProfile] = useState({
     education: [
       {
         degree: "Doctor of Medicine (MD)",
         institution: "Harvard Medical School",
         year: "2018",
         specialization: "Internal Medicine"
-      },
-      {
-        degree: "Bachelor of Science",
-        institution: "Stanford University",
-        year: "2014",
-        specialization: "Biology & Pre-Med"
       }
     ],
     experience: [
@@ -100,83 +40,58 @@ export default function MedicalProfile() {
         hospital: "Massachusetts General Hospital",
         duration: "2021 - Present",
         department: "Internal Medicine"
-      },
-      {
-        position: "Resident Physician",
-        hospital: "Johns Hopkins Hospital",
-        duration: "2018 - 2021",
-        department: "Internal Medicine Residency"
       }
-    ],
-    languages: [
-      { language: "English", proficiency: "Native" },
-      { language: "Spanish", proficiency: "Fluent" },
-      { language: "French", proficiency: "Conversational" }
-    ],
-    bio: "Dedicated internal medicine physician with over 6 years of experience in comprehensive patient care. Passionate about preventive medicine and building strong doctor-patient relationships. Committed to staying current with medical advances and providing evidence-based treatment plans."
-  };
+    ]
+  });
 
-  const navigateMonth = (direction) => {
-    setCurrentDate(prev => {
-      const newDate = new Date(prev);
-      if (direction === "prev") {
-        newDate.setMonth(prev.getMonth() - 1);
-      } else {
-        newDate.setMonth(prev.getMonth() + 1);
+  useEffect(() => {
+    async function GetAllData() {
+      const Id = localStorage.getItem("Id");
+
+      try {
+        const response = await axios.get(API_ROUTES.GET_USER(Id));
+        const expanded = await axios.get(API_ROUTES.GET_STAFF(Id));
+
+        if (response.status === 200) {
+          setEmail(response.data.email);
+          setName(response.data.full_name);
+        }
+        if (expanded.status === 200) {
+          setTele(expanded.data.tele_avail);
+          setRole(expanded.data.role);
+          setLanguage(expanded.data.language);
+          setBio(expanded.data.bio);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
-      return newDate;
-    });
-  };
+    }
+    GetAllData();
+  }, []);
 
-  const getDaysInMonth = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = (firstDay.getDay() + 6) % 7;
-    
-    const days = [];
-    
-    // Previous month days
-    const prevMonth = new Date(year, month - 1, 0);
-    for (let i = startingDayOfWeek - 1; i >= 0; i--) {
-      days.push({
-        day: prevMonth.getDate() - i,
-        isCurrentMonth: false,
-        isToday: false,
-        hasAppointment: false
+  const handleProfileSave = async (profileData) => {
+    try {
+      // Update bio
+      setBio(profileData.bio);
+      
+      // Update user profile
+      setUserProfile({
+        education: profileData.education,
+        experience: profileData.experience
       });
+
+      // Here you would typically make an API call to save the data
+      // Example:
+      // await axios.put(API_ROUTES.UPDATE_STAFF_PROFILE(Id), {
+      //   bio: profileData.bio,
+      //   education: profileData.education,
+      //   experience: profileData.experience
+      // });
+
+      console.log("Profile updated successfully");
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
-    
-    // Current month days
-    const today = new Date();
-    for (let day = 1; day <= daysInMonth; day++) {
-      const isToday = year === today.getFullYear() && 
-                     month === today.getMonth() && 
-                     day === today.getDate();
-      // Mock appointment data for some days
-      const hasAppointment = [5, 12, 18, 25, 28].includes(day);
-      days.push({
-        day,
-        isCurrentMonth: true,
-        isToday,
-        hasAppointment
-      });
-    }
-    
-    // Next month days
-    const remainingDays = 42 - days.length;
-    for (let day = 1; day <= remainingDays; day++) {
-      days.push({
-        day,
-        isCurrentMonth: false,
-        isToday: false,
-        hasAppointment: false
-      });
-    }
-    
-    return days;
   };
 
   return (
@@ -184,276 +99,45 @@ export default function MedicalProfile() {
       <HospitalHeader />
       <div className="w-full min-h-screen bg-gray-50 flex flex-row">
         {/* Sidebar */}
-        <div className="w-20 bg-white border-r border-gray-200 flex flex-col items-center gap-4 py-6">
-            <button onClick={(e)=>navigate("/dock/staff")} className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors">
-              <Home className="w-5 h-5" />
-            </button>
-            <button onClick={(e)=>navigate("/calendar/staff")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
-              <Calendar className="w-5 h-5" />
-            </button>
-            <button onClick={(e)=>navigate("/docs/staff")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
-              <FileText className="w-5 h-5" />
-            </button>
-            <button onClick={(e)=>navigate("/patinfo")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
-              <Bed className="w-5 h-5" />
-            </button>
-          </div>
+        <SidebarNav userId={Id} />
 
-      {/* Main Content */}
-      <div className="flex-1">
+        {/* Main Content */}
+        <div className="flex-1">
+          <div className="p-8">
+            {/* Profile Header */}
+            <ProfileHeader 
+              name={name}
+              role={role}
+              isEditing={isEditing}
+              onEditToggle={() => setIsEditing(!isEditing)}
+            />
 
-        <div className="p-8">
-        {/* Profile Header */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 mb-8">
-          <div className="relative">
-            {/* Cover Photo */}
-            <div className="h-20 bg-sky-700 rounded-t-2xl"></div>
-            
-            {/* Profile Info */}
-            <div className="relative px-8 py-8">
-              <div className="flex flex-col sm:flex-row sm:items-end sm:gap-6 -mt-16">
-                {/* Avatar */}
-                <div className="relative">
-                  <div
-                    className="w-32 h-32 bg-gray-100 flex items-center justify-center rounded-2xl border-4 border-white shadow-lg object-cover"
-                  >
-                    {profileIcon}
-                  </div>
-                  <button className="absolute bottom-2 right-2 w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
-                    <Camera className="w-4 h-4" />
-                  </button>
-                </div>
-                
-                {/* Profile Details */}
-                <div className="flex-1 mt-4 sm:mt-0">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <h1 className="text-3xl font-bold text-gray-900 mb-2">{name}</h1>
-                      <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
-                        <span className="flex items-center gap-2">
-                          <span>•</span>
-                          {role}
-                        </span>
-                        <span className="flex items-center gap-2">
-                           <span>•</span>
-                          {profileData.experience} experience
-                        </span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setIsEditing(!isEditing)}
-                      className="px-6 py-3 bg-white text-gray-800 border-1 border-gray-200 rounded-xl hover:bg-gray-50 transition-colors flex items-center gap-2"
-                    >
-                      {isEditing ? <Save className="w-4 h-4" /> : <Edit className="w-4 h-4" />}
-                      {isEditing ? "Save Profile" : "Edit Profile"}
-                    </button>
-                  </div>
-                </div>
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column - Profile Info */}
+              <div className="lg:col-span-1 space-y-6">
+                <ContactInfo 
+                  email={email}
+                  phone={phone}
+                  tele={tele}
+                />
+                <StatisticsCard />
+              </div>
+
+              {/* Right Column */}
+              <div className="lg:col-span-2 space-y-6">
+                <UserProfileSection 
+                  bio={bio}
+                  setBio={setBio}
+                  userProfile={userProfile}
+                  onSave={handleProfileSave}
+                />
+                <ScheduleCalendar />
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Profile Info */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Contact Information */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-6">Contact Information</h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-gray-50" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-medium text-gray-900">{email}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
-                    <Phone className="w-5 h-5 text-gray-50" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Phone</p>
-                    <p className="font-medium text-gray-900">{phone || "Not given"}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
-                    <Headset className="w-5 h-5 text-gray-50" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Telegraph Availability</p>
-                    <p className="font-medium text-gray-900">{tele}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Statistics */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-6">Statistics</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-sky-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <User className="w-5 h-5 text-sky-600" />
-                    <span className="font-medium text-gray-900">Total Patients</span>
-                  </div>
-                  <span className="text-2xl font-bold text-sky-600">{profileData.patients}</span>
-                </div>
-                <div className="flex items-center justify-between p-4 bg-sky-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-sky-600" />
-                    <span className="font-medium text-gray-900">This Month</span>
-                  </div>
-                  <span className="text-2xl font-bold text-sky-600">89</span>
-                </div>
-                <div className="flex items-center justify-between p-4 bg-sky-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-sky-600" />
-                    <span className="font-medium text-gray-900">Today</span>
-                  </div>
-                  <span className="text-2xl font-bold text-sky-600">4</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column */}
-          <div className="lg:col-span-2 space-y-6">
-
-            {/* Today's Appointments */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-gray-900">User's Profile</h3>
-                <button className="px-4 py-2 bg-sky-700 text-white rounded-xl hover:bg-sky-700 transition-colors text-sm">
-                  View All
-                </button>
-              </div>
-              <div className="space-y-6">
-            {/* Bio Section */}
-            <div className="p-4 bg-sky-50 rounded-xl">
-              <div className="flex items-center gap-2 mb-3">
-                <User className="w-5 h-5 text-sky-800" />
-                <h4 className="font-semibold text-sky-800">About</h4>
-              </div>
-              <p className="text-gray-800 text-sm leading-relaxed">{bio}</p>
-            </div>
-
-            {/* Education Section */}
-            <div className="p-4 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-2 mb-4">
-                <GraduationCap className="w-5 h-5 text-sky-800" />
-                <h4 className="font-semibold text-sky-800">Education</h4>
-              </div>
-              <div className="space-y-3">
-                {userProfile.education.map((edu, index) => (
-                  <div key={index} className="border-l-2 border-sky-500 pl-4">
-                    <div className="flex items-center justify-between">
-                      <p className="font-medium text-gray-900">{edu.degree}</p>
-                      <span className="text-sm text-sky-800 font-medium">{edu.year}</span>
-                    </div>
-                    <p className="text-sm text-gray-600">{edu.institution}</p>
-                    <p className="text-xs text-gray-500">{edu.specialization}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Medical Experience Section */}
-            <div className="p-4 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-2 mb-4">
-                <Stethoscope className="w-5 h-5 text-sky-800" />
-                <h4 className="font-semibold text-sky-800">Medical Experience</h4>
-              </div>
-              <div className="space-y-3">
-                {userProfile.experience.map((exp, index) => (
-                  <div key={index} className="border-l-2 border-sky-500 pl-4">
-                    <div className="flex items-center justify-between">
-                      <p className="font-medium text-gray-900">{exp.position}</p>
-                      <span className="text-sm text-sky-800 font-medium">{exp.duration}</span>
-                    </div>
-                    <p className="text-sm text-gray-600">{exp.hospital}</p>
-                    <p className="text-xs text-gray-500">{exp.department}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          
-
-              </div>
-            </div>
-
-            {/* Calendar */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-              <div className="p-6 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold text-gray-900">Schedule Calendar</h3>
-                  <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => navigateMonth("prev")}
-                      className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-                    >
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <span className="text-lg font-semibold text-gray-900 min-w-[200px] text-center">
-                      {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-                    </span>
-                    <button 
-                      onClick={() => navigateMonth("next")}
-                      className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-                    >
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="grid grid-cols-7 gap-2 text-center text-sm mb-4">
-                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-                    <div key={day} className="text-gray-500 font-medium py-2">
-                      {day}
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-7 gap-2">
-                  {getDaysInMonth(currentDate).map((day, index) => (
-                    <div
-                      key={index}
-                      className={`
-                        relative w-12 h-12 flex items-center justify-center text-sm rounded-xl cursor-pointer transition-all
-                        ${
-                          day.isCurrentMonth
-                            ? day.isToday
-                              ? "bg-sky-600 text-white shadow-lg"
-                              : day.hasAppointment
-                              ? "bg-sky-100 text-sky-800 hover:bg-sky-200"
-                              : "text-gray-900 hover:bg-gray-100"
-                            : "text-gray-400"
-                        }
-                      `}
-                    >
-                      {day.day}
-                      {day.hasAppointment && day.isCurrentMonth && (
-                        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-sky-600 rounded-full"></div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4 text-sm text-gray-600 flex items-center gap-2">
-                  <div className="w-3 h-3 bg-sky-600 rounded-full"></div>
-                  <span>Days with appointments</span>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
     </div>
-    </div>
-  </div>
   );
 }
