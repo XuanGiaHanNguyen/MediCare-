@@ -3,8 +3,6 @@ import {
   Calendar,
   Plus,
   Settings,
-  Users,
-  FileText,
   Home,
   Bed,
   ChevronLeft,

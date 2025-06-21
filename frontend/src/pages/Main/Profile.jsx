@@ -13,7 +13,7 @@ import {
   MapPin,
   Clock,
   Camera,
-  Save, GraduationCap, Stethoscope, Globe
+  Save, GraduationCap, Stethoscope, Headset
 } from "lucide-react";
 import { profileIcon } from "../../assets/icon";
 import HospitalHeader from "../../component/DockHeader";
@@ -21,7 +21,6 @@ import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
 import API_ROUTES from "../../constant/APIRoutes";
-import toast from "react-hot-toast";
 
 // Mock profile data
 const profileData = {
@@ -47,12 +46,13 @@ export default function MedicalProfile() {
   const [isEditing, setIsEditing] = useState(false);
 
   const [email, setEmail] = useState("")
-  const [staff, setStaff] = useState("")
-  const [diagnosis, setDiagnosis] = useState("")
-  const [age, setAge] = useState("")
-  const [name, setName] =useState("")
+  const [role, setRole] = useState("")
+  const [tele, setTele] = useState("")
+  const [language, setLanguage] = useState("")
+  const [phone, setPhone] = useState("")
+  const [bio, setBio] = useState("")
 
-  const Id = localStorage.getItem("Id")
+  const [name, setName] = useState("")
 
   useEffect(()=>{
     async function GetAllData (){
@@ -67,8 +67,10 @@ export default function MedicalProfile() {
         setName(response.data.full_name)
       }
       if (expanded.status === 200){
-        setDiagnosis(expanded.data.diagnosis)
-        setStaff(expanded.data.staff_in_charge)
+        setTele(expanded.data.tele_avail)
+        setRole(expanded.data.role)
+        setLanguage(expanded.data.language)
+        setBio(expanded.data.bio)
       }
       
     }
@@ -180,22 +182,22 @@ export default function MedicalProfile() {
   return (
     <div>
       <HospitalHeader />
-    <div className="w-full min-h-screen bg-gray-50 flex flex-row">
-      {/* Sidebar */}
-      <div className="w-20 bg-white border-r border-gray-200 flex flex-col items-center gap-4 py-6">
-          <button onClick={(e)=>navigate("/dock/staff")} className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors">
-            <Home className="w-5 h-5" />
-          </button>
-          <button onClick={(e)=>navigate("/calendar/staff")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
-            <Calendar className="w-5 h-5" />
-          </button>
-          <button onClick={(e)=>navigate("/docs/staff")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
-            <FileText className="w-5 h-5" />
-          </button>
-          <button onClick={(e)=>navigate("/patinfo")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
-            <Bed className="w-5 h-5" />
-          </button>
-        </div>
+      <div className="w-full min-h-screen bg-gray-50 flex flex-row">
+        {/* Sidebar */}
+        <div className="w-20 bg-white border-r border-gray-200 flex flex-col items-center gap-4 py-6">
+            <button onClick={(e)=>navigate("/dock/staff")} className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors">
+              <Home className="w-5 h-5" />
+            </button>
+            <button onClick={(e)=>navigate("/calendar/staff")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+              <Calendar className="w-5 h-5" />
+            </button>
+            <button onClick={(e)=>navigate("/docs/staff")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+              <FileText className="w-5 h-5" />
+            </button>
+            <button onClick={(e)=>navigate("/patinfo")} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+              <Bed className="w-5 h-5" />
+            </button>
+          </div>
 
       {/* Main Content */}
       <div className="flex-1">
@@ -226,7 +228,7 @@ export default function MedicalProfile() {
                 <div className="flex-1 mt-4 sm:mt-0">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <h1 className="text-3xl font-bold text-gray-900 mb-2">{profileData.name}</h1>
+                      <h1 className="text-3xl font-bold text-gray-900 mb-2">{name}</h1>
                       <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
                         <span className="flex items-center gap-2">
                           <span>•</span>
@@ -279,12 +281,12 @@ export default function MedicalProfile() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-gray-50" />
+                  <div className="w-10 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
+                    <Headset className="w-5 h-5 text-gray-50" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Address</p>
-                    <p className="font-medium text-gray-900">{profileData.address}</p>
+                    <p className="text-sm text-gray-500">Telegraph Availability</p>
+                    <p className="font-medium text-gray-900">Not given</p>
                   </div>
                 </div>
               </div>

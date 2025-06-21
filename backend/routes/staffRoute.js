@@ -20,7 +20,7 @@ staffRoute.route("/staff").get(
 staffRoute.route("/staff/:id").get(
     async (request, response ) => {
         let db = database.getDB()
-        let data = await db.collection("user_profile_staff").findOne({_id: new ObjectId(request.params.id)})
+        let data = await db.collection("user_profile_staff").findOne({userId:request.params.id})
         if (Object.keys(data).length > 0){
             response.json(data)
         } else {
