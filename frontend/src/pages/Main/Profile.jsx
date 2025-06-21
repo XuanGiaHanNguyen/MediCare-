@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Calendar,
   FileText,
@@ -19,6 +19,10 @@ import { profileIcon } from "../../assets/icon";
 import HospitalHeader from "../../component/DockHeader";
 import { useNavigate } from "react-router-dom";
 
+import axios from "axios";
+import API_ROUTES from "../../constant/APIRoutes";
+import toast from "react-hot-toast";
+
 // Mock profile data
 const profileData = {
   name: "Dr. Sarah Johnson",
@@ -33,20 +37,6 @@ const profileData = {
   department: "Cardiology Department"
 };
 
-const upcomingAppointments = [
-  { time: "09:00", patient: "John Smith", type: "Consultation", status: "confirmed" },
-  { time: "10:30", patient: "Mary Wilson", type: "Follow-up", status: "pending" },
-  { time: "14:00", patient: "Robert Davis", type: "Surgery", status: "confirmed" },
-  { time: "15:30", patient: "Lisa Brown", type: "Consultation", status: "confirmed" }
-];
-
-const recentActivity = [
-  { action: "Completed surgery for", patient: "Michael Chen", time: "2 hours ago", type: "surgery" },
-  { action: "Updated treatment plan for", patient: "Emma Watson", time: "4 hours ago", type: "update" },
-  { action: "Reviewed lab results for", patient: "David Kim", time: "6 hours ago", type: "review" },
-  { action: "Scheduled follow-up with", patient: "Anna Rodriguez", time: "1 day ago", type: "schedule" }
-];
-
 const monthNames = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
@@ -55,6 +45,35 @@ const monthNames = [
 export default function MedicalProfile() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isEditing, setIsEditing] = useState(false);
+
+  const [email, setEmail] = useState("")
+  const [staff, setStaff] = useState("")
+  const [diagnosis, setDiagnosis] = useState("")
+  const [age, setAge] = useState("")
+  const [name, setName] =useState("")
+
+  const Id = localStorage.getItem("Id")
+
+  useEffect(()=>{
+    async function GetAllData (){
+
+      const Id = localStorage.getItem("Id")
+
+      const response = await axios.get(API_ROUTES.GET_USER(Id))
+      const expanded = await axios.get(API_ROUTES.GET_STAFF(Id))
+
+      if (response.status === 200){
+        setEmail(response.data.email)
+        setName(response.data.full_name)
+      }
+      if (expanded.status === 200){
+        setDiagnosis(expanded.data.diagnosis)
+        setStaff(expanded.data.staff_in_charge)
+      }
+      
+    }
+    GetAllData()
+  }, [])
 
   const navigate = useNavigate()
 
