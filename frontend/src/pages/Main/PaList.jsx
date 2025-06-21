@@ -5,7 +5,6 @@ import {
   FileText,
   Home,
   Bed,
-  Upload,
   Search,
   Filter,
   MoreVertical,
@@ -14,16 +13,14 @@ import {
 import DockHeader from "../../component/DockHeader"
 import { useNavigate } from "react-router-dom";
 
+import AddPatientModal from "./List/AddPatientModal";
+
+
 export default function PaDock() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
-  const Id = localStorage.getItem("Id")
-
-  // Mock navigation function
-  const navigate = useNavigate()
-
-  // Mock patient data
-  const patients = [
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [patients, setPatients] = useState([
     {
       id: 1,
       name: "John Doe",
@@ -79,7 +76,10 @@ export default function PaDock() {
       phone: "+1 (555) 567-8901",
       email: "d.wilson@email.com"
     }
-  ];
+  ]);
+
+  const Id = localStorage.getItem("Id")
+  const navigate = useNavigate()
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -100,6 +100,18 @@ export default function PaDock() {
     const matchesStatus = selectedStatus === "all" || patient.status === selectedStatus;
     return matchesSearch && matchesStatus;
   });
+
+  const handleAddPatient = (newPatientData) => {
+    // Create new patient with unique ID
+    const newId = Math.max(...patients.map(p => p.id)) + 1;
+    const patientToAdd = {
+      ...newPatientData,
+      id: newId
+    };
+
+    // Add to patients list
+    setPatients([...patients, patientToAdd]);
+  };
 
   return (
     <div>
@@ -130,12 +142,12 @@ export default function PaDock() {
               <p className="text-gray-600">Your list of patients and their status</p>
             </div>
             <div className="flex gap-3">
-              <button className="px-6 py-3 bg-sky-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm">
-                <Upload className="w-5 h-5" />
-                Upload
-              </button>
-              <button className="p-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+              <button 
+                onClick={() => setShowAddModal(true)}
+                className="px-6 py-3 bg-sky-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm"
+              >
                 <Plus className="w-5 h-5" />
+                Add Patient
               </button>
             </div>
           </div>
@@ -201,10 +213,10 @@ export default function PaDock() {
                     </span>
                   </div>
                   <div className="col-span-2">
-                    <div className="text-gray-900">{patient.lastVisit}</div>
+                    <div className="text-gray-900">{patient.lastVisit || "N/A"}</div>
                   </div>
                   <div className="col-span-2">
-                    <div className="text-gray-900">{patient.nextAppointment}</div>
+                    <div className="text-gray-900">{patient.nextAppointment || "N/A"}</div>
                   </div>
                   <div className="col-span-1">
                     <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
@@ -269,6 +281,13 @@ export default function PaDock() {
           </div>
         </div>
       </div>
+
+      {/* Add Patient Modal */}
+      <AddPatientModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onAddPatient={handleAddPatient}
+      />
     </div>
   );
 }
