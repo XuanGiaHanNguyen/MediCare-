@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   Calendar,
-  Plus,
   FileText,
   Home,
   Bed,
@@ -17,17 +16,20 @@ import {
   Star,
   Eye
 } from "lucide-react";
-import DockHeader from "../../component/DockHeader"
-import { useNavigate } from "react-router-dom";
+
+import UploadModal from "./Doc/UploadModal";
+import DockHeader from "../../component/DockHeader"; 
+import { useNavigate } from "react-router-dom"; 
 
 export default function DocumentDock() {
   const [viewMode, setViewMode] = useState('grid');
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name');
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
+  // Since localStorage isn't available in artifacts, using a placeholder
   const Id = localStorage.getItem("Id")
-
   const navigate = useNavigate()
 
   // Sample data
@@ -61,11 +63,20 @@ export default function DocumentDock() {
     }
   };
 
+  const handleUploadComplete = (uploadedFile) => {
+    console.log('File uploaded:', uploadedFile);
+    // Add logic to update documents list
+    setShowUploadModal(false);
+  };
+
   return (
     <div>
-      <DockHeader />
+      {/* Mock DockHeader for artifact */}
+      <DockHeader/>
+      
       <div className="w-full min-h-screen bg-gray-50 flex flex-row">
-         {/* Sidebar */}
+        {/* Sidebar */}
+        {/* Sidebar */}
         <div className="w-20 bg-white border-r border-gray-200 flex flex-col items-center gap-4 py-6">
           <button onClick={(e)=>navigate(`/dock/staff/${Id}`)} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
             <Home className="w-5 h-5" />
@@ -90,12 +101,12 @@ export default function DocumentDock() {
               <p className="text-gray-600">Storage of all your important documentations</p>
             </div>
             <div className="flex gap-3">
-              <button className="px-6 py-3 bg-sky-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm">
+              <button 
+                onClick={() => setShowUploadModal(true)}
+                className="px-6 py-3 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors flex items-center gap-2 shadow-sm"
+              >
                 <Upload className="w-5 h-5" />
                 Upload
-              </button>
-              <button className="p-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-                <Plus className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -221,6 +232,14 @@ export default function DocumentDock() {
           </div>
         </div>
       </div>
+
+      {/* Upload Modal */}
+      {showUploadModal && (
+        <UploadModal 
+          onClose={() => setShowUploadModal(false)}
+          onUploadComplete={handleUploadComplete}
+        />
+      )}
     </div>
   );
 }

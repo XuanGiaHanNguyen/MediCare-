@@ -101,7 +101,7 @@ export default function UserProfileSection({
               </button>
               <button 
                 onClick={handleSave}
-                className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors text-sm flex items-center gap-2"
+                className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-green-700 transition-colors text-sm flex items-center gap-2"
               >
                 <Save className="w-4 h-4" />
                 Save
