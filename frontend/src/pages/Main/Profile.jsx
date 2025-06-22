@@ -20,6 +20,7 @@ export default function MedicalProfile() {
   const [phone, setPhone] = useState("");
   const [bio, setBio] = useState("");
   const [name, setName] = useState("");
+  const [experience, setExperience] = useState("")
   
   const Id = localStorage.getItem("Id");
   const navigate = useNavigate();
@@ -61,6 +62,8 @@ export default function MedicalProfile() {
           setRole(expanded.data.role);
           setLanguage(expanded.data.language);
           setBio(expanded.data.bio);
+          setPhone(expanded.data.phone);
+          setExperience(expanded.data.year)
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -108,6 +111,7 @@ export default function MedicalProfile() {
             <ProfileHeader 
               name={name}
               role={role}
+              experience={experience}
               isEditing={isEditing}
               onEditToggle={() => setIsEditing(!isEditing)}
             />

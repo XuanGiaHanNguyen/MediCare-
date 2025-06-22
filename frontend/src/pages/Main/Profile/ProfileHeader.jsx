@@ -5,19 +5,31 @@ import { profileIcon } from "../../../assets/icon";
 export default function ProfileHeader({ 
   name, 
   role, 
-  experience = "12 experience",
+  experience,
   onSave 
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  
+  // Clean the experience value - remove " of experience" suffix if it exists
+  const cleanExperience = experience?.toString().replace(/ years? of experience$/i, '').replace(/ of experience$/i, '') || '';
+  
   const [editData, setEditData] = useState({
     name: name,
     role: role,
-    experience: experience
+    experience: cleanExperience
   });
 
   const handleSave = async () => {
+    // Clean the experience field before saving - remove any text after numbers
+    const cleanedExperience = editData.experience.replace(/[^0-9]/g, '');
+    
+    const dataToSave = {
+      ...editData,
+      experience: cleanedExperience
+    };
+    
     // Call the parent's save function
-    await onSave(editData);
+    await onSave(dataToSave);
     setIsEditing(false);
   };
 
@@ -25,9 +37,17 @@ export default function ProfileHeader({
     setEditData({
       name: name,
       role: role,
-      experience: experience
+      experience: cleanExperience
     });
     setIsEditing(false);
+  };
+
+  const handleExperienceChange = (e) => {
+    // Only allow numbers and limit to reasonable range
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 99)) {
+      setEditData(prev => ({ ...prev, experience: value }));
+    }
   };
 
   return (
@@ -63,12 +83,20 @@ export default function ProfileHeader({
                           className="flex-1 p-2 border border-gray-300 rounded-lg text-gray-600"
                           placeholder="Your Role/Title"
                         />
-                        <input
-                          value={editData.experience}
-                          onChange={(e) => setEditData(prev => ({ ...prev, experience: e.target.value }))}
-                          className="flex-1 p-2 border border-gray-300 rounded-lg text-gray-600"
-                          placeholder="Years of experience"
-                        />
+
+                        <div className="flex-1 relative">
+                          <input
+                            type="text"
+                            value={editData.experience}
+                            onChange={handleExperienceChange}
+                            className="w-full p-2 border border-gray-300 rounded-lg text-gray-600 pr-20"
+                            placeholder="Years"
+                            maxLength="2"
+                          />
+                          <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
+                            years
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ) : (
@@ -81,7 +109,7 @@ export default function ProfileHeader({
                         </span>
                         <span className="flex items-center gap-2">
                           <span>•</span>
-                          {experience}
+                          {cleanExperience} {cleanExperience === '1' ? 'year' : 'years'} of experience
                         </span>
                       </div>
                     </>
