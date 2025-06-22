@@ -79,11 +79,12 @@ export default function MedicalProfile() {
     try {
       setRole(role)
       setExperience(experience)
-      Object = {
+      const requestData = {
         role: role, 
         year: experience 
       }
-      const response = await axios.put(API_ROUTES.EDIT_STAFF(Id), Object)
+      const response = await axios.put(API_ROUTES.EDIT_STAFF(Id), requestData)
+      console.log(response)
       if (response.status === 200){
         toast.success("Successfully saved changes.")
       } else {

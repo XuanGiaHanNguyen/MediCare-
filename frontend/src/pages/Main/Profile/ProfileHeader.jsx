@@ -12,25 +12,27 @@ export default function ProfileHeader({
   
   // Clean the experience value - handle any data type and extract numbers
   const cleanExperience = (() => {
-    if (!experience) return '';
-    
-    // Convert to string safely
+    if (experience === undefined || experience === null) return '';
+
     let expStr = '';
     if (typeof experience === 'string') {
       expStr = experience;
     } else if (typeof experience === 'number') {
       expStr = experience.toString();
-    } else if (experience && typeof experience === 'object') {
-      // If it's an object, try to stringify it or extract a value
-      expStr = JSON.stringify(experience);
+    } else if (typeof experience === 'object') {
+      try {
+        expStr = JSON.stringify(experience);
+      } catch (e) {
+        expStr = '';
+      }
     } else {
-      expStr = String(experience);
+      // Fixed: Handle undefined/null cases properly
+      expStr = experience != null ? String(experience) : '';
     }
-    
-    // Extract only numbers from the string
-    const numbers = expStr.replace(/[^0-9]/g, '');
-    return numbers;
+
+    return expStr.replace(/[^0-9]/g, '');
   })();
+
   
   const [editData, setEditData] = useState({
     name: name || '',
