@@ -103,9 +103,11 @@ export default function MedicalProfile() {
       // Prepare data for API call
       const requestData = {
         bio: profileData.bio,
-        education_list: profileData.education,
-        experience_list: profileData.experience
+        education: profileData.education,
+        experience: profileData.experience
       };
+
+      console.log(requestData)
 
       // Make API call to save the data
       const response = await axios.put(API_ROUTES.EDIT_STAFF(Id), requestData);

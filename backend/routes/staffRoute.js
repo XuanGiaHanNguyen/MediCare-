@@ -48,30 +48,85 @@ staffRoute.route("/staff").post(
     }
 );
 
-// Edit One
+// Edit One 
 staffRoute.route("/staff/:id").put(
     async (request, response) => {
-        let db = database.getDB();
+        try {
+            let db = database.getDB();
+            
+            // Log the incoming data for debugging
+            console.log("Received data:", request.body);
+            console.log("User ID:", request.params.id);
 
-        // Define editable fields
-        const editableFields = ["userId","language", "tele_avail", "bio", "role", "patient", "education", "year", "experience", "phone"];
+            // Define editable fields
+            const editableFields = [
+                "userId", "language", "tele_avail", "bio", "role", "patient", 
+                "education", "year", "experience", "phone", "education", "experience"
+            ];
 
-        // Only include fields that are passed from the frontend
-        let updateFields = {};
-        for (let field of editableFields) {
-            if (request.body[field] !== undefined) {
-                updateFields[field] = request.body[field];
+            // Only include fields that are passed from the frontend
+            let updateFields = {};
+            for (let field of editableFields) {
+                if (request.body[field] !== undefined) {
+                    updateFields[field] = request.body[field];
+                }
             }
+
+            console.log("Fields to update:", updateFields);
+
+            // Use $set to completely replace the arrays
+            let mongoObject = { $set: updateFields };
+
+            // First, check if the document exists
+            const existingDoc = await db.collection("user_profile_staff").findOne(
+                { userId:request.params.id }
+            );
+
+            if (!existingDoc) {
+                return response.status(404).json({ 
+                    error: "User not found",
+                    acknowledged: false,
+                    matchedCount: 0
+                });
+            }
+
+            console.log("Found existing document");
+
+            // Update the document
+            let data = await db.collection("user_profile_staff").updateOne(
+                { userId:request.params.id },
+                mongoObject
+            );
+
+            console.log("Update result:", data);
+
+            // Verify the update by fetching the updated document
+            const updatedDoc = await db.collection("user_profile_staff").findOne(
+                { userId:request.params.id }
+            );
+
+            console.log("Updated document:", {
+                bio: updatedDoc.bio,
+                education: updatedDoc.education,
+                experience: updatedDoc.experience
+            });
+
+            response.json({
+                ...data,
+                updatedData: {
+                    bio: updatedDoc.bio,
+                    education: updatedDoc.education,
+                    experience: updatedDoc.experience
+                }
+            });
+
+        } catch (error) {
+            console.error("Error updating staff profile:", error);
+            response.status(500).json({ 
+                error: "Internal server error",
+                message: error.message 
+            });
         }
-
-        let mongoObject = { $set: updateFields };
-
-        let data = await db.collection("user_profile_staff").updateOne(
-            {userId:request.params.id},
-            mongoObject
-        );
-
-        response.json(data);
     }
 );
 
