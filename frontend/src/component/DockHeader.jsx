@@ -64,7 +64,7 @@ const HospitalHeader = (props) => {
       {/* Right side - Icons and User Profile */}
       <div className="flex items-center gap-4">
         {/* Calendar Icon */}
-        <button className="p-2 text-white hover:bg-white/10 rounded-md transition-colors">
+        <button onClick={(e)=> navigate(`/calendar/${role ? "staff": "patient"}/${userId}`)} className="p-2 text-white hover:bg-white/10 rounded-md transition-colors">
           <Calendar className="h-5 w-5" />
         </button>
 
