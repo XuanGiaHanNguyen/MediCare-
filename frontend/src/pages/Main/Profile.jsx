@@ -11,7 +11,10 @@ import StatisticsCard from "./Profile/StatisticsCard";
 import UserProfileSection from "./Profile/UserProfileSection";
 import ScheduleCalendar from "./Profile/ScheduleCalendar";
 
+import toast from "react-hot-toast";
+
 export default function MedicalProfile() {
+
   const [isEditing, setIsEditing] = useState(false);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
@@ -72,6 +75,26 @@ export default function MedicalProfile() {
     GetAllData();
   }, []);
 
+  const handleHeaderSave = async (role, experience) => {
+    try {
+      setRole(role)
+      setExperience(experience)
+      Object = {
+        role: role, 
+        year: experience 
+      }
+      const response = await axios.put(API_ROUTES.EDIT_STAFF(Id), Object)
+      if (response.status === 200){
+        toast.success("Successfully saved changes.")
+      } else {
+        toast.error("Error saving changes - Please try again later.")
+      }
+
+    } catch (error) {
+      toast.error(error)
+    }
+  }
+
   const handleProfileSave = async (profileData) => {
     try {
       // Update bio
@@ -114,6 +137,7 @@ export default function MedicalProfile() {
               experience={experience}
               isEditing={isEditing}
               onEditToggle={() => setIsEditing(!isEditing)}
+              onSave={handleHeaderSave}
             />
 
             {/* Main Content Grid */}

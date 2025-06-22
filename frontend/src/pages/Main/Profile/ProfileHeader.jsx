@@ -11,11 +11,12 @@ export default function ProfileHeader({
   const [isEditing, setIsEditing] = useState(false);
   
   // Clean the experience value - remove " of experience" suffix if it exists
-  const cleanExperience = experience?.toString().replace(/ years? of experience$/i, '').replace(/ of experience$/i, '') || '';
+  // Fix: Handle undefined/null experience values properly
+  const cleanExperience = (experience?.toString() || '').replace(/ years? of experience$/i, '').replace(/ of experience$/i, '');
   
   const [editData, setEditData] = useState({
-    name: name,
-    role: role,
+    name: name || '',
+    role: role || '',
     experience: cleanExperience
   });
 
@@ -23,20 +24,17 @@ export default function ProfileHeader({
     // Clean the experience field before saving - remove any text after numbers
     const cleanedExperience = editData.experience.replace(/[^0-9]/g, '');
     
-    const dataToSave = {
-      ...editData,
-      experience: cleanedExperience
-    };
-    
-    // Call the parent's save function
-    await onSave(dataToSave);
+    // Call the parent's save function with separate parameters
+    if (onSave) {
+      await onSave(editData.role, cleanedExperience);
+    }
     setIsEditing(false);
   };
 
   const handleCancel = () => {
     setEditData({
-      name: name,
-      role: role,
+      name: name || '',
+      role: role || '',
       experience: cleanExperience
     });
     setIsEditing(false);
@@ -75,7 +73,7 @@ export default function ProfileHeader({
                 <div className="flex-1">
                   {isEditing ? (
                     <div className="space-y-3">
-                      <h1 className="text-3xl font-bold text-gray-900 mb-2">{name}</h1>
+                      <h1 className="text-3xl font-bold text-gray-900 mb-2">{name || 'User Name'}</h1>
                       <div className="flex flex-col sm:flex-row gap-2 pr-10">
                         <input
                           value={editData.role}
@@ -101,16 +99,18 @@ export default function ProfileHeader({
                     </div>
                   ) : (
                     <>
-                      <h1 className="text-3xl font-bold text-gray-900 mb-2">{name}</h1>
+                      <h1 className="text-3xl font-bold text-gray-900 mb-2">{name || 'User Name'}</h1>
                       <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
                         <span className="flex items-center gap-2">
                           <span>•</span>
-                          {role}
+                          {role || 'Role not specified'}
                         </span>
-                        <span className="flex items-center gap-2">
-                          <span>•</span>
-                          {cleanExperience} {cleanExperience === '1' ? 'year' : 'years'} of experience
-                        </span>
+                        {cleanExperience && (
+                          <span className="flex items-center gap-2">
+                            <span>•</span>
+                            {cleanExperience} {cleanExperience === '1' ? 'year' : 'years'} of experience
+                          </span>
+                        )}
                       </div>
                     </>
                   )}
