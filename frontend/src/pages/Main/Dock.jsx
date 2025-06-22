@@ -124,9 +124,6 @@ export default function Dashboard() {
               <p className="text-gray-600">Welcome back! Here's what's happening today.</p>
             </div>
             <div className="flex gap-3">
-              <button className="p-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-                <Plus className="w-5 h-5" />
-              </button>
               <button className="px-6 py-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm">
                 <Settings className="w-5 h-5" />
                 Manage Widgets

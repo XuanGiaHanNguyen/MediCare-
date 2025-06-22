@@ -13,14 +13,15 @@ import {
 import DockHeader from "../../component/DockHeader"
 import { useNavigate } from "react-router-dom";
 
+import AddEventModal from "./Calendar/AddEventModal";
+
 export default function CalendarDock() {
   const Id = localStorage.getItem("Id")
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-
-  // Mock events data
-  const mockEvents = {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [events, setEvents] = useState({
     '2025-05-01': [
       { id: 3, title: 'Connect', time: '21:00', color: 'bg-sky-500' },
       { id: 4, title: 'Synced', time: '21:00', color: 'bg-sky-500' }
@@ -48,7 +49,7 @@ export default function CalendarDock() {
       { id: 12, title: 'Tech Lead Interview', time: '3:30', color: 'bg-cyan-600' },
       { id: 13, title: 'Meeting', time: '4:30', color: 'bg-sky-500' }
     ]
-  };
+  });
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -104,7 +105,72 @@ export default function CalendarDock() {
   const getEventsForDate = (date) => {
     if (!date) return [];
     const dateString = date.toISOString().split('T')[0];
-    return mockEvents[dateString] || [];
+    return events[dateString] || [];
+  };
+
+  // Handler for opening the modal
+  const handleAddEventClick = () => {
+    setIsModalOpen(true);
+  };
+
+  // Handler for closing the modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Handler for saving a new event
+  const handleSaveEvent = async (eventData) => {
+    try {
+      // TODO: Replace this with your actual API call to save to backend
+      // Example API call:
+      /*
+      const response = await fetch('/api/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // if using auth
+        },
+        body: JSON.stringify({
+          ...eventData,
+          userId: Id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save event');
+      }
+
+      const savedEvent = await response.json();
+      */
+
+      // For now, add the event to local state
+      const dateKey = eventData.date;
+      setEvents(prevEvents => ({
+        ...prevEvents,
+        [dateKey]: [
+          ...(prevEvents[dateKey] || []),
+          {
+            id: eventData.id,
+            title: eventData.title,
+            time: eventData.time,
+            color: eventData.color,
+            type: eventData.type,
+            description: eventData.description,
+            location: eventData.location,
+            attendees: eventData.attendees,
+            duration: eventData.duration
+          }
+        ]
+      }));
+
+      // Optionally, set the selected date to the new event's date
+      setSelectedDate(new Date(eventData.date));
+
+      console.log('Event saved successfully:', eventData);
+    } catch (error) {
+      console.error('Error saving event:', error);
+      // You might want to show an error message to the user here
+    }
   };
 
   const days = getDaysInMonth(currentDate);
@@ -115,7 +181,6 @@ export default function CalendarDock() {
       <DockHeader />
       <div className="w-full min-h-screen bg-gray-50 flex flex-row">
         {/* Sidebar */}
-       {/* Sidebar */}
         <div className="w-20 bg-white border-r border-gray-200 flex flex-col items-center gap-4 py-6">
           <button onClick={(e)=>navigate(`/dock/staff/${Id}`)} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
             <Home className="w-5 h-5" />
@@ -140,13 +205,15 @@ export default function CalendarDock() {
               <p className="text-gray-600">Welcome back! Here's what's happening today.</p>
             </div>
             <div className="flex gap-3">
-              <button className="p-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-                <Plus className="w-5 h-5" />
+              <button 
+                onClick={handleAddEventClick}
+                className="p-3 bg-sky-600 flex flex-row gap-3 hover:bg-sky-700 text-white border border-blue-600 rounded-xl transition-colors shadow-sm"
+                title="Add new event"
+              >
+                <Plus className="w-6 h-6" />
+                Add Event
               </button>
-              <button className="px-6 py-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm">
-                <Settings className="w-5 h-5" />
-                Settings
-              </button>
+              
             </div>
           </div>
 
@@ -187,7 +254,7 @@ export default function CalendarDock() {
               {/* Calendar Grid */}
               <div className="grid grid-cols-7 gap-0 border border-gray-300 rounded-lg overflow-hidden">
                 {days.map((day, index) => {
-                  const events = getEventsForDate(day);
+                  const dayEvents = getEventsForDate(day);
                   return (
                     <div
                       key={index}
@@ -214,7 +281,7 @@ export default function CalendarDock() {
                           
                           {/* Events */}
                           <div className="flex-1 space-y-1 overflow-hidden">
-                            {events.slice(0, 3).map((event) => (
+                            {dayEvents.slice(0, 3).map((event) => (
                               <div
                                 key={event.id}
                                 className={`
@@ -226,9 +293,9 @@ export default function CalendarDock() {
                                 <span className="font-medium">{event.time}</span> {event.title}
                               </div>
                             ))}
-                            {events.length > 3 && (
+                            {dayEvents.length > 3 && (
                               <div className="text-xs text-gray-500 px-2">
-                                +{events.length - 3} more
+                                +{dayEvents.length - 3} more
                               </div>
                             )}
                           </div>
@@ -279,6 +346,12 @@ export default function CalendarDock() {
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium text-gray-900 mb-1 truncate">{event.title}</div>
                           <div className="text-xs text-gray-500 mb-2">{event.time}</div>
+                          {event.description && (
+                            <div className="text-xs text-gray-600 mb-1 truncate">{event.description}</div>
+                          )}
+                          {event.location && (
+                            <div className="text-xs text-gray-500 truncate">{event.location}</div>
+                          )}
                           {event.url && (
                             <button className="text-xs text-blue-600 hover:text-blue-800 hover:underline transition-colors">
                               Join Meeting
@@ -303,13 +376,26 @@ export default function CalendarDock() {
                     <Calendar className="w-6 h-6 text-gray-400" />
                   </div>
                   <p className="text-sm text-gray-500 mb-2">No events scheduled</p>
-                  <p className="text-xs text-gray-400">Click a date to view events</p>
+                  <button 
+                    onClick={handleAddEventClick}
+                    className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    Add your first event
+                  </button>
                 </div>
               )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Add Event Modal */}
+      <AddEventModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        selectedDate={selectedDate}
+        onSaveEvent={handleSaveEvent}
+      />
     </div>
   );
 }

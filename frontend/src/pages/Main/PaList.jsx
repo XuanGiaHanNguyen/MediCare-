@@ -144,7 +144,7 @@ export default function PaDock() {
             <div className="flex gap-3">
               <button 
                 onClick={() => setShowAddModal(true)}
-                className="px-6 py-3 bg-sky-600 text-white rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm"
+                className="px-6 py-3 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors flex items-center gap-2 shadow-sm"
               >
                 <Plus className="w-5 h-5" />
                 Add Patient
