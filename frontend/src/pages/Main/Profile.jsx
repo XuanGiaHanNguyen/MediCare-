@@ -28,24 +28,10 @@ export default function MedicalProfile() {
   const Id = localStorage.getItem("Id");
   const navigate = useNavigate();
 
-  // Mock user profile data - replace with real data from API
+  // Updated to use state instead of mock data
   const [userProfile, setUserProfile] = useState({
-    education: [
-      {
-        degree: "Doctor of Medicine (MD)",
-        institution: "Harvard Medical School",
-        year: "2018",
-        specialization: "Internal Medicine"
-      }
-    ],
-    experience: [
-      {
-        position: "Senior Internal Medicine Physician",
-        hospital: "Massachusetts General Hospital",
-        duration: "2021 - Present",
-        department: "Internal Medicine"
-      }
-    ]
+    education: [],
+    experience: []
   });
 
   useEffect(() => {
@@ -60,13 +46,21 @@ export default function MedicalProfile() {
           setEmail(response.data.email);
           setName(response.data.full_name);
         }
+        
         if (expanded.status === 200) {
           setTele(expanded.data.tele_avail);
           setRole(expanded.data.role);
           setLanguage(expanded.data.language);
           setBio(expanded.data.bio);
           setPhone(expanded.data.phone);
-          setExperience(expanded.data.year)
+          setExperience(expanded.data.year);
+          
+          // Set education and experience from API response
+          // If they don't exist in the API, use default empty arrays
+          setUserProfile({
+            education: expanded.data.education,
+            experience: expanded.data.experience 
+          });
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -92,31 +86,39 @@ export default function MedicalProfile() {
       }
 
     } catch (error) {
-      toast.error(error)
+      toast.error("Error saving changes - Please try again later.")
+      console.error("Error:", error)
     }
   }
 
   const handleProfileSave = async (profileData) => {
     try {
-      // Update bio
+      // Update local state
       setBio(profileData.bio);
-      
-      // Update user profile
       setUserProfile({
         education: profileData.education,
         experience: profileData.experience
       });
 
-      // Here you would typically make an API call to save the data
-      // Example:
-      // await axios.put(API_ROUTES.UPDATE_STAFF_PROFILE(Id), {
-      //   bio: profileData.bio,
-      //   education: profileData.education,
-      //   experience: profileData.experience
-      // });
+      // Prepare data for API call
+      const requestData = {
+        bio: profileData.bio,
+        education_list: profileData.education,
+        experience_list: profileData.experience
+      };
 
-      console.log("Profile updated successfully");
+      // Make API call to save the data
+      const response = await axios.put(API_ROUTES.EDIT_STAFF(Id), requestData);
+      
+      if (response.status === 200) {
+        toast.success("Profile updated successfully!");
+      } else {
+        toast.error("Error updating profile - Please try again later.");
+      }
+
+      console.log("Profile updated successfully", response.data);
     } catch (error) {
+      toast.error("Error updating profile - Please try again later.");
       console.error("Error updating profile:", error);
     }
   };
