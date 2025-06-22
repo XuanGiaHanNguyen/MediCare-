@@ -53,6 +53,14 @@ staffRoute.route("/staff/:id").put(
     async (request, response) => {
         let db = database.getDB();
 
+        console.log("Looking for userId:", request.params.id);
+        
+        // Check if document exists first
+        let existingDoc = await db.collection("user_profile_staff").findOne(
+            {userId: request.params.id}
+        );
+        console.log("Found document:", existingDoc);
+
         // Define editable fields
         const editableFields = ["userId","language", "tele_avail", "bio", "role", "patient", "education", "year", "experience", "phone"];
 
