@@ -67,7 +67,7 @@ staffRoute.route("/staff/:id").put(
         let mongoObject = { $set: updateFields };
 
         let data = await db.collection("user_profile_staff").updateOne(
-            { userId: request.params.id },
+            {userId:request.params.id},
             mongoObject
         );
 
