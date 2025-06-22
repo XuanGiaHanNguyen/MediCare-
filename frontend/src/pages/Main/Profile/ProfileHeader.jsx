@@ -10,9 +10,27 @@ export default function ProfileHeader({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   
-  // Clean the experience value - remove " of experience" suffix if it exists
-  // Fix: Handle undefined/null experience values properly
-  const cleanExperience = (experience?.toString() || '').replace(/ years? of experience$/i, '').replace(/ of experience$/i, '');
+  // Clean the experience value - handle any data type and extract numbers
+  const cleanExperience = (() => {
+    if (!experience) return '';
+    
+    // Convert to string safely
+    let expStr = '';
+    if (typeof experience === 'string') {
+      expStr = experience;
+    } else if (typeof experience === 'number') {
+      expStr = experience.toString();
+    } else if (experience && typeof experience === 'object') {
+      // If it's an object, try to stringify it or extract a value
+      expStr = JSON.stringify(experience);
+    } else {
+      expStr = String(experience);
+    }
+    
+    // Extract only numbers from the string
+    const numbers = expStr.replace(/[^0-9]/g, '');
+    return numbers;
+  })();
   
   const [editData, setEditData] = useState({
     name: name || '',
