@@ -89,6 +89,7 @@ userRoute.route("/user/login").post(
         let user = await db.collection("user").findOne({email: request.body.email})
 
         if (user){
+            
             let confirmation = await bcrypt.compare(request.body.password, user.password)
             if (confirmation) {
                 response.json({success: true, user})

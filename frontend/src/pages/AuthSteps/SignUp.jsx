@@ -45,8 +45,6 @@ function SignUp() {
             )
             if (response.status === 200){
 
-                console.log(response.data)
-
                 const postObject = {
                     is_staff: staff, 
                     full_name: response.data.name, 
@@ -54,6 +52,8 @@ function SignUp() {
                     password: response.data.sub, 
                     google: "yes"
                 }
+
+                console.log(postObject)
 
                 sessionStorage.setItem("Name", response.data.name)
 
@@ -63,6 +63,7 @@ function SignUp() {
                     toast.success("User created successfully")
                     localStorage.setItem("Id", login.data.insertedId)
                     sessionStorage.removeItem("Role")
+                    console.log(login)
 
                     if (given === "healthcare"){
                         navigate("/medprofile")
@@ -94,10 +95,11 @@ function SignUp() {
                 password: password, 
                 google: "no"
             }
+            console.log(SignUpObject)
             const response = await axios.post(API_ROUTES.CREATE_USER, SignUpObject)
 
             if (response.status === 200) {
-                
+                console.log(response)
                 toast.success("User created successfully")
                 localStorage.setItem("Id", response.data.insertedId)
                 sessionStorage.removeItem("Role")

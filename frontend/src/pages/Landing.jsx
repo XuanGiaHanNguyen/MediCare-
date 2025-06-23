@@ -185,8 +185,30 @@ function Landing () {
   const handleGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       console.log(tokenResponse)
+      const response = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`
+          }
+        }
+      )
+      console.log(response)
+      const postObject = {
+        email: response.data.email,
+        password: response.data.sub
+      }
+
+      const post = await axios.post(API_ROUTE.LOGIN, postObject)
+
+      if (post.data.success === true){
+        const userId = post.data.user._id.toString()
+        localStorage.setItem("Id", userId)
+        navigate("/loading")
+      } else {
+        toast.error(`Error in Login process - Try again later`)
+      }
     },
-    onError: toast.error("Error Occured during Log In")
+    onError: error => toast.error("Error Occured during Log In")
   })
 
   
@@ -197,7 +219,7 @@ function Landing () {
     }
 
     let response = await axios.post(API_ROUTE.LOGIN, Object)
-    console.log(response.data.success)
+    
     if (response.data.success === true){
       const userId = response.data.user._id.toString()
       localStorage.setItem("Id", userId)
