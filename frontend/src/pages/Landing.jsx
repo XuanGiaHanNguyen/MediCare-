@@ -8,6 +8,8 @@ import {
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { GoogleIcon } from '../assets/icon';
+
 import axios from "axios"
 import toast from "react-hot-toast"
 import API_ROUTE from "../constant/APIRoutes"
@@ -324,6 +326,22 @@ function Landing () {
                             style={{ transitionDelay: '800ms' }}
                         >
                             Sign In
+                        </button>
+
+                        <div className="flex items-center justify-center w-full">
+                            <div className="flex-1 h-px bg-gray-300"></div>
+                            <span className="px-4 text-gray-700 font-medium">OR</span>
+                            <div className="flex-1 h-px bg-gray-300"></div>
+                        </div>
+
+                        <button 
+                            onClick={handleSubmit}
+                            className={`border-2 border-sky-600 text-sky-800 font-semibold w-full flex text-center justify-center py-3 rounded-md cursor-pointer hover:bg-sky-50 transition-all duration-400 ease-out focus:ring-4 focus:ring-blue-200 focus:outline-none transform hover:scale-105 hover:shadow-lg active:scale-95 ${
+                              formVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                            }`}
+                            style={{ transitionDelay: '800ms' }}
+                        >
+                            <span className="pr-2">{GoogleIcon}</span> Sign Up with Google 
                         </button>
 
                         <div className={`text-center transform transition-all duration-600 ease-out delay-1000 ${
