@@ -55,10 +55,13 @@ function SignUp() {
                     google: "yes"
                 }
 
+                sessionStorage.setItem("Name", response.data.name)
+
                 const login = await axios.post(API_ROUTES.CREATE_USER, postObject)
-                if (response.status === 200) {
+
+                if (login.status === 200) {
                     toast.success("User created successfully")
-                    localStorage.setItem("Id", response.data.insertedId)
+                    localStorage.setItem("Id", login.data.insertedId)
                     sessionStorage.removeItem("Role")
 
                     if (given === "healthcare"){
