@@ -8,14 +8,10 @@ import axios from "axios"
 import Header from "../../component/header";
 import toast from "react-hot-toast";
 
+import { useGoogleLogin } from "@react-oauth/google";
+
+
 function SignUp() {
-
-    const [name, setName] = useState("")
-    const [email, setEmail]= useState("")
-    const [password, setPassword] = useState("")
-    const [confirm, setConfirm] = useState("")
-
-    const given = sessionStorage.getItem("Role")
 
     let [ staff, setStaff ] = useState(false)
 
@@ -27,7 +23,59 @@ function SignUp() {
         }
     })
 
+    const [name, setName] = useState("")
+    const [email, setEmail]= useState("")
+    const [password, setPassword] = useState("")
+    const [confirm, setConfirm] = useState("")
+
+    const given = sessionStorage.getItem("Role")
+
+
     const navigate = useNavigate()
+
+    const login = useGoogleLogin({
+        onSuccess: 
+        async (tokenResponse) => {
+            const response = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo",
+                {
+                    headers: {
+                        Authorization: `Bearer ${tokenResponse.access_token}`
+                    }
+                }
+            )
+            if (response.status === 200){
+
+                console.log(response.data)
+
+                const postObject = {
+                    is_staff: staff, 
+                    full_name: response.data.name, 
+                    email: response.data.email,
+                    password: response.data.sub, 
+                    google: "yes"
+                }
+
+                const login = await axios.post(API_ROUTES.CREATE_USER, postObject)
+                if (response.status === 200) {
+                    toast.success("User created successfully")
+                    localStorage.setItem("Id", response.data.insertedId)
+                    sessionStorage.removeItem("Role")
+
+                    if (given === "healthcare"){
+                        navigate("/medprofile")
+                    }else{
+                        navigate("/patprofile")}
+                } else {
+                    toast.error("Error in the Google Authentication process")
+                }
+
+            } else {
+                toast.error("Error in retrieving information.")
+            }
+        },
+        onError: error => toast.error("Login Failed:", error)
+    });
+
 
     async function handleSubmit (){
         
@@ -40,9 +88,11 @@ function SignUp() {
                 is_staff: staff, 
                 full_name: name, 
                 email: email,
-                password: password
+                password: password, 
+                google: "no"
             }
             const response = await axios.post(API_ROUTES.CREATE_USER, SignUpObject)
+
             if (response.status === 200) {
                 
                 toast.success("User created successfully")
@@ -80,9 +130,11 @@ function SignUp() {
                 <button 
                     className="border-2 border-sky-600 text-sky-800 font-semibold w-full flex text-center justify-center py-3 rounded-md cursor-pointer hover:bg-sky-50"
                     type="button"
+                    onClick={(e)=> login()}
                 >
                     <span className="pr-2">{GoogleIcon}</span> Sign Up with Google 
                 </button>
+
 
                 <div className="flex items-center justify-center w-full">
                     <div className="flex-1 h-px bg-gray-300"></div>

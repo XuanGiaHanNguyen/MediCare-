@@ -45,7 +45,8 @@ userRoute.route("/user").post(
                 is_staff: request.body.is_staff, 
                 full_name: request.body.full_name, 
                 email: request.body.email,
-                password: hash
+                password: hash, 
+                google: request.body.google
             }
             let data = await db.collection("user").insertOne(mongoObject)
             response.json(data)
@@ -63,7 +64,8 @@ userRoute.route("/user/:id").put(
                 is_staff: request.body.is_staff, 
                 full_name: request.body.full_name, 
                 email: request.body.email,
-                password: hash
+                password: hash, 
+                google: request.body.google
             }
         }
         let data = await db.collection("user").updateOne({_id: new ObjectId(request.params.id)},mongoObject)
