@@ -43,7 +43,7 @@ export default function MedicalProfile() {
         const expanded = await axios.get(API_ROUTES.GET_STAFF(Id));
         console.log(expanded)
 
-        console.log(expanded.data.education[0])
+        console.log(expanded.data.education)
 
         if (response.status === 200) {
           setEmail(response.data.email);
@@ -61,8 +61,8 @@ export default function MedicalProfile() {
           // Set education and experience from API response
           // If they don't exist in the API, use default empty arrays
           setUserProfile({
-            education: expanded.data.education[0],
-            experience: expanded.data.experience[0] 
+            education: expanded.data.education,
+            experience: expanded.data.experience 
           });
         }
       } catch (error) {
@@ -127,6 +127,8 @@ export default function MedicalProfile() {
       console.error("Error updating profile:", error);
     }
   };
+
+  console.log(userProfile)
 
   return (
     <div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { User, GraduationCap, Stethoscope, Edit, Save, X } from "lucide-react";
+import React from "react";
 
 export default function UserProfileSection({ 
   bio, 
@@ -9,9 +10,9 @@ export default function UserProfileSection({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
-    bio: bio,
-    education: userProfile.education,
-    experience: userProfile.experience
+    bio: bio || "",
+    education: userProfile?.education || [],
+    experience: userProfile?.experience || []
   });
 
   const handleSave = async () => {
@@ -22,9 +23,9 @@ export default function UserProfileSection({
 
   const handleCancel = () => {
     setEditData({
-      bio: bio,
-      education: userProfile.education,
-      experience: userProfile.experience
+      bio: bio || "",
+      education: userProfile?.education || [],
+      experience: userProfile?.experience || []
     });
     setIsEditing(false);
   };
@@ -85,6 +86,15 @@ export default function UserProfileSection({
     }));
   };
 
+  // Update editData when props change
+  React.useEffect(() => {
+    setEditData({
+      bio: bio || "",
+      education: userProfile?.education || [],
+      experience: userProfile?.experience || []
+    });
+  }, [bio, userProfile]);
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <div className="flex items-center justify-between mb-6">
@@ -101,7 +111,7 @@ export default function UserProfileSection({
               </button>
               <button 
                 onClick={handleSave}
-                className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-green-700 transition-colors text-sm flex items-center gap-2"
+                className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors text-sm flex items-center gap-2"
               >
                 <Save className="w-4 h-4" />
                 Save
@@ -135,7 +145,7 @@ export default function UserProfileSection({
               placeholder="Write about yourself..."
             />
           ) : (
-            <p className="text-gray-800 text-sm leading-relaxed">{bio}</p>
+            <p className="text-gray-800 text-sm leading-relaxed">{bio || "No bio provided"}</p>
           )}
         </div>
 
@@ -156,57 +166,61 @@ export default function UserProfileSection({
             )}
           </div>
           <div className="space-y-3">
-            {editData.education.map((edu, index) => (
-              <div key={index} className="border-l-2 border-sky-500 pl-4 relative">
-                {isEditing && (
-                  <button
-                    onClick={() => removeEducation(index)}
-                    className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-                {isEditing ? (
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
+            {editData.education && editData.education.length > 0 ? (
+              editData.education.map((edu, index) => (
+                <div key={index} className="border-l-2 border-sky-500 pl-4 relative">
+                  {isEditing && (
+                    <button
+                      onClick={() => removeEducation(index)}
+                      className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
+                        <input
+                          value={edu.degree || ""}
+                          onChange={(e) => updateEducation(index, 'degree', e.target.value)}
+                          placeholder="Degree"
+                          className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                        />
+                        <input
+                          value={edu.year || ""}
+                          onChange={(e) => updateEducation(index, 'year', e.target.value)}
+                          placeholder="Year"
+                          className="w-20 p-2 border border-gray-300 rounded text-sm"
+                        />
+                      </div>
                       <input
-                        value={edu.degree}
-                        onChange={(e) => updateEducation(index, 'degree', e.target.value)}
-                        placeholder="Degree"
-                        className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                        value={edu.institution || ""}
+                        onChange={(e) => updateEducation(index, 'institution', e.target.value)}
+                        placeholder="Institution"
+                        className="w-full p-2 border border-gray-300 rounded text-sm"
                       />
                       <input
-                        value={edu.year}
-                        onChange={(e) => updateEducation(index, 'year', e.target.value)}
-                        placeholder="Year"
-                        className="w-20 p-2 border border-gray-300 rounded text-sm"
+                        value={edu.specialization || ""}
+                        onChange={(e) => updateEducation(index, 'specialization', e.target.value)}
+                        placeholder="Specialization"
+                        className="w-full p-2 border border-gray-300 rounded text-sm"
                       />
                     </div>
-                    <input
-                      value={edu.institution}
-                      onChange={(e) => updateEducation(index, 'institution', e.target.value)}
-                      placeholder="Institution"
-                      className="w-full p-2 border border-gray-300 rounded text-sm"
-                    />
-                    <input
-                      value={edu.specialization}
-                      onChange={(e) => updateEducation(index, 'specialization', e.target.value)}
-                      placeholder="Specialization"
-                      className="w-full p-2 border border-gray-300 rounded text-sm"
-                    />
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex items-center justify-between">
-                      <p className="font-medium text-gray-900">{edu.degree}</p>
-                      <span className="text-sm text-sky-800 font-medium">{edu.year}</span>
-                    </div>
-                    <p className="text-sm text-gray-600">{edu.institution}</p>
-                    <p className="text-xs text-gray-500">{edu.specialization}</p>
-                  </>
-                )}
-              </div>
-            ))}
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium text-gray-900">{edu.degree || "No degree specified"}</p>
+                        <span className="text-sm text-sky-800 font-medium">{edu.year || "Year not specified"}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{edu.institution || "Institution not specified"}</p>
+                      <p className="text-xs text-gray-500">{edu.specialization || "No specialization specified"}</p>
+                    </>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 text-sm">No education information provided</p>
+            )}
           </div>
         </div>
 
@@ -227,57 +241,61 @@ export default function UserProfileSection({
             )}
           </div>
           <div className="space-y-3">
-            {editData.experience.map((exp, index) => (
-              <div key={index} className="border-l-2 border-sky-500 pl-4 relative">
-                {isEditing && (
-                  <button
-                    onClick={() => removeExperience(index)}
-                    className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-                {isEditing ? (
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
+            {editData.experience && editData.experience.length > 0 ? (
+              editData.experience.map((exp, index) => (
+                <div key={index} className="border-l-2 border-sky-500 pl-4 relative">
+                  {isEditing && (
+                    <button
+                      onClick={() => removeExperience(index)}
+                      className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
+                        <input
+                          value={exp.position || ""}
+                          onChange={(e) => updateExperience(index, 'position', e.target.value)}
+                          placeholder="Position"
+                          className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                        />
+                        <input
+                          value={exp.duration || ""}
+                          onChange={(e) => updateExperience(index, 'duration', e.target.value)}
+                          placeholder="Duration"
+                          className="w-32 p-2 border border-gray-300 rounded text-sm"
+                        />
+                      </div>
                       <input
-                        value={exp.position}
-                        onChange={(e) => updateExperience(index, 'position', e.target.value)}
-                        placeholder="Position"
-                        className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                        value={exp.hospital || ""}
+                        onChange={(e) => updateExperience(index, 'hospital', e.target.value)}
+                        placeholder="Hospital/Organization"
+                        className="w-full p-2 border border-gray-300 rounded text-sm"
                       />
                       <input
-                        value={exp.duration}
-                        onChange={(e) => updateExperience(index, 'duration', e.target.value)}
-                        placeholder="Duration"
-                        className="w-32 p-2 border border-gray-300 rounded text-sm"
+                        value={exp.department || ""}
+                        onChange={(e) => updateExperience(index, 'department', e.target.value)}
+                        placeholder="Department"
+                        className="w-full p-2 border border-gray-300 rounded text-sm"
                       />
                     </div>
-                    <input
-                      value={exp.hospital}
-                      onChange={(e) => updateExperience(index, 'hospital', e.target.value)}
-                      placeholder="Hospital/Organization"
-                      className="w-full p-2 border border-gray-300 rounded text-sm"
-                    />
-                    <input
-                      value={exp.department}
-                      onChange={(e) => updateExperience(index, 'department', e.target.value)}
-                      placeholder="Department"
-                      className="w-full p-2 border border-gray-300 rounded text-sm"
-                    />
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex items-center justify-between">
-                      <p className="font-medium text-gray-900">{exp.position}</p>
-                      <span className="text-sm text-sky-800 font-medium">{exp.duration}</span>
-                    </div>
-                    <p className="text-sm text-gray-600">{exp.hospital}</p>
-                    <p className="text-xs text-gray-500">{exp.department}</p>
-                  </>
-                )}
-              </div>
-            ))}
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium text-gray-900">{exp.position || "Position not specified"}</p>
+                        <span className="text-sm text-sky-800 font-medium">{exp.duration || "Duration not specified"}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{exp.hospital || "Organization not specified"}</p>
+                      <p className="text-xs text-gray-500">{exp.department || "Department not specified"}</p>
+                    </>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 text-sm">No experience information provided</p>
+            )}
           </div>
         </div>
       </div>
