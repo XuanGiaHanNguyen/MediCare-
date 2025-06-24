@@ -5,19 +5,14 @@ import {
   Calendar,
   Home,
   Bed,
-  Edit,
   ChevronLeft,
   ChevronRight,
-  User,
   Mail,
-  Camera,
-  Save,
-  Stethoscope, 
-  Tablets,
-  Ambulance
-
+  Ambulance, 
+  Headset, 
+  Phone
 } from "lucide-react";
-import { profileIcon } from "../../assets/icon";
+
 import HospitalHeader from "../../component/DockHeader";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -38,6 +33,8 @@ export default function ProfileP() {
   const [diagnosis, setDiagnosis] = useState("")
   const [age, setAge] = useState("")
   const [name, setName] =useState("")
+  const [phone, setPhone] = useState("")
+  const [tele, setTele] = useState("")
 
   const Id = localStorage.getItem("Id")
 
@@ -58,7 +55,9 @@ export default function ProfileP() {
       if (expanded.status === 200){
         setDiagnosis(expanded.data.diagnosis)
         setStaff(expanded.data.staff_in_charge)
+        setPhone(expanded.data.phone || "Not given")
         setAge(expanded.data.age)
+        setTele(expanded.data.tele_avail)
       }
       
     }
@@ -200,6 +199,24 @@ export default function ProfileP() {
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-gray-50" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Phone</p>
+                      <p className="font-medium text-gray-900">{phone || "None"}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
+                      <Headset className="w-5 h-5 text-gray-50" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Telegraph Availability</p>
+                      <p className="font-medium text-gray-900">{ tele || "None"}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-sky-700 rounded-xl flex items-center justify-center">
                       <Ambulance className="w-5 h-5 text-gray-50" />
                     </div>
                     <div>
@@ -210,33 +227,6 @@ export default function ProfileP() {
                 </div>
               </div>
 
-              {/* Statistics */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-6">Statistics</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-sky-50 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <User className="w-5 h-5 text-sky-600" />
-                      <span className="font-medium text-gray-900">Current Status</span>
-                    </div>
-                    <span className="text-2xl font-bold text-sky-600">99</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-sky-50 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <Stethoscope className="w-5 h-5 text-sky-600" />
-                      <span className="font-medium text-gray-900">Appointments</span>
-                    </div>
-                    <span className="text-2xl font-bold text-sky-600">89</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-sky-50 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <Tablets className="w-5 h-5 text-sky-600" />
-                      <span className="font-medium text-gray-900">Perscription</span>
-                    </div>
-                    <span className="text-2xl font-bold text-sky-600">4</span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Right Column */}
