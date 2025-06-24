@@ -32,8 +32,11 @@ function Patient (){
             phone: Tele === "No" ? "Not given" : (Phone || "Not given"),
             age: Age, 
             bio: Bio, 
-            diagnosis: Diagnosis
+            diagnosis: Diagnosis, 
+            name: name 
         }
+
+        console.log(Object)
         const response = await axios.post(API_ROUTES.CREATE_PATIENT, Object)
 
         if (response.status === 200){

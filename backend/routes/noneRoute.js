@@ -36,7 +36,7 @@ userNoneRoute.route("/patient").post(
         let db = database.getDB();
 
         // List of all expected fields
-        const expectedFields = ["userId","language", "tele_avail", "bio", "diagnosis", "staff_in_charge", "status", "phone", "age"];
+        const expectedFields = ["userId","language", "tele_avail", "bio", "diagnosis", "staff_in_charge", "status", "phone", "age", "name"];
 
         // Create mongoObject with null as default
         let mongoObject = {};
@@ -56,7 +56,7 @@ userNoneRoute.route("/patient/:id").put(
         let db = database.getDB();
 
         // List of all expected fields
-        const expectedFields = ["userId","language", "tele_avail", "bio", "diagnosis", "staff_in_charge", "status", "phone", "age"];
+        const expectedFields = ["userId","language", "tele_avail", "bio", "diagnosis", "staff_in_charge", "status", "phone", "age", "name"];
 
         let updateFields = {};
             for (let field of expectedFields) {

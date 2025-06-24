@@ -35,7 +35,7 @@ staffRoute.route("/staff").post(
         let db = database.getDB();
 
         // Define all expected fields
-        const expectedFields = ["userId","language", "tele_avail", "bio", "role", "patient", "education", "year", "experience", "phone"];
+        const expectedFields = ["userId","language", "tele_avail", "bio", "role", "patient", "education", "year", "experience", "phone", "name"];
 
         // Build the object with null for any missing fields
         let mongoObject = {};
@@ -61,7 +61,7 @@ staffRoute.route("/staff/:id").put(
             // Define editable fields
             const editableFields = [
                 "userId", "language", "tele_avail", "bio", "role", "patient", 
-                "education", "year", "experience", "phone", "education", "experience"
+                "education", "year", "experience", "phone", "education", "experience", "name"
             ];
 
             // Only include fields that are passed from the frontend

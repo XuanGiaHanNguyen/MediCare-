@@ -11,12 +11,17 @@ import {
   Edit3
 } from "lucide-react";
 
+import axios from "axios"
+import API_ROUTES from "../../../constant/APIRoutes"
+import toast from "react-hot-toast"
+
 export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [data, setData] = useState([])
   const [patientData, setPatientData] = useState({
     name: "",
     age: "",
@@ -28,35 +33,15 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
     email: ""
   });
 
-  // Mock database search function - replace with actual API call
-  const searchPatients = async (term) => {
-    if (!term.trim()) {
-      setSearchResults([]);
-      return;
+  useEffect(()=> {
+    async function GetData (){
+      const response = await axios.get(API_ROUTES.GET_PATIENTS)
+      setData(response.data)
     }
+    GetData()
+  }, [])
 
-    setIsLoading(true);
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    // Mock search results - replace with actual database query
-    const mockPatients = [
-      { id: 1, name: "John Smith", age: 45, phone: "+1 (555) 123-4567", email: "john.smith@email.com", lastVisit: "2024-05-15" },
-      { id: 2, name: "Jane Doe", age: 32, phone: "+1 (555) 987-6543", email: "jane.doe@email.com", lastVisit: "2024-04-20" },
-      { id: 3, name: "Robert Johnson", age: 58, phone: "+1 (555) 456-7890", email: "r.johnson@email.com", lastVisit: "2024-03-10" },
-      { id: 4, name: "Mary Williams", age: 41, phone: "+1 (555) 321-0987", email: "mary.w@email.com", lastVisit: "2024-06-01" },
-    ];
-
-    const filtered = mockPatients.filter(patient => 
-      patient.name.toLowerCase().includes(term.toLowerCase()) ||
-      patient.phone.includes(term) ||
-      patient.email.toLowerCase().includes(term.toLowerCase())
-    );
-
-    setSearchResults(filtered);
-    setIsLoading(false);
-  };
+  console.log(data)
 
   // Debounced search
   useEffect(() => {
@@ -244,10 +229,12 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
 
               {/* Initial State */}
               {!searchTerm && (
-                <div className="text-center py-12">
-                  <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Search for a patient</h3>
-                  <p className="text-gray-600">Enter a name, phone number, or email to find existing patients</p>
+                <div className="text-center py-12 border-2">
+                  {data.map((item, index) => (
+                    <div key={index} className="border-2">
+                      {item.bio}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
