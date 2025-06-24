@@ -36,7 +36,7 @@ userNoneRoute.route("/patient").post(
         let db = database.getDB();
 
         // List of all expected fields
-        const expectedFields = ["userId","language", "tele_avail", "bio", "diagnosis", "staff_in_charge", "status"];
+        const expectedFields = ["userId","language", "tele_avail", "bio", "diagnosis", "staff_in_charge", "status", "phone", "age"];
 
         // Create mongoObject with null as default
         let mongoObject = {};
@@ -56,7 +56,7 @@ userNoneRoute.route("/patient/:id").put(
 
         // Update only provided fields
         let result = await db.collection("user_profile_none").updateOne(
-            { _id: new ObjectId(id) },
+            { userId: id},
             { $set: updates }
         );
 
