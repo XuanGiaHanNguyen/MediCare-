@@ -51,16 +51,52 @@ userNoneRoute.route("/patient").post(
 
 // Edit One 
 userNoneRoute.route("/patient/:id").put(
-    async (request,response) => {
-       const { id, updates } = request.body;
+     async (request, response) => {
+        
+        let db = database.getDB();
+                    
+        // Log the incoming data for debugging
+        console.log("Received data:", request.body);
+        console.log("User ID:", request.params.id);
 
-        // Update only provided fields
-        let result = await db.collection("user_profile_none").updateOne(
-            { userId: id},
-            { $set: updates }
+        // List of all expected fields
+        const expectedFields = ["userId","language", "tele_avail", "bio", "diagnosis", "staff_in_charge", "status", "phone", "age"];
+
+        let updateFields = {};
+            for (let field of editableFields) {
+                if (request.body[field] !== undefined) {
+                    updateFields[field] = request.body[field];
+                }
+            }
+
+        console.log("Fields to update:", updateFields);
+
+        // Use $set to completely replace the arrays
+        let mongoObject = { $set: updateFields };
+
+        // First, check if the document exists
+        const existingDoc = await db.collection("user_profile_none").findOne(
+            { userId: request.params.id }
         );
 
-        response.json(result);
+        if (!existingDoc) {
+            return response.status(404).json({ 
+                error: "User not found",
+                acknowledged: false,
+                matchedCount: 0
+            });
+        }
+
+        console.log("Found existing document");
+
+        // Update the document
+        let data = await db.collection("user_profile_none").updateOne(
+            { userId:request.params.id },
+            mongoObject
+        );
+
+        console.log("Update result:", data);
+        response.json(data)
     }
 )
 
