@@ -4,30 +4,30 @@ import { profileIcon } from "../../../assets/icon";
 
 export default function ProfileHeader({ 
   name, 
-  role, 
-  experience,
+  diagnosis, 
+  age,
   onSave 
 }) {
   const [isEditing, setIsEditing] = useState(false);
   
   // Clean the experience value - handle any data type and extract numbers
-  const cleanExperience = (() => {
-    if (experience === undefined || experience === null) return '';
+  const cleanAge = (() => {
+    if (age === undefined || age === null) return '';
 
     let expStr = '';
-    if (typeof experience === 'string') {
-      expStr = experience;
-    } else if (typeof experience === 'number') {
-      expStr = experience.toString();
-    } else if (typeof experience === 'object') {
+    if (typeof age === 'string') {
+      expStr = age;
+    } else if (typeof age === 'number') {
+      expStr = age.toString();
+    } else if (typeof age === 'object') {
       try {
-        expStr = JSON.stringify(experience);
+        expStr = JSON.stringify(age);
       } catch (e) {
         expStr = '';
       }
     } else {
       // Fixed: Handle undefined/null cases properly
-      expStr = experience != null ? String(experience) : '';
+      expStr = age != null ? String(age) : '';
     }
 
     return expStr.replace(/[^0-9]/g, '');
@@ -36,17 +36,17 @@ export default function ProfileHeader({
   
   const [editData, setEditData] = useState({
     name: name || '',
-    role: role || '',
-    experience: cleanExperience
+    diagnosis: diagnosis || '',
+    age: cleanAge
   });
 
   const handleSave = async () => {
     // Clean the experience field before saving - remove any text after numbers
-    const cleanedExperience = editData.experience.replace(/[^0-9]/g, '');
+    const cleanedAge = editData.age.replace(/[^0-9]/g, '');
     
     // Call the parent's save function with separate parameters
     if (onSave) {
-      await onSave(editData.role, cleanedExperience);
+      await onSave(editData.diagnosis, cleanedAge);
     }
     setIsEditing(false);
   };
@@ -54,17 +54,17 @@ export default function ProfileHeader({
   const handleCancel = () => {
     setEditData({
       name: name || '',
-      role: role || '',
-      experience: cleanExperience
+      diagnosis: diagnosis || '',
+      age: cleanAge
     });
     setIsEditing(false);
   };
 
-  const handleExperienceChange = (e) => {
+  const handleAgeChange = (e) => {
     // Only allow numbers and limit to reasonable range
     const value = e.target.value.replace(/[^0-9]/g, '');
-    if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 99)) {
-      setEditData(prev => ({ ...prev, experience: value }));
+    if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 150)) {
+      setEditData(prev => ({ ...prev, age: value }));
     }
   };
 
@@ -96,17 +96,17 @@ export default function ProfileHeader({
                       <h1 className="text-3xl font-bold text-gray-900 mb-2">{name || 'User Name'}</h1>
                       <div className="flex flex-col sm:flex-row gap-2 pr-10">
                         <input
-                          value={editData.role}
-                          onChange={(e) => setEditData(prev => ({ ...prev, role: e.target.value }))}
+                          value={editData.diagnosis}
+                          onChange={(e) => setEditData(prev => ({ ...prev, diagnosis: e.target.value }))}
                           className="flex-1 p-2 border border-gray-300 rounded-lg text-gray-600"
-                          placeholder="Your Role/Title"
+                          placeholder="Your Diagnosis"
                         />
 
                         <div className="flex-1 relative">
                           <input
                             type="text"
-                            value={editData.experience}
-                            onChange={handleExperienceChange}
+                            value={editData.age}
+                            onChange={handleAgeChange}
                             className="w-full p-2 border border-gray-300 rounded-lg text-gray-600 pr-20"
                             placeholder="Years"
                             maxLength="2"
@@ -123,12 +123,12 @@ export default function ProfileHeader({
                       <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
                         <span className="flex items-center gap-2">
                           <span>•</span>
-                          {role || 'Role not specified'}
+                          {diagnosis || 'Diagnosis not specified'}
                         </span>
-                        {cleanExperience && (
+                        {cleanAge && (
                           <span className="flex items-center gap-2">
                             <span>•</span>
-                            {cleanExperience} {cleanExperience === '1' ? 'year' : 'years'} of experience
+                            {cleanAge} {cleanAge === '1' ? 'year' : 'years'} old
                           </span>
                         )}
                       </div>

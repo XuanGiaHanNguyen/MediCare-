@@ -22,8 +22,7 @@ import HospitalHeader from "../../component/DockHeader";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-
-
+import ProfileHeader from "./profile/ProfileHeaderP";
 
 const monthNames = [
   "January", "February", "March", "April", "May", "June",
@@ -59,6 +58,7 @@ export default function ProfileP() {
       if (expanded.status === 200){
         setDiagnosis(expanded.data.diagnosis)
         setStaff(expanded.data.staff_in_charge)
+        setAge(expanded.data.age)
       }
       
     }
@@ -76,6 +76,28 @@ export default function ProfileP() {
       return newDate;
     });
   };
+
+  const handleHeaderSave = async (diagnosis, age) => {
+    try {
+      setDiagnosis(diagnosis)
+      setAge(age)
+      const requestData = {
+        diagnosis: diagnosis, 
+        age: age
+      }
+      const response = await axios.put(API_ROUTES.EDIT_PATIENT(Id), requestData)
+      console.log(response)
+      if (response.status === 200){
+        toast.success("Successfully saved changes.")
+      } else {
+        toast.error("Error saving changes - Please try again later.")
+      }
+
+    } catch (error) {
+      toast.error("Error saving changes - Please try again later.")
+      console.error("Error:", error)
+    }
+  }
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
@@ -149,56 +171,15 @@ export default function ProfileP() {
         <div className="flex-1">
 
           <div className="p-8">
-          {/* Profile Header */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 mb-8">
-            <div className="relative">
-              {/* Cover Photo */}
-              <div className="h-20 bg-sky-700 rounded-t-2xl"></div>
-              
-              {/* Profile Info */}
-              <div className="relative px-8 py-8">
-                <div className="flex flex-col sm:flex-row sm:items-end sm:gap-6 -mt-16">
-                  {/* Avatar */}
-                  <div className="relative">
-                    <div
-                      className="w-32 h-32 bg-gray-100 flex items-center justify-center rounded-2xl border-4 border-white shadow-lg object-cover"
-                    >
-                      {profileIcon}
-                    </div>
-                    <button className="absolute bottom-2 right-2 w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors">
-                      <Camera className="w-4 h-4" />
-                    </button>
-                  </div>
-                  
-                  {/* Profile Details */}
-                  <div className="flex-1 mt-4 sm:mt-0">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">{name}</h1>
-                        <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
-                          <span className="flex items-center gap-2">
-                            <span>•</span>
-                            {diagnosis}
-                          </span>
-                          <span className="flex items-center gap-2">
-                            <span>•</span>
-                            {age || "Not Found"}
-                          </span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => setIsEditing(!isEditing)}
-                        className="px-6 py-3 bg-white text-gray-800 border-1 border-gray-200 rounded-xl hover:bg-gray-50 transition-colors flex items-center gap-2"
-                      >
-                        {isEditing ? <Save className="w-4 h-4" /> : <Edit className="w-4 h-4" />}
-                        {isEditing ? "Save Profile" : "Edit Profile"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          
+          <ProfileHeader
+            name={name}
+            diagnosis={diagnosis}
+            age={age}
+            isEditing={isEditing}
+            onEditToggle={() => setIsEditing(!isEditing)}
+            onSave={handleHeaderSave}
+          />
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
