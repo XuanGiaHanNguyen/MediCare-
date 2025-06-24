@@ -63,7 +63,7 @@ userNoneRoute.route("/patient/:id").put(
         const expectedFields = ["userId","language", "tele_avail", "bio", "diagnosis", "staff_in_charge", "status", "phone", "age"];
 
         let updateFields = {};
-            for (let field of editableFields) {
+            for (let field of expectedFields) {
                 if (request.body[field] !== undefined) {
                     updateFields[field] = request.body[field];
                 }
