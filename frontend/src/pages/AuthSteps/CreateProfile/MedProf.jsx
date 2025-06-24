@@ -43,7 +43,8 @@ function MedProf (){
             phone: Tele === "No" ? "Not given" : (Phone || "Not given"),
             role: StaffRole,
             year: Year,
-            bio: Bio 
+            bio: Bio, 
+            name: name 
         }
 
         try {
