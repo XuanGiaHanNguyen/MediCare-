@@ -54,10 +54,6 @@ userNoneRoute.route("/patient/:id").put(
      async (request, response) => {
         
         let db = database.getDB();
-                    
-        // Log the incoming data for debugging
-        console.log("Received data:", request.body);
-        console.log("User ID:", request.params.id);
 
         // List of all expected fields
         const expectedFields = ["userId","language", "tele_avail", "bio", "diagnosis", "staff_in_charge", "status", "phone", "age"];
@@ -68,8 +64,6 @@ userNoneRoute.route("/patient/:id").put(
                     updateFields[field] = request.body[field];
                 }
             }
-
-        console.log("Fields to update:", updateFields);
 
         // Use $set to completely replace the arrays
         let mongoObject = { $set: updateFields };
@@ -87,15 +81,11 @@ userNoneRoute.route("/patient/:id").put(
             });
         }
 
-        console.log("Found existing document");
-
         // Update the document
         let data = await db.collection("user_profile_none").updateOne(
             { userId:request.params.id },
             mongoObject
         );
-
-        console.log("Update result:", data);
         response.json(data)
     }
 )
