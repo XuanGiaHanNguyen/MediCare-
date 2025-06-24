@@ -20,18 +20,10 @@ import {
 import { profileIcon } from "../../assets/icon";
 import HospitalHeader from "../../component/DockHeader";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
-// Mock profile data
-const profileData = {
-  name: "Joe Brown",
-  title: "Cardiologist",
-  email: "sarah.johnson@medicenter.com",
-  phone: "+1 (555) 123-4567",
-  specialization: "Diabetes",
-  experience: "46 years old",
-  patients: "1,234",
-  department: "Cardiology Department"
-};
+
+
 
 const monthNames = [
   "January", "February", "March", "April", "May", "June",
@@ -246,7 +238,7 @@ export default function ProfileP() {
                       <User className="w-5 h-5 text-sky-600" />
                       <span className="font-medium text-gray-900">Current Status</span>
                     </div>
-                    <span className="text-2xl font-bold text-sky-600">{profileData.patients}</span>
+                    <span className="text-2xl font-bold text-sky-600">99</span>
                   </div>
                   <div className="flex items-center justify-between p-4 bg-sky-50 rounded-xl">
                     <div className="flex items-center gap-3">
