@@ -8,7 +8,9 @@ import {
   Calendar,
   User,
   UserPlus,
-  Edit3
+  Edit3, 
+  MoreVertical,
+  SquareMousePointer
 } from "lucide-react";
 
 import axios from "axios"
@@ -41,6 +43,21 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
     GetData()
   }, [])
 
+  const searchPatients = (term) => {
+    if (!term) {
+      setSearchResults([]);
+      return;
+    }
+
+    const lowerTerm = term.toLowerCase();
+    const results = data.filter((patient) =>
+      patient.name.toLowerCase().includes(lowerTerm) ||
+      patient.phone?.toLowerCase().includes(lowerTerm) ||
+      patient.email?.toLowerCase().includes(lowerTerm)
+    );
+    setSearchResults(results);
+  };
+
   console.log(data)
 
   // Debounced search
@@ -50,19 +67,19 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchTerm]);
+  }, [searchTerm, data]);
 
   const handlePatientSelect = (patient) => {
     setSelectedPatient(patient);
     setPatientData({
       name: patient.name,
       age: patient.age.toString(),
-      condition: "",
+      condition: patient.diagnosis || "",
       status: "stable",
       lastVisit: patient.lastVisit || "",
       nextAppointment: "",
-      phone: patient.phone,
-      email: patient.email
+      phone: patient.phone || "",
+      email: patient.email || ""
     });
     setShowAddForm(true);
   };
@@ -100,7 +117,7 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
     onAddPatient({
       ...patientData,
       age: parseInt(patientData.age),
-      id: selectedPatient?.id || Date.now() // Use existing ID or generate new one
+      id: selectedPatient?.id || selectedPatient?.userId || Date.now()
     });
 
     handleClose();
@@ -128,6 +145,46 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
     setShowAddForm(false);
     setSelectedPatient(null);
   };
+
+  // Unified patient row component
+  const PatientRow = ({ patient, onClick }) => (
+    <div 
+      key={patient.userId || patient.id} 
+      className="px-6 border-2 border-gray-200 rounded-md my-2 py-4 grid grid-cols-12 gap-4 items-center hover:bg-gray-50 transition-colors cursor-pointer"
+    >
+      <div className="col-span-3 flex items-center gap-3">
+        <div className="w-10 h-10 bg-sky-100 rounded-full flex items-center justify-center">
+          <User className="w-5 h-5 text-sky-600" />
+        </div>
+        <div className="flex flex-col justify-start text-start">
+          <div className="font-semibold text-gray-900">{patient.name}</div>
+        </div>
+      </div>
+      <div className="col-span-2">
+        <div className="text-sm text-gray-500">Age {patient.age}</div>
+      </div>
+      <div className="col-span-3 pl-3 flex flex-col justify-start text-start">
+        <div className="text-sm text-gray-500">{patient.diagnosis || 'No diagnosis'}</div>
+      </div>
+      <div className="col-span-2 text-sm text-gray-500">
+        {patient.phone && <div>{patient.phone}</div>}
+        {patient.email && <div className="truncate">{patient.email}</div>}
+      </div>
+      <div className="col-span-1 flex align-center justify-center">
+        <button onClick={() => onClick(patient)}>
+          <SquareMousePointer className="w-6 h-6 text-gray-400 hover:text-gray-600" strokeWidth={1}/>
+        </button>
+      </div>
+      <div className="col-span-1">
+        <button 
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          onClick={(e) => { e.stopPropagation(); /* Handle menu action */ }}
+        >
+          <MoreVertical className="w-4 h-4 text-gray-400" />
+        </button>
+      </div>
+    </div>
+  );
 
   if (!isOpen) return null;
 
@@ -182,32 +239,23 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
               )}
 
               {/* Search Results */}
-              {!isLoading && searchResults.length > 0 && (
+              {!isLoading && searchTerm && searchResults.length > 0 && (
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-gray-900">Found {searchResults.length} patient(s)</h3>
-                  {searchResults.map((patient) => (
-                    <div
-                      key={patient.id}
-                      className="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 cursor-pointer transition-colors"
-                      onClick={() => handlePatientSelect(patient)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-sky-100 rounded-full flex items-center justify-center">
-                            <User className="w-5 h-5 text-sky-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-900">{patient.name}</h4>
-                            <p className="text-sm text-gray-600">Age: {patient.age} • Last visit: {patient.lastVisit}</p>
-                          </div>
-                        </div>
-                        <div className="text-right text-sm text-gray-600">
-                          <p>{patient.phone}</p>
-                          <p>{patient.email}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Found {searchResults.length} patient(s) for "{searchTerm}"
+                    </h3>
+                    
+                  </div>
+                  <div className="px-1">
+                    {searchResults.map((patient) => (
+                      <PatientRow 
+                        key={patient.userId || patient.id} 
+                        patient={patient} 
+                        onClick={handlePatientSelect}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -227,14 +275,23 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
                 </div>
               )}
 
-              {/* Initial State */}
+              {/* Initial State - All Patients */}
               {!searchTerm && (
-                <div className="text-center py-12 border-2">
-                  {data.map((item, index) => (
-                    <div key={index} className="border-2">
-                      {item.bio}
-                    </div>
-                  ))}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      All Patients ({data.length})
+                    </h3>
+                  </div>
+                  <div className="px-1">
+                    {data.map((patient) => (
+                      <PatientRow 
+                        key={patient.userId || patient.id} 
+                        patient={patient} 
+                        onClick={handlePatientSelect}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
