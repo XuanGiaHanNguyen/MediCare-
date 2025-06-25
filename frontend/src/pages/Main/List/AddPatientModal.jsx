@@ -5,9 +5,7 @@ import {
   Plus,
   Phone,
   Mail,
-  Calendar,
   User,
-  UserPlus,
   Edit3, 
   MoreVertical,
   SquareMousePointer
