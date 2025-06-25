@@ -84,21 +84,6 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
     setShowAddForm(true);
   };
 
-  const handleCreateNew = () => {
-    setSelectedPatient(null);
-    setPatientData({
-      name: searchTerm,
-      age: "",
-      condition: "",
-      status: "stable",
-      lastVisit: "",
-      nextAppointment: "",
-      phone: "",
-      email: ""
-    });
-    setShowAddForm(true);
-  };
-
   const handleInputChange = (field, value) => {
     setPatientData(prev => ({
       ...prev,
@@ -203,7 +188,7 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
               </button>
             )}
             <h2 className="text-2xl font-bold text-gray-900">
-              {showAddForm ? (selectedPatient ? "Update Patient Information" : "Add New Patient") : "Search Patient"}
+              {showAddForm ?  "Add New Patient" : "Search Patient"}
             </h2>
           </div>
           <button
@@ -265,13 +250,6 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
                   <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">No patients found</h3>
                   <p className="text-gray-600 mb-4">No patients match "{searchTerm}"</p>
-                  <button
-                    onClick={handleCreateNew}
-                    className="px-6 py-3 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors flex items-center gap-2 mx-auto"
-                  >
-                    <UserPlus className="w-5 h-5" />
-                    Create New Patient
-                  </button>
                 </div>
               )}
 
@@ -302,7 +280,7 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
                 <div className="bg-sky-50 border border-sky-200 rounded-xl p-4">
                   <div className="flex items-center gap-3">
                     <Edit3 className="w-5 h-5 text-sky-600" />
-                    <span className="text-sky-800">Updating information for existing patient: <strong>{selectedPatient.name}</strong></span>
+                    <span className="text-sky-800">Adding patient: <strong>{selectedPatient.name}</strong></span>
                   </div>
                 </div>
               )}
@@ -313,31 +291,19 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name *
+                      Full Name
                     </label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                      placeholder="Enter patient's full name"
-                      value={patientData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                    />
+                    <div className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-neutral-100">
+                        {patientData.name}
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Age *
+                      Age
                     </label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      max="150"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                      placeholder="Enter age"
-                      value={patientData.age}
-                      onChange={(e) => handleInputChange('age', e.target.value)}
-                    />
+                    <div className="w-full px-4 py-3 border bg-neutral-100 border-gray-300 rounded-xl">
+                        {patientData.age}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -352,13 +318,9 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
                     </label>
                     <div className="relative">
                       <Phone className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                      <input
-                        type="tel"
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                        placeholder="+1 (555) 123-4567"
-                        value={patientData.phone}
-                        onChange={(e) => handleInputChange('phone', e.target.value)}
-                      />
+                      <div className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent bg-neutral-100">
+                          {patientData.phone}
+                      </div>
                     </div>
                   </div>
                   <div>
@@ -367,13 +329,10 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
                     </label>
                     <div className="relative">
                       <Mail className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                      <input
-                        type="email"
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                        placeholder="patient@email.com"
-                        value={patientData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                      />
+                      <div className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent bg-neutral-100">
+                          {patientData.email || "Not shown"}
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -413,41 +372,6 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
                 </div>
               </div>
 
-              {/* Appointment Information */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Appointment Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Visit
-                    </label>
-                    <div className="relative">
-                      <Calendar className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                      <input
-                        type="date"
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                        value={patientData.lastVisit}
-                        onChange={(e) => handleInputChange('lastVisit', e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Next Appointment
-                    </label>
-                    <div className="relative">
-                      <Calendar className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                      <input
-                        type="date"
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                        value={patientData.nextAppointment}
-                        onChange={(e) => handleInputChange('nextAppointment', e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               {/* Form Actions */}
               <div className="flex items-center justify-end gap-4 pt-6 border-t border-gray-200">
                 <button
@@ -463,7 +387,7 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
                   className="px-6 py-3 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors flex items-center gap-2"
                 >
                   <Plus className="w-5 h-5" />
-                  {selectedPatient ? "Update Patient" : "Add Patient"}
+                  Add Patient
                 </button>
               </div>
             </div>
