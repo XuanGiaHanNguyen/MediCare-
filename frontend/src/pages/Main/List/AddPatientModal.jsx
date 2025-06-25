@@ -67,7 +67,12 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
     return () => clearTimeout(timer);
   }, [searchTerm, data]);
 
-  const handlePatientSelect = (patient) => {
+  async function handlePatientSelect (patient) {
+
+    const response = await axios.get(API_ROUTES.GET_USER(patient.userId))
+
+    console.log(response.data.email)
+
     setSelectedPatient(patient);
     setPatientData({
       name: patient.name,
@@ -77,7 +82,8 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
       lastVisit: patient.lastVisit || "",
       nextAppointment: "",
       phone: patient.phone || "",
-      email: patient.email || ""
+      email: response.data.email || "", 
+      Id: patient.userId
     });
     setShowAddForm(true);
   };
@@ -92,15 +98,14 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
   const handleSubmit = () => {
     // Validate required fields
     if (!patientData.name || !patientData.age || !patientData.condition) {
-      alert("Please fill in all required fields (Name, Age, Condition)");
+      toast.error("Please fill in all required fields (Name, Age, Condition)");
       return;
     }
 
     // Pass the patient data to parent component
     onAddPatient({
       ...patientData,
-      age: parseInt(patientData.age),
-      id: selectedPatient?.id || selectedPatient?.userId || Date.now()
+      age: parseInt(patientData.age)
     });
 
     handleClose();
@@ -328,7 +333,7 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
                     <div className="relative">
                       <Mail className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                       <div className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent bg-neutral-100">
-                          {patientData.email || "Not shown"}
+                          {patientData.email}
                       </div>
 
                     </div>

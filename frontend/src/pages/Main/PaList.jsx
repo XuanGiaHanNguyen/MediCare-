@@ -21,61 +21,7 @@ export default function PaDock() {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [showAddModal, setShowAddModal] = useState(false);
   const [patients, setPatients] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      age: 45,
-      condition: "Hypertension",
-      status: "stable",
-      lastVisit: "2024-01-15",
-      nextAppointment: "2024-02-10",
-      phone: "+1 (555) 123-4567",
-      email: "john.doe@email.com"
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      age: 32,
-      condition: "Diabetes Type 2",
-      status: "monitoring",
-      lastVisit: "2024-01-20",
-      nextAppointment: "2024-01-28",
-      phone: "+1 (555) 234-5678",
-      email: "sarah.j@email.com"
-    },
-    {
-      id: 3,
-      name: "Michael Chen",
-      age: 58,
-      condition: "Heart Disease",
-      status: "critical",
-      lastVisit: "2024-01-22",
-      nextAppointment: "2024-01-25",
-      phone: "+1 (555) 345-6789",
-      email: "m.chen@email.com"
-    },
-    {
-      id: 4,
-      name: "Emily Rodriguez",
-      age: 28,
-      condition: "Asthma",
-      status: "stable",
-      lastVisit: "2024-01-10",
-      nextAppointment: "2024-02-15",
-      phone: "+1 (555) 456-7890",
-      email: "emily.r@email.com"
-    },
-    {
-      id: 5,
-      name: "David Wilson",
-      age: 67,
-      condition: "Arthritis",
-      status: "monitoring",
-      lastVisit: "2024-01-18",
-      nextAppointment: "2024-02-05",
-      phone: "+1 (555) 567-8901",
-      email: "d.wilson@email.com"
-    }
+    
   ]);
 
   const Id = localStorage.getItem("Id")
@@ -102,15 +48,15 @@ export default function PaDock() {
   });
 
   const handleAddPatient = (newPatientData) => {
-    // Create new patient with unique ID
-    const newId = Math.max(...patients.map(p => p.id)) + 1;
+    
     const patientToAdd = {
       ...newPatientData,
-      id: newId
     };
 
-    // Add to patients list
+    console.log(patientToAdd)
+
     setPatients([...patients, patientToAdd]);
+
   };
 
   return (
@@ -225,17 +171,18 @@ export default function PaDock() {
                   </div>
                 </div>
               ))}
+              {filteredPatients.length === 0 && (
+              <div className="text-center py-20">
+                <User className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No patients found</h3>
+                <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+              </div>
+            )}
             </div>
           </div>
 
           {/* Empty State */}
-          {filteredPatients.length === 0 && (
-            <div className="text-center py-12">
-              <User className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No patients found</h3>
-              <p className="text-gray-500">Try adjusting your search or filter criteria</p>
-            </div>
-          )}
+          
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
