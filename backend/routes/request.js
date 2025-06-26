@@ -18,11 +18,20 @@ requestRoute.route("/request").post(
         response.json(data)
         
     }
-
 )
 
 // Show Request
-
+requestRoute.route("/request/:id").get(
+    async (request, response) => {
+        let db = database.getDB()
+        const data = await db.collection("request").findOne({patient: request.params.id})
+        if (data) {
+            response.json(data)
+        } else {
+            response.status(404).json({ error: "Data not found." })
+        }
+    }
+)
 
 // Seen Request 
 

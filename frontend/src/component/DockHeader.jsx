@@ -1,7 +1,7 @@
-import { Search, Calendar, Bell, Menu } from "lucide-react"
+import { Search, Calendar, Bell, Menu, X } from "lucide-react"
 import { Link } from "react-router-dom"
 import React from "react";
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -11,8 +11,34 @@ const HospitalHeader = (props) => {
   const [staff, setStaff] = useState("")
   const [name, setName] = useState("")
   const [role, setRole] = useState(null)
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false)
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      title: "Appointment Reminder",
+      message: "You have an appointment tomorrow at 10:00 AM",
+      time: "2 hours ago",
+      isRead: false
+    }
+  ])
+  
   const navigate = useNavigate()
+  const notificationRef = useRef(null)
   let userId = localStorage.getItem("Id")
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setIsNotificationOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
  
   useEffect( () => {
       async function Auth (){
@@ -42,6 +68,31 @@ const HospitalHeader = (props) => {
     Auth()
     
   }, []);
+
+  const toggleNotifications = () => {
+    setIsNotificationOpen(!isNotificationOpen)
+  }
+
+  const markAsRead = (notificationId) => {
+    setNotifications(prev => 
+      prev.map(notif => 
+        notif.id === notificationId ? { ...notif, isRead: true } : notif
+      )
+    )
+  }
+
+  const markAllAsRead = () => {
+    setNotifications(prev => 
+      prev.map(notif => ({ ...notif, isRead: true }))
+    )
+  }
+
+  const deleteNotification = (notificationId) => {
+    setNotifications(prev => prev.filter(notif => notif.id !== notificationId))
+  }
+
+  const unreadCount = notifications.filter(notif => !notif.isRead).length
+
   return (
     <header className="bg-sky-800 text-white px-10 py-2 flex items-center justify-between shadow-xl">
       {/* Left side - Logo and Title */}
@@ -68,14 +119,89 @@ const HospitalHeader = (props) => {
           <Calendar className="h-5 w-5" />
         </button>
 
-        {/* Notification Bell with Badge */}
-        <div className="relative">
-          <button className="p-2 text-white hover:bg-white/10 rounded-md transition-colors">
+        {/* Notification Bell with Dropdown */}
+        <div className="relative" ref={notificationRef}>
+          <button 
+            onClick={toggleNotifications}
+            className="p-2 text-white hover:bg-white/10 rounded-md transition-colors relative"
+          >
             <Bell className="h-5 w-5" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-xs flex items-center justify-center border-2 border-sky-800 font-medium">
+                {unreadCount}
+              </span>
+            )}
           </button>
-          <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-xs flex items-center justify-center border-2 border-sky-800 font-medium">
-            1
-          </span>
+
+          {/* Notification Dropdown */}
+          {isNotificationOpen && (
+            <div className="absolute right-0 top-full mt-3 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+              {/* Header */}
+              <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setIsNotificationOpen(false)}
+                    className="p-1 hover:bg-gray-100 rounded"
+                  >
+                    <X className="h-4 w-4 text-gray-500" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Notification List */}
+              <div className="max-h-96 overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="px-4 py-8 text-center text-gray-500">
+                    <Bell className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+                    <p>No notifications</p>
+                  </div>
+                ) : (
+                  notifications.map((notification) => (
+                    <div
+                      key={notification.id}
+                      className={`px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
+                        !notification.isRead ? 'bg-blue-50' : ''
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h4 className={`text-md font-medium ${
+                              !notification.isRead ? 'text-gray-900' : 'text-gray-700'
+                            }`}>
+                              {notification.title}
+                            </h4>
+                            {!notification.isRead && (
+                              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {notification.message}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-2">
+                            {notification.time}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 ml-2">
+                          
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Footer */}
+              {notifications.length > 0 && (
+                <div className="px-4 py-3 border-t border-gray-200">
+                  <button className="w-full text-sm text-sky-600 hover:text-sky-700 font-medium">
+                    View all notifications
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Divider */}

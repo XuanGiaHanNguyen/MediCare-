@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Calendar,
   Plus,
@@ -23,11 +23,20 @@ export default function PaDock() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [patients, setPatients] = useState([
-    
-  ]);
-
+  const [patients, setPatients] = useState([]);
   const Id = localStorage.getItem("Id")
+
+  useEffect(()=> {
+    async function getPatients(){
+      const response = await axios.get(API_ROUTES.GET_PATIENTS)
+      const allPatient = response.data
+      const staffPatient = allPatient.filter(patient => patient.staff_in_charge === Id)
+      console.log(staffPatient)
+      setPatients(staffPatient)
+    }
+    getPatients()
+  },[])
+  
   const navigate = useNavigate()
 
   const getStatusColor = (status) => {
@@ -85,12 +94,9 @@ export default function PaDock() {
     if ( none.status === 200 && staff.status === 200 && request.status === 200){
       setPatients([...patients, patientToAdd]);
       toast.success("Successfully added new patient.")
-      console.log("added")
     } else {
       toast.error("Please try again later.")
     }
-
-
     
   };
 
@@ -190,7 +196,7 @@ export default function PaDock() {
                   </div>
                   <div className="col-span-2">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(patient.status)}`}>
-                      {patient.status.charAt(0).toUpperCase() + patient.status.slice(1)}
+                      {patient.status?.charAt(0).toUpperCase() + patient.status?.slice(1)}
                     </span>
                   </div>
                   <div className="col-span-2">
@@ -215,9 +221,6 @@ export default function PaDock() {
             )}
             </div>
           </div>
-
-          {/* Empty State */}
-          
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
