@@ -15,6 +15,9 @@ import { useNavigate } from "react-router-dom";
 
 import AddPatientModal from "./List/AddPatientModal";
 
+import API_ROUTES from "../../constant/APIRoutes";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function PaDock() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -47,7 +50,7 @@ export default function PaDock() {
     return matchesSearch && matchesStatus;
   });
 
-  const handleAddPatient = (newPatientData) => {
+  async function handleAddPatient(newPatientData){
     
     const patientToAdd = {
       ...newPatientData,
@@ -55,8 +58,40 @@ export default function PaDock() {
 
     console.log(patientToAdd)
 
-    setPatients([...patients, patientToAdd]);
+    const patientData = {
+      staff_in_charge: Id, 
+      status: patientToAdd.status,
+      diagnosis: patientToAdd.condition
+    }
+    
+    const staffData = {
+      patient: patientToAdd.Id
+    }
 
+    //const availField = ["staff", "patient", "condition", "status", "date", "time"]
+    const requestData = {
+      staff: Id,
+      patient: patientToAdd.Id, 
+      condition: patientToAdd.condition, 
+      status: patientToAdd.status 
+    }
+
+    const [none, staff, request]= await Promise.all([
+      axios.put(API_ROUTES.EDIT_PATIENT(patientToAdd.Id),patientData), 
+      axios.put(API_ROUTES.EDIT_STAFF(Id), staffData),
+      axios.post(API_ROUTES.CREATE_REQUEST, requestData)
+    ])
+
+    if ( none.status === 200 && staff.status === 200 && request.status === 200){
+      setPatients([...patients, patientToAdd]);
+      toast.success("Successfully added new patient.")
+      console.log("added")
+    } else {
+      toast.error("Please try again later.")
+    }
+
+
+    
   };
 
   return (

@@ -36,7 +36,13 @@ export default function PatientSearchModal({ isOpen, onClose, onAddPatient }) {
   useEffect(()=> {
     async function GetData (){
       const response = await axios.get(API_ROUTES.GET_PATIENTS)
-      setData(response.data)
+
+      const patients = response.data;
+
+      // Filter out patients with null staff_in_charge
+      const notassignedPatients = patients.filter(patient => patient.staff_in_charge === null);
+
+      setData(notassignedPatients);
     }
     GetData()
   }, [])
