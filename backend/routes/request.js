@@ -7,13 +7,15 @@ let requestRoute = express.Router()
 requestRoute.route("/request").post(
     async (request, response) => {
         let db = database.getDB()
-        let postObject = {
-            staff: request.body.staff, 
-            patient: request.body.patient, 
-            condition: request.body.condition,
-            status: request.body.status
+
+        const availField = ["staff", "patient", "condition", "status", "date", "time"]
+        let mongoObject = {}
+        for (let field of availField){
+            mongoObject[field] = request.body[field]!== undefined ? request.body[field] : null;
         }
-        let data = await db.collection("request").insertOne(postObject)
+        
+        let data = await db.collection("request").insertOne(mongoObject)
+        response.json(data)
         
     }
 
