@@ -120,12 +120,10 @@ const HospitalHeader = (props) => {
 
         setNotifications(notificationsWithStaffNames)
       } catch (error) {
-        console.error("Error fetching notifications:", error)
-        toast.error("Error fetching notifications")
         setNotifications([])
       }
     }
-    
+  
     getData()
   }, [navigate]) // Added dependency array to prevent infinite loop
 
