@@ -40,7 +40,11 @@ staffRoute.route("/staff").post(
         // Build the object with null for any missing fields
         let mongoObject = {};
         for (let field of expectedFields) {
-            mongoObject[field] = request.body[field] !== undefined ? request.body[field] : null;
+            if (field === "patient"){
+                mongoObject[field] = request.body[field] !== undefined ? request.body[field] : [];
+            }else {
+                mongoObject[field] = request.body[field] !== undefined ? request.body[field] : null;
+            }  
         }
 
         let data = await db.collection("user_profile_staff").insertOne(mongoObject);
@@ -64,18 +68,29 @@ staffRoute.route("/staff/:id").put(
                 "education", "year", "experience", "phone", "education", "experience", "name"
             ];
 
-            // Only include fields that are passed from the frontend
-            let updateFields = {};
+            // Separate update operators
+            let updateObject = { $set: {}, $push: {} };
+
             for (let field of editableFields) {
-                if (request.body[field] !== undefined) {
-                    updateFields[field] = request.body[field];
+            if (request.body[field] !== undefined) {
+                if (field === "patient") {
+                // If patient is an array, push each one individually using $each
+                updateObject.$push[field] = {
+                    $each: Array.isArray(request.body[field]) ? request.body[field] : [request.body[field]]
+                };
+                } else {
+                updateObject.$set[field] = request.body[field];
                 }
             }
+            }
 
-            console.log("Fields to update:", updateFields);
-
-            // Use $set to completely replace the arrays
-            let mongoObject = { $set: updateFields };
+            // Clean up if $push or $set is empty to avoid errors
+            if (Object.keys(updateObject.$push).length === 0) {
+            delete updateObject.$push;
+            }
+            if (Object.keys(updateObject.$set).length === 0) {
+            delete updateObject.$set;
+            }
 
             // First, check if the document exists
             const existingDoc = await db.collection("user_profile_staff").findOne(
