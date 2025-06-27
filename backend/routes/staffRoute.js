@@ -110,7 +110,7 @@ staffRoute.route("/staff/:id").put(
             // Update the document
             let data = await db.collection("user_profile_staff").updateOne(
                 { userId:request.params.id },
-                mongoObject
+                updateObject
             );
 
             console.log("Update result:", data);
