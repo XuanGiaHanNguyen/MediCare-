@@ -54,7 +54,11 @@ export default function ProfileP() {
       }
       if (expanded.status === 200){
         setDiagnosis(expanded.data.diagnosis)
-        setStaff(expanded.data.staff_in_charge)
+        // setStaff(expanded.data.staff_in_charge)
+        const findingStaffName = await axios.get(API_ROUTES.GET_STAFF(expanded.data.staff_in_charge))
+        if (findingStaffName.status === 200){
+          setStaff(findingStaffName.data.name)
+        }
         setPhone(expanded.data.phone || "Not given")
         setAge(expanded.data.age)
         setTele(expanded.data.tele_avail)
