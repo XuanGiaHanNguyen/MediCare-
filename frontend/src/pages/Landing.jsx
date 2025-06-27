@@ -586,7 +586,7 @@ function Landing () {
                 footerVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
               }`}
               style={{ transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}>
-                <p className="text-xs text-gray-300 font-medium transform hover:translate-x-1 transition-all duration-300 ease-out">© 2024 MediCare Pro. All rights reserved.</p>
+                <p className="text-xs text-gray-300 font-medium transform hover:translate-x-1 transition-all duration-300 ease-out">© 2025 MediCare+. All rights reserved.</p>
                 <nav className="sm:ml-auto flex gap-4 sm:gap-6">
                   <Link href="#" className="text-xs hover:underline underline-offset-4 text-gray-300 font-medium hover:text-white">
                     Privacy Policy
