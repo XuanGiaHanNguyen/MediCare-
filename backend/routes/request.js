@@ -34,5 +34,23 @@ requestRoute.route("/request/:id").get(
 )
 
 // Seen Request 
+requestRoute.route("/request/:id").put(
+    async (request, response) => {
+        let db = database.getDB()
+
+        const updateObject = {
+            $set: {
+                seen: true
+            }
+        }
+        
+        let data = await db.collection("request").updateOne(
+            {patient: request.params.id}, updateObject
+        )
+        
+        response.json(data)
+        
+    }
+)
 
 module.exports = requestRoute

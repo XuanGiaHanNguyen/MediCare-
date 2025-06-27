@@ -66,6 +66,7 @@ const HospitalHeader = (props) => {
     Auth()
   }, [navigate]);
 
+  
   useEffect(() => {
     async function getData() {
       let userId = localStorage.getItem("Id")
@@ -83,18 +84,25 @@ const HospitalHeader = (props) => {
         
         // Handle both array and single object responses
         if (Array.isArray(response.data)) {
-          notificationsData = response.data
+          // Filter array to only include notifications where seen is false
+          notificationsData = response.data.filter(notification => notification.seen === false)
         } else if (response.data && typeof response.data === 'object') {
-          // If it's a single object, wrap it in an array
-          notificationsData = [response.data]
+          // If it's a single object, only add it if seen is false
+          if (response.data.seen === false) {
+            notificationsData = [response.data]
+          }
+          // If seen is true, notificationsData remains empty array
         } else {
-          console.warn("API response is neither array nor object:", response.data)
-          setNotifications([])
-          return
+          // Handle empty or unexpected response
+          notificationsData = []
         }
+        
+        console.log("Filtered notifications (unseen only):", notificationsData)
+        
+        // Set your notifications state here
+        // setNotifications(notificationsData) // replace with your actual state setter
 
-        // Fetch staff details for each notification
-        const notificationsWithStaffNames = await Promise.all(
+         const notificationsWithStaffNames = await Promise.all(
           notificationsData.map(async (notification) => {
             try {
               if (notification.staff) {
@@ -119,13 +127,16 @@ const HospitalHeader = (props) => {
         )
 
         setNotifications(notificationsWithStaffNames)
+      
       } catch (error) {
-        setNotifications([])
+        console.error("Error fetching notifications:", error)
+        toast.error("Failed to fetch notifications")
       }
     }
-  
+    
     getData()
-  }, [navigate]) // Added dependency array to prevent infinite loop
+}, [])
+
 
   const toggleNotifications = () => {
     setIsNotificationOpen(!isNotificationOpen)
@@ -133,11 +144,39 @@ const HospitalHeader = (props) => {
 
   // New function to mark all notifications as read
   const markAllAsRead = () => {
+
     setNotifications(prev => 
       prev.map(notif => ({ ...notif, isRead: true }))
     )
     setIsNotificationOpen(false)
+
   }
+
+  const handleCloseNotifications = async () => {
+    try {
+      // Get all unread notification IDs
+      const unreadNotificationIds = notifications
+        .filter(notif => !notif.isRead)
+        .map(notif => notif._id);
+
+      setIsNotificationOpen(false);
+
+      if (unreadNotificationIds.length > 0) {
+       
+        await axios.put(API_ROUTES.SEEN_REQUEST(userId));
+
+        // Update local state after successful API call
+        setNotifications(prev => 
+          prev.map(notif => ({ ...notif, isRead: true }))
+        );
+        
+      }
+      
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+    }
+  };
+
 
   // Safe filter with fallback to empty array
   const unreadCount = Array.isArray(notifications) 
@@ -192,7 +231,7 @@ const HospitalHeader = (props) => {
                 <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={markAllAsRead}
+                    onClick={handleCloseNotifications}
                     className="p-1 hover:bg-gray-100 rounded"
                   >
                     <X className="h-4 w-4 text-gray-500" />
@@ -218,10 +257,10 @@ const HospitalHeader = (props) => {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <h4 className={`text-sm font-medium ${
+                            <h4 className={`text-md font-medium ${
                               !notification.isRead ? 'text-gray-900' : 'text-gray-700'
                             }`}>
-                              A staff have added you to their patient's list
+                              Added to a Patient List
                             </h4>
                             {!notification.isRead && (
                               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
