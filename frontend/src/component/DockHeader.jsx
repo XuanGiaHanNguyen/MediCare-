@@ -12,15 +12,7 @@ const HospitalHeader = (props) => {
   const [name, setName] = useState("")
   const [role, setRole] = useState(null)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: "Appointment Reminder",
-      message: "You have an appointment tomorrow at 10:00 AM",
-      time: "2 hours ago",
-      isRead: false
-    }
-  ])
+  const [notifications, setNotifications] = useState([])
   
   const navigate = useNavigate()
   const notificationRef = useRef(null)
@@ -40,58 +32,119 @@ const HospitalHeader = (props) => {
     }
   }, [])
  
-  useEffect( () => {
-      async function Auth (){
-        let userId = localStorage.getItem("Id")
-        if (!userId) {
-          toast.error("User ID not found. Please log in again");
-          navigate("/");
-          return;
-        }
+  useEffect(() => {
+    async function Auth() {
+      let userId = localStorage.getItem("Id")
+      if (!userId) {
+        toast.error("User ID not found. Please log in again");
+        navigate("/");
+        return;
+      }
+      
+      try {
         const response = await axios.get(API_ROUTES.GET_USER(userId))
         
-        
-        if (response.data.is_staff === false){
-            setStaff("Patient")
-            setName(response.data.full_name)
-            setRole(false)
-        }else if(response.data.is_staff === true){
-            setStaff("Staff")
-            setName(response.data.full_name)
-            setRole(true)
-        }else{
+        if (response.data.is_staff === false) {
+          setStaff("Patient")
+          setName(response.data.full_name)
+          setRole(false)
+        } else if (response.data.is_staff === true) {
+          setStaff("Staff")
+          setName(response.data.full_name)
+          setRole(true)
+        } else {
           toast.error("Cannot fetch UserId")
           navigate("/")
         }
+      } catch (error) {
+        console.error("Error fetching user data:", error)
+        toast.error("Error fetching user data")
+        navigate("/")
       }
+    }
 
     Auth()
+  }, [navigate]);
+
+  useEffect(() => {
+    async function getData() {
+      let userId = localStorage.getItem("Id")
+      if (!userId) {
+        toast.error("User ID not found. Please log in again");
+        navigate("/");
+        return;
+      }
+      
+      try {
+        const response = await axios.get(API_ROUTES.GET_REQUEST(userId))
+        console.log(response.data)
+        
+        let notificationsData = []
+        
+        // Handle both array and single object responses
+        if (Array.isArray(response.data)) {
+          notificationsData = response.data
+        } else if (response.data && typeof response.data === 'object') {
+          // If it's a single object, wrap it in an array
+          notificationsData = [response.data]
+        } else {
+          console.warn("API response is neither array nor object:", response.data)
+          setNotifications([])
+          return
+        }
+
+        // Fetch staff details for each notification
+        const notificationsWithStaffNames = await Promise.all(
+          notificationsData.map(async (notification) => {
+            try {
+              if (notification.staff) {
+                const staffResponse = await axios.get(API_ROUTES.GET_USER(notification.staff))
+                return {
+                  ...notification,
+                  staffName: staffResponse.data.full_name || 'Unknown Staff'
+                }
+              }
+              return {
+                ...notification,
+                staffName: 'Unknown Staff'
+              }
+            } catch (error) {
+              console.error(`Error fetching staff details for ID ${notification.staff}:`, error)
+              return {
+                ...notification,
+                staffName: 'Unknown Staff'
+              }
+            }
+          })
+        )
+
+        setNotifications(notificationsWithStaffNames)
+      } catch (error) {
+        console.error("Error fetching notifications:", error)
+        toast.error("Error fetching notifications")
+        setNotifications([])
+      }
+    }
     
-  }, []);
+    getData()
+  }, [navigate]) // Added dependency array to prevent infinite loop
 
   const toggleNotifications = () => {
     setIsNotificationOpen(!isNotificationOpen)
   }
 
-  const markAsRead = (notificationId) => {
-    setNotifications(prev => 
-      prev.map(notif => 
-        notif.id === notificationId ? { ...notif, isRead: true } : notif
-      )
-    )
-  }
-
+  // New function to mark all notifications as read
   const markAllAsRead = () => {
     setNotifications(prev => 
       prev.map(notif => ({ ...notif, isRead: true }))
     )
+    setIsNotificationOpen(false)
   }
 
-  const deleteNotification = (notificationId) => {
-    setNotifications(prev => prev.filter(notif => notif.id !== notificationId))
-  }
-
-  const unreadCount = notifications.filter(notif => !notif.isRead).length
+  // Safe filter with fallback to empty array
+  const unreadCount = Array.isArray(notifications) 
+    ? notifications.filter(notif => !notif.isRead).length 
+    : 0
 
   return (
     <header className="bg-sky-800 text-white px-10 py-2 flex items-center justify-between shadow-xl">
@@ -141,7 +194,7 @@ const HospitalHeader = (props) => {
                 <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setIsNotificationOpen(false)}
+                    onClick={markAllAsRead}
                     className="p-1 hover:bg-gray-100 rounded"
                   >
                     <X className="h-4 w-4 text-gray-500" />
@@ -151,7 +204,7 @@ const HospitalHeader = (props) => {
 
               {/* Notification List */}
               <div className="max-h-96 overflow-y-auto">
-                {notifications.length === 0 ? (
+                {!Array.isArray(notifications) || notifications.length === 0 ? (
                   <div className="px-4 py-8 text-center text-gray-500">
                     <Bell className="h-12 w-12 mx-auto mb-3 text-gray-300" />
                     <p>No notifications</p>
@@ -159,7 +212,7 @@ const HospitalHeader = (props) => {
                 ) : (
                   notifications.map((notification) => (
                     <div
-                      key={notification.id}
+                      key={notification._id}
                       className={`px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
                         !notification.isRead ? 'bg-blue-50' : ''
                       }`}
@@ -167,20 +220,20 @@ const HospitalHeader = (props) => {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <h4 className={`text-md font-medium ${
+                            <h4 className={`text-sm font-medium ${
                               !notification.isRead ? 'text-gray-900' : 'text-gray-700'
                             }`}>
-                              {notification.title}
+                              A staff have added you to their patient's list
                             </h4>
                             {!notification.isRead && (
                               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                             )}
                           </div>
                           <p className="text-sm text-gray-600 mt-1">
-                            {notification.message}
+                            You've been added as {notification.staffName || 'Unknown Staff'}'s patient.
                           </p>
                           <p className="text-xs text-gray-500 mt-2">
-                            {notification.time}
+                            
                           </p>
                         </div>
                         <div className="flex items-center gap-1 ml-2">
@@ -193,7 +246,7 @@ const HospitalHeader = (props) => {
               </div>
 
               {/* Footer */}
-              {notifications.length > 0 && (
+              {Array.isArray(notifications) && notifications.length > 0 && (
                 <div className="px-4 py-3 border-t border-gray-200">
                   <button className="w-full text-sm text-sky-600 hover:text-sky-700 font-medium">
                     View all notifications

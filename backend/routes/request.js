@@ -8,7 +8,7 @@ requestRoute.route("/request").post(
     async (request, response) => {
         let db = database.getDB()
 
-        const availField = ["staff", "patient", "condition", "status", "date", "time"]
+        const availField = ["staff", "patient", "condition", "status", "date", "time", "seen"]
         let mongoObject = {}
         for (let field of availField){
             mongoObject[field] = request.body[field]!== undefined ? request.body[field] : null;

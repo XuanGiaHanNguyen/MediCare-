@@ -42,7 +42,8 @@ const API_ROUTES = {
     LOGIN: `${BASE_API_URL}/user/login`, 
 
     //Request
-    CREATE_REQUEST: `${BASE_API_URL}/request`
+    CREATE_REQUEST: `${BASE_API_URL}/request`,
+    GET_REQUEST: (user_id)=> `${BASE_API_URL}/request/${user_id}`
 
 }
 
