@@ -83,7 +83,8 @@ export default function PaDock() {
       patient: patientToAdd.Id, 
       condition: patientToAdd.condition, 
       status: patientToAdd.status, 
-      seen: false 
+      staffSeen: false, 
+      patientSeen: false
     }
 
     const [none, staff, request]= await Promise.all([

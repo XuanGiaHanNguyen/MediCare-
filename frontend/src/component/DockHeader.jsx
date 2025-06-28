@@ -92,10 +92,10 @@ const HospitalHeader = (props) => {
         // Handle both array and single object responses
         if (Array.isArray(response.data)) {
           // Filter array to only include notifications where seen is false
-          notificationsData = response.data.filter(notification => notification.seen === false)
+          notificationsData = response.data.filter(notification => notification.patientSeen === false)
         } else if (response.data && typeof response.data === 'object') {
           // If it's a single object, only add it if seen is false
-          if (response.data.seen === false) {
+          if (response.data.patientSeen === false) {
             notificationsData = [response.data]
           }
           // If seen is true, notificationsData remains empty array
@@ -131,8 +131,52 @@ const HospitalHeader = (props) => {
         )
 
         setNotifications(notificationsWithStaffNames)
+
       } else if (staff === "Staff"){
         response = await axios.get(API_ROUTES.GET_REQUEST_STAFF(userId))
+        let notificationsData = []
+        // Handle both array and single object responses
+        if (Array.isArray(response.data)) {
+          // Filter array to only include notifications where seen is false
+          notificationsData = response.data.filter(notification => notification.staffSeen === false)
+        } else if (response.data && typeof response.data === 'object') {
+          // If it's a single object, only add it if seen is false
+          if (response.data.staffSeen === false) {
+            notificationsData = [response.data]
+          }
+          // If seen is true, notificationsData remains empty array
+        } else {
+          // Handle empty or unexpected response
+          notificationsData = []
+        }
+        
+        console.log("Filtered notifications (unseen only):", notificationsData)
+        
+        const notificationsWithpatientNames = await Promise.all(
+          notificationsData.map(async (notification) => {
+            try {
+              if (notification.patient) {
+                const patientResponse = await axios.get(API_ROUTES.GET_USER(notification.patient))
+                return {
+                  ...notification,
+                  patientName: patientResponse.data.full_name || 'Unknown patient'
+                }
+              }
+              return {
+                ...notification,
+                patientName: 'Unknown patient'
+              }
+            } catch (error) {
+              console.error(`Error fetching patient details for ID ${notification.patient}:`, error)
+              return {
+                ...notification,
+                patientName: 'Unknown patient'
+              }
+            }
+          })
+        )
+
+        setNotifications(notificationsWithpatientNames)
         console.log(response.data)
       } else {
         toast.error("Cannot identify whether user is a staff or a patient");
@@ -155,16 +199,6 @@ const HospitalHeader = (props) => {
     setIsNotificationOpen(!isNotificationOpen)
   }
 
-  // New function to mark all notifications as read
-  const markAllAsRead = () => {
-
-    setNotifications(prev => 
-      prev.map(notif => ({ ...notif, isRead: true }))
-    )
-    setIsNotificationOpen(false)
-
-  }
-
   const handleCloseNotifications = async () => {
     try {
       // Get all unread notification IDs
@@ -175,14 +209,25 @@ const HospitalHeader = (props) => {
       setIsNotificationOpen(false);
 
       if (unreadNotificationIds.length > 0) {
-       
-        await axios.put(API_ROUTES.SEEN_REQUEST(userId));
+        if (staff === "Staff"){
+          await axios.put(API_ROUTES.SEEN_REQUEST_STAFF(userId));
 
-        // Update local state after successful API call
-        setNotifications(prev => 
-          prev.map(notif => ({ ...notif, isRead: true }))
-        );
-        
+          // Update local state after successful API call
+          setNotifications(prev => 
+            prev.map(notif => ({ ...notif, isRead: true }))
+          );
+
+        }else if ( staff === "Patient"){
+          await axios.put(API_ROUTES.SEEN_REQUEST(userId));
+
+          // Update local state after successful API call
+          setNotifications(prev => 
+            prev.map(notif => ({ ...notif, isRead: true }))
+          );
+
+        }else{
+          toast.error("Error occured while closing tab")
+        }
       }
       
     } catch (error) {

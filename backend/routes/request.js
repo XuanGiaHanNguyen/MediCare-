@@ -8,7 +8,7 @@ requestRoute.route("/request").post(
     async (request, response) => {
         let db = database.getDB()
 
-        const availField = ["staff", "patient", "condition", "status", "date", "time", "seen"]
+        const availField = ["staff", "patient", "condition", "status", "date", "time", "staffSeen", "patientSeen"]
         let mongoObject = {}
         for (let field of availField){
             mongoObject[field] = request.body[field]!== undefined ? request.body[field] : null;
@@ -54,12 +54,32 @@ requestRoute.route("/request/:id").put(
 
         const updateObject = {
             $set: {
-                seen: true
+                patientSeen: true
             }
         }
         
         let data = await db.collection("request").updateOne(
             {patient: request.params.id}, updateObject
+        )
+        
+        response.json(data)
+        
+    }
+)
+
+// Seen Request 
+requestRoute.route("/request/staff/:id").put(
+    async (request, response) => {
+        let db = database.getDB()
+
+        const updateObject = {
+            $set: {
+                staffSeen: true
+            }
+        }
+        
+        let data = await db.collection("request").updateOne(
+            {staff: request.params.id}, updateObject
         )
         
         response.json(data)
