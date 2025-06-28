@@ -318,14 +318,14 @@ const HospitalHeader = (props) => {
                             <h4 className={`text-md font-medium ${
                               !notification.isRead ? 'text-gray-900' : 'text-gray-700'
                             }`}>
-                              Added to a Patient List
+                             {staff === "Staff" ? `Added new patient`: `Added to a Patient List`} 
                             </h4>
                             {!notification.isRead && (
                               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                             )}
                           </div>
                           <p className="text-sm text-gray-600 mt-1">
-                            You've been added as {notification.staffName || 'Unknown Staff'}'s patient.
+                            {staff === "Staff" ? `Added ${notification.patientName} as a new patient`: `You've been added as ${notification.staffName || 'Unknown Staff'}'s patient.`}
                           </p>
                           <p className="text-xs text-gray-500 mt-2">
                             
