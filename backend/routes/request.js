@@ -33,6 +33,20 @@ requestRoute.route("/request/:id").get(
     }
 )
 
+//Show Staff Request 
+requestRoute.route("/request/staff/:id").get(
+    async (request, response) => {
+        let db = database.getDB()
+        const data = await db.collection("request").findOne({staff: request.params.id})
+        if (data) {
+            response.json(data)
+        } else {
+            response.status(404).json({ error: "Data not found." })
+        }
+    }
+)
+
+
 // Seen Request 
 requestRoute.route("/request/:id").put(
     async (request, response) => {

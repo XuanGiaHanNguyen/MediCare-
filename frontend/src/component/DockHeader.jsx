@@ -68,74 +68,85 @@ const HospitalHeader = (props) => {
 
   
   useEffect(() => {
-    async function getData() {
-      let userId = localStorage.getItem("Id")
-      if (!userId) {
-        toast.error("User ID not found. Please log in again");
-        navigate("/");
+  async function getData() {
+    let userId = localStorage.getItem("Id")
+    if (!userId) {
+      toast.error("User ID not found. Please log in again");
+      navigate("/");
+      return;
+    }
+    
+    // Don't proceed if staff role hasn't been determined yet
+    if (!staff) {
+      return;
+    }
+    
+    try {
+      let response;
+      if (staff === "Patient"){
+        response = await axios.get(API_ROUTES.GET_REQUEST(userId))
+      } else if (staff === "Staff"){
+        response = await axios.get(API_ROUTES.GET_REQUEST_STAFF(userId))
+      } else {
+        toast.error("Cannot identify whether user is a staff or a patient");
         return;
       }
       
-      try {
-        const response = await axios.get(API_ROUTES.GET_REQUEST(userId))
-        console.log(response.data)
-        
-        let notificationsData = []
-        
-        // Handle both array and single object responses
-        if (Array.isArray(response.data)) {
-          // Filter array to only include notifications where seen is false
-          notificationsData = response.data.filter(notification => notification.seen === false)
-        } else if (response.data && typeof response.data === 'object') {
-          // If it's a single object, only add it if seen is false
-          if (response.data.seen === false) {
-            notificationsData = [response.data]
-          }
-          // If seen is true, notificationsData remains empty array
-        } else {
-          // Handle empty or unexpected response
-          notificationsData = []
+      console.log(response.data)
+      
+      let notificationsData = []
+      
+      // Handle both array and single object responses
+      if (Array.isArray(response.data)) {
+        // Filter array to only include notifications where seen is false
+        notificationsData = response.data.filter(notification => notification.seen === false)
+      } else if (response.data && typeof response.data === 'object') {
+        // If it's a single object, only add it if seen is false
+        if (response.data.seen === false) {
+          notificationsData = [response.data]
         }
-        
-        console.log("Filtered notifications (unseen only):", notificationsData)
-        
-        // Set your notifications state here
-        // setNotifications(notificationsData) // replace with your actual state setter
-
-         const notificationsWithStaffNames = await Promise.all(
-          notificationsData.map(async (notification) => {
-            try {
-              if (notification.staff) {
-                const staffResponse = await axios.get(API_ROUTES.GET_USER(notification.staff))
-                return {
-                  ...notification,
-                  staffName: staffResponse.data.full_name || 'Unknown Staff'
-                }
-              }
+        // If seen is true, notificationsData remains empty array
+      } else {
+        // Handle empty or unexpected response
+        notificationsData = []
+      }
+      
+      console.log("Filtered notifications (unseen only):", notificationsData)
+      
+      const notificationsWithStaffNames = await Promise.all(
+        notificationsData.map(async (notification) => {
+          try {
+            if (notification.staff) {
+              const staffResponse = await axios.get(API_ROUTES.GET_USER(notification.staff))
               return {
                 ...notification,
-                staffName: 'Unknown Staff'
-              }
-            } catch (error) {
-              console.error(`Error fetching staff details for ID ${notification.staff}:`, error)
-              return {
-                ...notification,
-                staffName: 'Unknown Staff'
+                staffName: staffResponse.data.full_name || 'Unknown Staff'
               }
             }
-          })
-        )
+            return {
+              ...notification,
+              staffName: 'Unknown Staff'
+            }
+          } catch (error) {
+            console.error(`Error fetching staff details for ID ${notification.staff}:`, error)
+            return {
+              ...notification,
+              staffName: 'Unknown Staff'
+            }
+          }
+        })
+      )
 
-        setNotifications(notificationsWithStaffNames)
-      
-      } catch (error) {
-        console.error("Error fetching notifications:", error)
-        toast.error("Failed to fetch notifications")
-      }
-    }
+      setNotifications(notificationsWithStaffNames)
     
-    getData()
-}, [])
+    } catch (error) {
+      console.error("Error fetching notifications:", error)
+      toast.error("Failed to fetch notifications")
+    }
+  }
+  
+  getData()
+}, [staff, navigate]) // Add staff to dependency array
 
 
   const toggleNotifications = () => {
