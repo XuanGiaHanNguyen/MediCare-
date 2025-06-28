@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { X, Calendar, Clock, Users, FileText, MapPin } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, Calendar, Clock, Users, FileText, MapPin, UserCheck } from "lucide-react";
 
 export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEvent }) {
   const [formData, setFormData] = useState({
@@ -8,21 +8,43 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
     time: "",
     duration: "30",
     type: "meeting",
+    session: "online",
     description: "",
     location: "",
     attendees: "",
+    participants: [], // New field for selected participants
     color: "bg-sky-500"
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [participantsList, setParticipantsList] = useState([]);
+  const [loadingParticipants, setLoadingParticipants] = useState(false);
+
+  // Mock data for demonstration
+  const mockStaffList = [
+    { id: 1, name: "Dr. Sarah Johnson", email: "sarah.johnson@clinic.com", role: "Senior Doctor", department: "Cardiology" },
+    { id: 2, name: "Dr. Michael Chen", email: "michael.chen@clinic.com", role: "Resident", department: "Internal Medicine" },
+    { id: 3, name: "Nurse Lisa Williams", email: "lisa.williams@clinic.com", role: "Head Nurse", department: "Emergency" },
+    { id: 4, name: "Dr. Emily Davis", email: "emily.davis@clinic.com", role: "Specialist", department: "Pediatrics" },
+    { id: 5, name: "Admin John Smith", email: "john.smith@clinic.com", role: "Administrator", department: "Administration" }
+  ];
+
+  const mockPatientList = [
+    { id: 1, name: "Alice Brown", email: "alice.brown@email.com", phone: "+1 (555) 123-4567", lastVisit: "2024-06-15" },
+    { id: 2, name: "Robert Wilson", email: "robert.wilson@email.com", phone: "+1 (555) 234-5678", lastVisit: "2024-06-20" },
+    { id: 3, name: "Maria Garcia", email: "maria.garcia@email.com", phone: "+1 (555) 345-6789", lastVisit: "2024-06-18" },
+    { id: 4, name: "James Taylor", email: "james.taylor@email.com", phone: "+1 (555) 456-7890", lastVisit: "2024-06-22" },
+    { id: 5, name: "Jennifer Lee", email: "jennifer.lee@email.com", phone: "+1 (555) 567-8901", lastVisit: "2024-06-25" }
+  ];
 
   const eventTypes = [
     { value: "meeting", label: "Meeting", color: "bg-sky-500" },
-    { value: "appointment", label: "Appointment", color: "bg-cyan-600" },
-    { value: "consultation", label: "Consultation", color: "bg-green-500" },
-    { value: "interview", label: "Interview", color: "bg-purple-500" },
-    { value: "personal", label: "Personal", color: "bg-amber-500" },
-    { value: "other", label: "Other", color: "bg-gray-500" }
+    { value: "appointment", label: "Appointment", color: "bg-cyan-600" }
+  ];
+
+  const sessionTypes = [
+    { value: "online", label: "Online"},
+    { value: "offline", label: "Offline"}
   ];
 
   const durations = [
@@ -34,6 +56,41 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
     { value: "120", label: "2 hours" },
     { value: "180", label: "3 hours" }
   ];
+
+  // Function to fetch participants based on event type
+  const fetchParticipants = async (eventType) => {
+    setLoadingParticipants(true);
+    
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // This is where you would make your actual API call
+      // const response = await fetch(`/api/participants/${eventType}`);
+      // const data = await response.json();
+      
+      // For now, using mock data
+      if (eventType === "meeting") {
+        setParticipantsList(mockStaffList);
+      } else if (eventType === "appointment") {
+        setParticipantsList(mockPatientList);
+      }
+    } catch (error) {
+      console.error('Error fetching participants:', error);
+      setParticipantsList([]);
+    } finally {
+      setLoadingParticipants(false);
+    }
+  };
+
+  // Load participants when event type changes
+  useEffect(() => {
+    if (formData.type) {
+      fetchParticipants(formData.type);
+      // Reset selected participants when type changes
+      setFormData(prev => ({ ...prev, participants: [] }));
+    }
+  }, [formData.type]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -52,6 +109,28 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
     }
   };
 
+  const handleParticipantToggle = (participant) => {
+    setFormData(prev => {
+      if (prev.type === "appointment") {
+        // For appointments, only allow single selection
+        return {
+          ...prev,
+          participants: prev.participants.some(p => p.id === participant.id) 
+            ? [] 
+            : [participant]
+        };
+      } else {
+        // For meetings, allow multiple selection
+        return {
+          ...prev,
+          participants: prev.participants.some(p => p.id === participant.id)
+            ? prev.participants.filter(p => p.id !== participant.id)
+            : [...prev.participants, participant]
+        };
+      }
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -63,33 +142,16 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
         attendees: formData.attendees.split(',').map(email => email.trim()).filter(email => email),
         id: Date.now(), // Temporary ID - replace with backend generated ID
         createdAt: new Date().toISOString(),
-        userId: localStorage.getItem("Id") // Get user ID from localStorage
+        userId: "demo-user-id"
       };
 
-      // TODO: Replace this with your actual API call
-      // Example API call structure:
-      /*
-      const response = await fetch('/api/events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // if using auth tokens
-        },
-        body: JSON.stringify(eventData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create event');
-      }
-
-      const savedEvent = await response.json();
-      */
-
-      // For now, simulate API call with setTimeout
+      // For demo purposes, simulate API call with setTimeout
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Call the parent component's save handler
-      onSaveEvent(eventData);
+      if (onSaveEvent) {
+        onSaveEvent(eventData);
+      }
 
       // Reset form and close modal
       setFormData({
@@ -98,15 +160,16 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
         time: "",
         duration: "30",
         type: "meeting",
+        session: "online",
         description: "",
         location: "",
         attendees: "",
+        participants: [],
         color: "bg-sky-500"
       });
       onClose();
     } catch (error) {
       console.error('Error saving event:', error);
-      // TODO: Show error message to user
       alert('Error saving event. Please try again.');
     } finally {
       setIsLoading(false);
@@ -130,7 +193,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
         </div>
 
         {/* Modal Content */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <div className="p-6 space-y-6">
           {/* Event Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -164,6 +227,152 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Session Format */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Session Format
+            </label>
+            <select
+              name="session"
+              value={formData.session}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+            >
+              {sessionTypes.map(type => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Participants Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <UserCheck className="w-4 h-4 inline mr-1" />
+              Select Attendant(s)
+              {formData.type === "appointment" && (
+                <span className="text-xs text-gray-500 ml-1">(Select one)</span>
+              )}
+            </label>
+            
+            {loadingParticipants ? (
+              <div className="border border-gray-300 rounded-lg p-4 text-center text-gray-500">
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  Loading {formData.type === "meeting" ? "staff" : "patients"}...
+                </div>
+              </div>
+            ) : (
+              <div className="border border-gray-300 rounded-lg max-h-64 overflow-y-auto bg-white">
+                {participantsList.length === 0 ? (
+                  <div className="p-6 text-center text-gray-500">
+                    <UserCheck className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                    <p>No {formData.type === "meeting" ? "staff members" : "patients"} found</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-gray-100">
+                    {participantsList.map((participant) => {
+                      const isSelected = formData.participants.some(p => p.id === participant.id);
+                      return (
+                        <label
+                          key={participant.id}
+                          className={`flex items-center p-4 cursor-pointer transition-all duration-200 ${
+                            isSelected 
+                              ? 'bg-blue-50 border-l-4 border-blue-500' 
+                              : 'hover:bg-gray-50'
+                          }`}
+                        >
+                          <div className="flex-shrink-0 mr-4">
+                            <input
+                              type={formData.type === "appointment" ? "radio" : "checkbox"}
+                              name={formData.type === "appointment" ? "selectedPatient" : undefined}
+                              checked={isSelected}
+                              onChange={() => handleParticipantToggle(participant)}
+                              className={`h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 ${
+                                formData.type === "appointment" ? "rounded-full" : "rounded"
+                              }`}
+                            />
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-gray-900 truncate">
+                                  {participant.name}
+                                </p>
+                                <p className="text-sm text-gray-600 truncate">
+                                  {participant.email}
+                                </p>
+                              </div>
+                              
+                              {formData.type === "meeting" ? (
+                                <div className="flex-shrink-0 ml-4 text-right">
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    {participant.department}
+                                  </span>
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    {participant.role}
+                                  </p>
+                                </div>
+                              ) : (
+                                <div className="flex-shrink-0 ml-4 text-right">
+                                  <p className="text-xs text-gray-500">
+                                    {participant.phone}
+                                  </p>
+                                  <p className="text-xs text-gray-400 mt-1">
+                                    Last visit: {new Date(participant.lastVisit).toLocaleDateString()}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                            
+                          </div>
+                          
+                          {isSelected && (
+                            <div className="flex-shrink-0 ml-2">
+                             
+                            </div>
+                          )}
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {formData.participants.length > 0 && (
+              <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center gap-2">
+                  <UserCheck className="w-4 h-4 text-blue-600" />
+                  <p className="text-sm font-medium text-blue-900">
+                    {formData.type === "meeting" ? "Selected Staff:" : "Selected Patient:"}
+                  </p>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {formData.participants.map(p => (
+                    <span 
+                      key={p.id}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full"
+                    >
+                      {p.name}
+                      {formData.type === "meeting" && (
+                        <button
+                          type="button"
+                          onClick={() => handleParticipantToggle(p)}
+                          className="ml-1 w-3 h-3 text-blue-600 hover:text-blue-800"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Date and Time */}
@@ -233,11 +442,11 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
             />
           </div>
 
-          {/* Attendees */}
+          {/* Additional Attendees */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <Users className="w-4 h-4 inline mr-1" />
-              Attendees
+              Additional Attendees
             </label>
             <input
               type="text"
@@ -280,7 +489,15 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
               </span>
             </div>
           </div>
-        </form>
+
+          {/* Debug Info */}
+          <div className="bg-gray-50 p-3 rounded-lg">
+            <p className="text-xs font-medium text-gray-700 mb-1">Current Selection:</p>
+            <p className="text-xs text-gray-600">
+              Type: {formData.type} | Session: {formData.session} | Participants: {formData.participants.length}
+            </p>
+          </div>
+        </div>
 
         {/* Modal Footer */}
         <div className="flex gap-3 p-6 border-t border-gray-200">
