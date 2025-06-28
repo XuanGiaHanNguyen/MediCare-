@@ -13,7 +13,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
     location: "",
     attendees: "",
     participants: [], // New field for selected participants
-    color: "bg-sky-500"
+    color: "bg-amber-500"
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +38,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
   ];
 
   const eventTypes = [
-    { value: "meeting", label: "Meeting", color: "bg-sky-500" },
+    { value: "meeting", label: "Meeting", color: "bg-amber-500" },
     { value: "appointment", label: "Appointment", color: "bg-cyan-600" }
   ];
 
@@ -281,7 +281,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
                           key={participant.id}
                           className={`flex items-center p-4 cursor-pointer transition-all duration-200 ${
                             isSelected 
-                              ? 'bg-blue-50 border-l-4 border-blue-500' 
+                              ? 'bg-sky-50 border-l-4 border-sky-500' 
                               : 'hover:bg-gray-50'
                           }`}
                         >
@@ -344,35 +344,6 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
               </div>
             )}
             
-            {formData.participants.length > 0 && (
-              <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="flex items-center gap-2">
-                  <UserCheck className="w-4 h-4 text-blue-600" />
-                  <p className="text-sm font-medium text-blue-900">
-                    {formData.type === "meeting" ? "Selected Staff:" : "Selected Patient:"}
-                  </p>
-                </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {formData.participants.map(p => (
-                    <span 
-                      key={p.id}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full"
-                    >
-                      {p.name}
-                      {formData.type === "meeting" && (
-                        <button
-                          type="button"
-                          onClick={() => handleParticipantToggle(p)}
-                          className="ml-1 w-3 h-3 text-blue-600 hover:text-blue-800"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      )}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Date and Time */}
@@ -442,25 +413,6 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
             />
           </div>
 
-          {/* Additional Attendees */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <Users className="w-4 h-4 inline mr-1" />
-              Additional Attendees
-            </label>
-            <input
-              type="text"
-              name="attendees"
-              value={formData.attendees}
-              onChange={handleInputChange}
-              placeholder="Enter email addresses separated by commas"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Separate multiple emails with commas
-            </p>
-          </div>
-
           {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -490,13 +442,13 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
             </div>
           </div>
 
-          {/* Debug Info */}
+          {/* Debug Info
           <div className="bg-gray-50 p-3 rounded-lg">
             <p className="text-xs font-medium text-gray-700 mb-1">Current Selection:</p>
             <p className="text-xs text-gray-600">
               Type: {formData.type} | Session: {formData.session} | Participants: {formData.participants.length}
             </p>
-          </div>
+          </div> */}
         </div>
 
         {/* Modal Footer */}
@@ -515,7 +467,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
             disabled={isLoading || !formData.title || !formData.date || !formData.time}
             className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
           >
-            {isLoading ? "Saving..." : "Save Event"}
+            {isLoading ? "Requesting..." : "Request Event"}
           </button>
         </div>
       </div>
