@@ -193,7 +193,7 @@ export default function PaDock() {
                     </div>
                   </div>
                   <div className="col-span-2">
-                    <div className="text-gray-900">{patient.condition}</div>
+                    <div className="text-gray-900">{ patient.condition || patient.diagnosis }</div>
                   </div>
                   <div className="col-span-2">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(patient.status)}`}>
