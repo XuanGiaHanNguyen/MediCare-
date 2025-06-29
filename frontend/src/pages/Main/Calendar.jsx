@@ -143,31 +143,31 @@ export default function CalendarDock() {
 
       // For now, add the event to local state
       const dateKey = eventData.date;
+      // Destructure to exclude attendees, keep everything else and override userId
+      // For now, add the event to local state
+
+      // Destructure to exclude attendees, keep everything else and override userId
+      const { attendees, ...eventToStore } = eventData;
+
+      const modifiedEvent = {
+        ...eventToStore,
+        userId: Id
+      };
+
       setEvents(prevEvents => ({
         ...prevEvents,
         [dateKey]: [
           ...(prevEvents[dateKey] || []),
-          {
-            id: eventData.id,
-            title: eventData.title,
-            time: eventData.time,
-            color: eventData.color,
-            type: eventData.type,
-            description: eventData.description,
-            location: eventData.location,
-            attendees: eventData.attendees,
-            duration: eventData.duration
-          }
+          modifiedEvent
         ]
       }));
 
       // Optionally, set the selected date to the new event's date
       setSelectedDate(new Date(eventData.date));
 
-      console.log('Event saved successfully:', eventData);
+      console.log('Event saved successfully:', modifiedEvent); // Now logs the modified version
     } catch (error) {
       console.error('Error saving event:', error);
-      // You might want to show an error message to the user here
     }
   };
 

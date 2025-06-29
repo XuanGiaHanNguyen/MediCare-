@@ -37,14 +37,19 @@ const monthNames = [
 
 export default function Dashboard() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [patient, setPatient] = useState([])
+  const [patientData, setPatientData] = useState([])
   const Id = localStorage.getItem("Id")
 
   useEffect(()=> {
-    async function getData (){
-      
+    async function getPatients(){
+      const response = await axios.get(API_ROUTES.GET_PATIENTS)
+      const allPatient = response.data
+      const staffPatient = allPatient.filter(patient => patient.staff_in_charge === Id)
+      console.log(staffPatient)
+      setPatientData(staffPatient)
+
     }
-    getData()
+    getPatients()
   }, [])
 
   const navigateMonth = (direction) => {
@@ -237,7 +242,7 @@ export default function Dashboard() {
             <div className="p-6 border-b border-gray-100">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-semibold text-gray-900">Patient List</h3>
-                <button className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors">
+                <button onClick={(e)=> navigate(`/patinfo/${Id}`)} className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors">
                   View All
                 </button>
               </div>
@@ -246,27 +251,25 @@ export default function Dashboard() {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Country</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-10 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>       
+                    <th className="px-10 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>                 
+                    <th className="px-10 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
+                    <th className="px-10 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diagnosis</th>
+                    <th className="px-10 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telehealth</th>
+                    <th className="px-10 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
+                    <th className="px-10 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {patientData.map((patient) => (
-                    <tr key={patient.no} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.no}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{patient.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-sky-800 hover:text-blue-800 cursor-pointer">{patient.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.date}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.age}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.country}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{patient.gender}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {patientData.map((patient, index) => (
+                    <tr key={index+1} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-10 py-4 whitespace-nowrap text-sm text-gray-900">{index+1}</td>
+                      <td className="px-10 py-4 whitespace-nowrap text-sm font-medium text-sky-800 hover:text-blue-800 cursor-pointer">{patient.name}</td>
+                      <td className="px-10 py-4 whitespace-nowrap text-sm text-gray-900">{patient.age}</td>
+                      <td className="px-10 py-4 whitespace-nowrap text-sm text-gray-900">{patient.diagnosis}</td>
+                      <td className="px-10 py-4 whitespace-nowrap text-sm text-gray-900">{patient.tele_avail}</td>
+                      <td className="px-10 py-4 whitespace-nowrap text-sm text-gray-900">{patient.phone}</td>
+                      <td className="px-10 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div className="flex gap-2">
                           <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                             <Edit className="w-4 h-4" />
