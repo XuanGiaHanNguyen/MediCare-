@@ -33,14 +33,6 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
   const [loadingParticipants, setLoadingParticipants] = useState(false);
   const Id = localStorage.getItem("Id")
 
-  const mockPatientList = [
-    { id: 1, name: "Alice Brown", email: "alice.brown@email.com", phone: "+1 (555) 123-4567", lastVisit: "2024-06-15" },
-    { id: 2, name: "Robert Wilson", email: "robert.wilson@email.com", phone: "+1 (555) 234-5678", lastVisit: "2024-06-20" },
-    { id: 3, name: "Maria Garcia", email: "maria.garcia@email.com", phone: "+1 (555) 345-6789", lastVisit: "2024-06-18" },
-    { id: 4, name: "James Taylor", email: "james.taylor@email.com", phone: "+1 (555) 456-7890", lastVisit: "2024-06-22" },
-    { id: 5, name: "Jennifer Lee", email: "jennifer.lee@email.com", phone: "+1 (555) 567-8901", lastVisit: "2024-06-25" }
-  ];
-
   const eventTypes = [
     { value: "meeting", label: "Meeting", color: "bg-amber-500" },
     { value: "appointment", label: "Appointment", color: "bg-cyan-600" }
@@ -105,30 +97,29 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
           const List = response.data;
           console.log(List)
           
-          const patientList = List.filter(patient => patient.userId !== Id)
+          const patientList = List.filter(patient => patient.staff_in_charge === Id)
+          console.log("Patient list:")
           console.log(patientList)
 
           // Fetch emails in parallel
-          const staffWithEmails = await Promise.all(
-            staffList.map(async (staff) => {
+          const patientWithEmails = await Promise.all(
+            patientList.map(async (patient) => {
               try {
-                const emailResponse = await axios.get(API_ROUTE.GET_USER(staff.userId));
+                const emailResponse = await axios.get(API_ROUTE.GET_USER(patient.userId));
                 const email = emailResponse.data.email
-                return { ...staff, email };
+                return { ...patient, email };
               } catch (err) {
-                console.error("Failed to get email for staff:", staff.userId);
-                return { ...staff, email: "N/A" }; // fallback if email fetch fails
+                console.error("Failed to get email for patient:", patient.userId);
+                return { ...patient, email: "N/A" }; // fallback if email fetch fails
               }
             })
           );
 
-          setParticipantsList(staffWithEmails);
-          console.log(staffWithEmails)
+          setParticipantsList(patientWithEmails);
+          console.log(participantsList.length)
         } catch (error) {
           console.error("Failed to fetch staff list or emails:", error);
         }
-
-        setParticipantsList(mockPatientList);
       }
     } catch (error) {
       console.error('Error fetching participants:', error);
