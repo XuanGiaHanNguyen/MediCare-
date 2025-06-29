@@ -32,8 +32,6 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
   const [email, setEmail] = useState([])
   const [loadingParticipants, setLoadingParticipants] = useState(false);
   const Id = localStorage.getItem("Id")
-  console.log(Id)
-
 
   const mockPatientList = [
     { id: 1, name: "Alice Brown", email: "alice.brown@email.com", phone: "+1 (555) 123-4567", lastVisit: "2024-06-15" },
@@ -97,11 +95,39 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
           );
 
           setParticipantsList(staffWithEmails);
-          console.log(staffWithEmails)
+
         } catch (error) {
           console.error("Failed to fetch staff list or emails:", error);
         }
       } else if (eventType === "appointment") {
+        try {
+          const response = await axios.get(API_ROUTE.GET_PATIENTS);
+          const List = response.data;
+          console.log(List)
+          
+          const patientList = List.filter(patient => patient.userId !== Id)
+          console.log(patientList)
+
+          // Fetch emails in parallel
+          const staffWithEmails = await Promise.all(
+            staffList.map(async (staff) => {
+              try {
+                const emailResponse = await axios.get(API_ROUTE.GET_USER(staff.userId));
+                const email = emailResponse.data.email
+                return { ...staff, email };
+              } catch (err) {
+                console.error("Failed to get email for staff:", staff.userId);
+                return { ...staff, email: "N/A" }; // fallback if email fetch fails
+              }
+            })
+          );
+
+          setParticipantsList(staffWithEmails);
+          console.log(staffWithEmails)
+        } catch (error) {
+          console.error("Failed to fetch staff list or emails:", error);
+        }
+
         setParticipantsList(mockPatientList);
       }
     } catch (error) {
@@ -355,10 +381,10 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
                               ) : (
                                 <div className="flex-shrink-0 ml-4 text-right">
                                   <p className="text-xs text-gray-500">
-                                    {participant.phone}
+                                    {participant.phone || "Not available"}
                                   </p>
                                   <p className="text-xs text-gray-400 mt-1">
-                                    Last visit: {new Date(participant.lastVisit).toLocaleDateString()}
+                                    Diagnosis: {participant.diagnosis}
                                   </p>
                                 </div>
                               )}
