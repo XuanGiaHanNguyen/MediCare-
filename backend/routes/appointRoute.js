@@ -35,11 +35,18 @@ appointRoute.route("/appointment").post(
     async (request, response) => {
         let db = database.getDB()
         let mongoObject = {
-            staff: request.body.staff,
-            patient: request.body.patient,
-            reason: request.body.reason, 
-            date: request.body.date,
-            time: request.body.time
+            approved: request.body.approved, 
+            color: request.body.color, 
+            createdAt: request.body.createdAt, 
+            date: request.body.date, 
+            description: request.body.description, 
+            duration: request.body.duration,
+            location: request.body.location, 
+            participants: request.body.participants, 
+            session: request.body.session, 
+            time: request.body.time, 
+            title: request.body.title, 
+            userId: request.body.userId
         }
         let data = await db.collection("appointment").insertOne(mongoObject)
         response.json(data)
@@ -52,11 +59,18 @@ appointRoute.route("/appointment/:id").put(
         let db = database.getDB()
         let mongoObject = {
             $set: {
-                staff: request.body.staff,
-                patient: request.body.patient,
-                reason: request.body.reason, 
-                date: request.body.date,
-                time: request.body.time
+               approved: request.body.approved, 
+                color: request.body.color, 
+                createdAt: request.body.createdAt, 
+                date: request.body.date, 
+                description: request.body.description, 
+                duration: request.body.duration,
+                location: request.body.location, 
+                participants: request.body.participants, 
+                session: request.body.session, 
+                time: request.body.time, 
+                title: request.body.title, 
+                userId: request.body.userId
             }
         }
         let data = await db.collection("appointment").updateOne({_id: new ObjectId(request.params.id)}, mongoObject)

@@ -12,6 +12,9 @@ import DockHeader from "../../component/DockHeader"
 import { useNavigate } from "react-router-dom";
 
 import AddEventModal from "./Calendar/AddEventModal";
+import axios from "axios";
+import API_ROUTES from "../../constant/APIRoutes";
+import toast from "react-hot-toast";
 
 export default function CalendarDock() {
   const Id = localStorage.getItem("Id")
@@ -92,10 +95,7 @@ export default function CalendarDock() {
   const handleSaveEvent = async (eventData) => {
     try {
 
-      // For now, add the event to local state
-      const dateKey = eventData.date;
-      
-      const { attendees, ...eventToStore } = eventData;
+      const { attendees, id, ...eventToStore } = eventData;
 
       const modifiedEvent = {
         ...eventToStore,
@@ -107,16 +107,32 @@ export default function CalendarDock() {
 
       if (modifiedEvent.type === "appointment" ){
 
+        const {type, ...saveObject} = modifiedEvent
+        const response = await axios.post(API_ROUTES.CREATE_APPOINTMENT, saveObject)
+        if (response.status === 200){
+          toast.success("Appointment Successfully Requested.")
+          
+          const dateKey = eventData.date;
+              setEvents(prevEvents => ({
+            ...prevEvents,
+            [dateKey]: [
+              ...(prevEvents[dateKey] || []),
+              modifiedEvent
+            ]
+          }));
+
+          setSelectedDate(new Date(eventData.date));
+
+        }else {
+          toast.error("Error occured during the requesting process.")
+        }
+
       } else if (modifiedEvent.type === "meeting" ){
 
       }else {
         toast.error("Cannot determine the type of the event")
       }
 
-
-
-      
-      // Now logs the modified version
     } catch (error) {
       console.error('Error saving event:', error);
     }
