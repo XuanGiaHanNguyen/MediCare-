@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Calendar,
   Plus,
@@ -15,6 +15,10 @@ import {
   BedDouble
 } from "lucide-react";
 import DockHeader from "../../component/DockHeader"
+
+import axios from "axios";
+import API_ROUTES from "../../constant/APIRoutes";
+import toast from "react-hot-toast";
 
 import { useNavigate } from "react-router-dom";
 
@@ -33,7 +37,15 @@ const monthNames = [
 
 export default function Dashboard() {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [patient, setPatient] = useState([])
   const Id = localStorage.getItem("Id")
+
+  useEffect(()=> {
+    async function getData (){
+      
+    }
+    getData()
+  }, [])
 
   const navigateMonth = (direction) => {
     setCurrentDate(prev => {
