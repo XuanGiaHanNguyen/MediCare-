@@ -19,35 +19,7 @@ export default function CalendarDock() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [events, setEvents] = useState({
-    '2025-05-01': [
-      { id: 3, title: 'Connect', time: '21:00', color: 'bg-sky-500' },
-      { id: 4, title: 'Synced', time: '21:00', color: 'bg-sky-500' }
-    ],
-    '2025-05-02': [
-      { id: 5, title: 'Connect', time: '21:00', color: 'bg-sky-500' }
-    ],
-    '2025-05-03': [
-      { id: 6, title: 'Connect', time: '21:00', color: 'bg-sky-500' }
-    ],
-    '2025-05-04': [
-      { id: 7, title: 'Cancelled', time: '21:00', color: 'bg-amber-500' }
-    ],
-    '2025-05-05': [
-      { id: 8, title: 'Connect', time: '21:00', color: 'bg-sky-500' }
-    ],
-    '2025-05-08': [
-      { id: 9, title: 'PHY2048 Final', time: '21:00', color: 'bg-cyan-600' },
-      { id: 10, title: 'PHY2048 Final', time: '21:00', color: 'bg-cyan-600' }
-    ],
-    '2025-05-21': [
-      { id: 11, title: 'Meeting', time: '4:00', color: 'bg-sky-500' }
-    ],
-    '2025-05-27': [
-      { id: 12, title: 'Tech Lead Interview', time: '3:30', color: 'bg-cyan-600' },
-      { id: 13, title: 'Meeting', time: '4:30', color: 'bg-sky-500' }
-    ]
-  });
+  const [events, setEvents] = useState({});
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -127,21 +99,24 @@ export default function CalendarDock() {
 
       const modifiedEvent = {
         ...eventToStore,
-        userId: Id
+        userId: Id, 
+        approved: false 
       };
 
-      setEvents(prevEvents => ({
-        ...prevEvents,
-        [dateKey]: [
-          ...(prevEvents[dateKey] || []),
-          modifiedEvent
-        ]
-      }));
+      console.log('Event saved successfully:', modifiedEvent); 
 
-      // Optionally, set the selected date to the new event's date
-      setSelectedDate(new Date(eventData.date));
+      if (modifiedEvent.type === "appointment" ){
 
-      console.log('Event saved successfully:', modifiedEvent); // Now logs the modified version
+      } else if (modifiedEvent.type === "meeting" ){
+
+      }else {
+        toast.error("Cannot determine the type of the event")
+      }
+
+
+
+      
+      // Now logs the modified version
     } catch (error) {
       console.error('Error saving event:', error);
     }
