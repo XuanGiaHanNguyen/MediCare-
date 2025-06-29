@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { X, Calendar, Clock, Users, FileText, MapPin, UserCheck } from "lucide-react";
 
+import axios from "axios"
+import API_ROUTE from "../../../constant/APIRoutes"
+import toast from "react-hot-toast"
+
 export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEvent }) {
   const [formData, setFormData] = useState({
     title: "",
@@ -11,23 +15,25 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
     session: "online",
     description: "",
     location: "",
-    attendees: "",
     participants: [], // New field for selected participants
-    color: "bg-amber-500"
+    color: "bg-amber-500" 
   });
+
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      color: formData.type === "meeting" ? "bg-amber-500" : "bg-cyan-500"
+    }));
+  }, [formData.type]);
+
 
   const [isLoading, setIsLoading] = useState(false);
   const [participantsList, setParticipantsList] = useState([]);
+  const [email, setEmail] = useState([])
   const [loadingParticipants, setLoadingParticipants] = useState(false);
+  const Id = localStorage.getItem("Id")
+  console.log(Id)
 
-  // Mock data for demonstration
-  const mockStaffList = [
-    { id: 1, name: "Dr. Sarah Johnson", email: "sarah.johnson@clinic.com", role: "Senior Doctor", department: "Cardiology" },
-    { id: 2, name: "Dr. Michael Chen", email: "michael.chen@clinic.com", role: "Resident", department: "Internal Medicine" },
-    { id: 3, name: "Nurse Lisa Williams", email: "lisa.williams@clinic.com", role: "Head Nurse", department: "Emergency" },
-    { id: 4, name: "Dr. Emily Davis", email: "emily.davis@clinic.com", role: "Specialist", department: "Pediatrics" },
-    { id: 5, name: "Admin John Smith", email: "john.smith@clinic.com", role: "Administrator", department: "Administration" }
-  ];
 
   const mockPatientList = [
     { id: 1, name: "Alice Brown", email: "alice.brown@email.com", phone: "+1 (555) 123-4567", lastVisit: "2024-06-15" },
@@ -62,8 +68,6 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
     setLoadingParticipants(true);
     
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500));
       
       // This is where you would make your actual API call
       // const response = await fetch(`/api/participants/${eventType}`);
@@ -71,7 +75,32 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
       
       // For now, using mock data
       if (eventType === "meeting") {
-        setParticipantsList(mockStaffList);
+        try {
+          const response = await axios.get(API_ROUTE.GET_STAFFS);
+          const List = response.data;
+          
+          const staffList = List.filter(staff => staff.userId !== Id)
+          console.log(staffList)
+
+          // Fetch emails in parallel
+          const staffWithEmails = await Promise.all(
+            staffList.map(async (staff) => {
+              try {
+                const emailResponse = await axios.get(API_ROUTE.GET_USER(staff.userId));
+                const email = emailResponse.data.email
+                return { ...staff, email };
+              } catch (err) {
+                console.error("Failed to get email for staff:", staff.userId);
+                return { ...staff, email: "N/A" }; // fallback if email fetch fails
+              }
+            })
+          );
+
+          setParticipantsList(staffWithEmails);
+          console.log(staffWithEmails)
+        } catch (error) {
+          console.error("Failed to fetch staff list or emails:", error);
+        }
       } else if (eventType === "appointment") {
         setParticipantsList(mockPatientList);
       }
@@ -110,12 +139,14 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
   };
 
   const handleParticipantToggle = (participant) => {
+    const participantId = participant.id || participant.userId; // Use fallback
+    
     setFormData(prev => {
       if (prev.type === "appointment") {
         // For appointments, only allow single selection
         return {
           ...prev,
-          participants: prev.participants.some(p => p.id === participant.id) 
+          participants: prev.participants.some(p => (p.id || p.userId) === participantId) 
             ? [] 
             : [participant]
         };
@@ -123,8 +154,8 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
         // For meetings, allow multiple selection
         return {
           ...prev,
-          participants: prev.participants.some(p => p.id === participant.id)
-            ? prev.participants.filter(p => p.id !== participant.id)
+          participants: prev.participants.some(p => (p.id || p.userId) === participantId)
+            ? prev.participants.filter(p => (p.id || p.userId) !== participantId)
             : [...prev.participants, participant]
         };
       }
@@ -139,7 +170,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
       // Prepare event data for API
       const eventData = {
         ...formData,
-        attendees: formData.attendees.split(',').map(email => email.trim()).filter(email => email),
+        attendees: formData.attendees ? formData.attendees.split(',').map(email => email.trim()).filter(email => email) : [],
         id: Date.now(), // Temporary ID - replace with backend generated ID
         createdAt: new Date().toISOString(),
         userId: "demo-user-id"
@@ -275,10 +306,14 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
                 ) : (
                   <div className="divide-y divide-gray-100">
                     {participantsList.map((participant) => {
-                      const isSelected = formData.participants.some(p => p.id === participant.id);
+                      const participantId = participant.id || participant.userId; // Use consistent ID
+                      const isSelected = formData.participants.some(p => 
+                        (p.id || p.userId) === participantId
+                      );
+                      
                       return (
                         <label
-                          key={participant.id}
+                          key={participantId} // Use consistent ID
                           className={`flex items-center p-4 cursor-pointer transition-all duration-200 ${
                             isSelected 
                               ? 'bg-sky-50 border-l-4 border-sky-500' 
@@ -310,11 +345,11 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
                               
                               {formData.type === "meeting" ? (
                                 <div className="flex-shrink-0 ml-4 text-right">
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    {participant.department}
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"> 
+                                    {participant.role}
                                   </span>
                                   <p className="text-xs text-gray-500 mt-1">
-                                    {participant.role}
+                                    {participant.language}
                                   </p>
                                 </div>
                               ) : (
