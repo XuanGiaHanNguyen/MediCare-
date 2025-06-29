@@ -2,8 +2,6 @@ import { useState } from "react";
 import {
   Calendar,
   Plus,
-  Settings,
-  Users,
   FileText,
   Home,
   Bed,
@@ -376,12 +374,6 @@ export default function CalendarDock() {
                     <Calendar className="w-6 h-6 text-gray-400" />
                   </div>
                   <p className="text-sm text-gray-500 mb-2">No events scheduled</p>
-                  <button 
-                    onClick={handleAddEventClick}
-                    className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
-                  >
-                    Add your first event
-                  </button>
                 </div>
               )}
             </div>

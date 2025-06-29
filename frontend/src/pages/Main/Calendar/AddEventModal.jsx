@@ -59,11 +59,6 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
     
     try {
       
-      // This is where you would make your actual API call
-      // const response = await fetch(`/api/participants/${eventType}`);
-      // const data = await response.json();
-      
-      // For now, using mock data
       if (eventType === "meeting") {
         try {
           const response = await axios.get(API_ROUTE.GET_STAFFS);
