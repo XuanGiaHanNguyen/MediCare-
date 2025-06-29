@@ -111,7 +111,7 @@ export default function CalendarDock() {
         const response = await axios.post(API_ROUTES.CREATE_APPOINTMENT, saveObject)
         if (response.status === 200){
           toast.success("Appointment Successfully Requested.")
-          
+
           const dateKey = eventData.date;
               setEvents(prevEvents => ({
             ...prevEvents,
@@ -129,9 +129,28 @@ export default function CalendarDock() {
 
       } else if (modifiedEvent.type === "meeting" ){
 
-      }else {
-        toast.error("Cannot determine the type of the event")
-      }
+         const {type, ...saveObject} = modifiedEvent
+          const response = await axios.post(API_ROUTES.CREATE_MEETING, saveObject)
+          if (response.status === 200){
+            toast.success("Meeting Successfully Requested.")
+
+            const dateKey = eventData.date;
+                setEvents(prevEvents => ({
+              ...prevEvents,
+              [dateKey]: [
+                ...(prevEvents[dateKey] || []),
+                modifiedEvent
+              ]
+            }));
+
+            setSelectedDate(new Date(eventData.date));
+
+          }else {
+            toast.error("Error occured during the requesting process.")
+          }
+        }else {
+          toast.error("Cannot determine the type of the event")
+        }
 
     } catch (error) {
       console.error('Error saving event:', error);
