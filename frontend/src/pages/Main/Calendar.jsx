@@ -119,34 +119,10 @@ export default function CalendarDock() {
   // Handler for saving a new event
   const handleSaveEvent = async (eventData) => {
     try {
-      // TODO: Replace this with your actual API call to save to backend
-      // Example API call:
-      /*
-      const response = await fetch('/api/events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // if using auth
-        },
-        body: JSON.stringify({
-          ...eventData,
-          userId: Id
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save event');
-      }
-
-      const savedEvent = await response.json();
-      */
 
       // For now, add the event to local state
       const dateKey = eventData.date;
-      // Destructure to exclude attendees, keep everything else and override userId
-      // For now, add the event to local state
-
-      // Destructure to exclude attendees, keep everything else and override userId
+      
       const { attendees, ...eventToStore } = eventData;
 
       const modifiedEvent = {
