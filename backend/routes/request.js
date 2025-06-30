@@ -25,11 +25,7 @@ requestRoute.route("/request/:id").get(
     async (request, response) => {
         let db = database.getDB()
         const data = await db.collection("request").findOne({patient: request.params.id})
-        if (data) {
-            response.json(data)
-        } else {
-            response.status(404).json({ error: "Data not found." })
-        }
+        response.json(data)
     }
 )
 
@@ -38,11 +34,8 @@ requestRoute.route("/request/staff/:id").get(
     async (request, response) => {
         let db = database.getDB()
         const data = await db.collection("request").findOne({staff: request.params.id})
-        if (data) {
-            response.json(data)
-        } else {
-            response.status(404).json({ error: "Data not found." })
-        }
+        response.json(data)
+        
     }
 )
 
