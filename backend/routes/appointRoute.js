@@ -29,6 +29,8 @@ appointRoute.route("/appointment/:id").get(
             }).toArray();
         if (Object.keys(data).length > 0 ){
             response.json(data)
+        } else {
+           console.log("data not found")
         }
     }
 )

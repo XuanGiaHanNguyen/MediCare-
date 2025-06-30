@@ -33,6 +33,9 @@ meetingRoute.route("/meeting/:id").get(
 
             if (data.length > 0) {
                 response.json(data);
+            } else {
+                console.error("Error fetching meetings:", error);
+                response.status(500).json({ error: "Server error" });
             }
         } catch (error) {
             console.error("Error fetching meetings:", error);
