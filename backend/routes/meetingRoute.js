@@ -27,14 +27,12 @@ meetingRoute.route("/meeting/:id").get(
             let data = await db.collection("meeting").find({
                 $or: [
                     { userId: userId },
-                    { participants: { $elemMatch: { $eq: userId } } }
+                    { participants: { $elemMatch: { userId: userId }}  }
                 ]
             }).toArray();
 
             if (data.length > 0) {
                 response.json(data);
-            } else {
-                response.status(404).json({ error: "No meetings found." });
             }
         } catch (error) {
             console.error("Error fetching meetings:", error);
