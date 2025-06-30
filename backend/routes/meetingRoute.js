@@ -7,12 +7,13 @@ let meetingRoute = express.Router()
 // Find All 
 meetingRoute.route("/meeting").get(
     async (request, response) => {
-        let db = database.getDB()
-        let data = await db.collection("meeting").find({}).toArray()
-        if (data.length >0 ){
-            response.json(data)
-        } else {
-            throw new Error ("Data not found.")
+        try {
+            let db = database.getDB()
+            let data = await db.collection("meeting").find({}).toArray()
+            response.json(data) // Always return array, even if empty
+        } catch (error) {
+            console.error("Error fetching all meetings:", error);
+            response.status(500).json({ error: "Server error", data: [] });
         }
     }
 )
@@ -31,49 +32,22 @@ meetingRoute.route("/meeting/:id").get(
                 ]
             }).toArray();
 
-            if (data.length > 0) {
-                response.json(data);
-            } else {
-                console.error("Error fetching meetings:", error);
-                response.status(500).json({ error: "Server error" });
-            }
+            // Always return data, even if empty array
+            response.json(data);
+            
         } catch (error) {
             console.error("Error fetching meetings:", error);
-            response.status(500).json({ error: "Server error" });
+            response.status(500).json({ error: "Server error", data: [] });
         }
     }
 );
 
-
 // Create One 
 meetingRoute.route("/meeting").post(
     async (request, response) => {
-        let db = database.getDB()
-        let mongoObject = {
-            approved: request.body.approved, 
-            color: request.body.color, 
-            createdAt: request.body.createdAt, 
-            date: request.body.date, 
-            description: request.body.description, 
-            duration: request.body.duration,
-            location: request.body.location, 
-            participants: request.body.participants, 
-            session: request.body.session, 
-            time: request.body.time, 
-            title: request.body.title, 
-            userId: request.body.userId
-        }
-        let data = await db.collection("meeting").insertOne(mongoObject)
-        response.json(data)
-    }
-)
-
-// Edit One 
-meetingRoute.route("/meeting/:id").put(
-    async (request,response) => {
-        let db = database.getDB()
-        let mongoObject = {
-            $set: {
+        try {
+            let db = database.getDB()
+            let mongoObject = {
                 approved: request.body.approved, 
                 color: request.body.color, 
                 createdAt: request.body.createdAt, 
@@ -87,18 +61,56 @@ meetingRoute.route("/meeting/:id").put(
                 title: request.body.title, 
                 userId: request.body.userId
             }
+            let data = await db.collection("meeting").insertOne(mongoObject)
+            response.json(data)
+        } catch (error) {
+            console.error("Error creating meeting:", error);
+            response.status(500).json({ error: "Server error" });
         }
-        let data = await db.collection("meeting").updateOne({_id: new ObjectId(request.params.id)}, mongoObject)
-        response.json(data)
     }
 )
 
-// Delete One 
-meetingRoute.route("/meeting").delete(
+// Edit One 
+meetingRoute.route("/meeting/:id").put(
     async (request, response) => {
-        let db = database.getDB()
-        let data = db.collection("meeting").deleteOne({_id: new ObjectId(request.params.id)})
-        response.json(data)
+        try {
+            let db = database.getDB()
+            let mongoObject = {
+                $set: {
+                    approved: request.body.approved, 
+                    color: request.body.color, 
+                    createdAt: request.body.createdAt, 
+                    date: request.body.date, 
+                    description: request.body.description, 
+                    duration: request.body.duration,
+                    location: request.body.location, 
+                    participants: request.body.participants, 
+                    session: request.body.session, 
+                    time: request.body.time, 
+                    title: request.body.title, 
+                    userId: request.body.userId
+                }
+            }
+            let data = await db.collection("meeting").updateOne({_id: new ObjectId(request.params.id)}, mongoObject)
+            response.json(data)
+        } catch (error) {
+            console.error("Error updating meeting:", error);
+            response.status(500).json({ error: "Server error" });
+        }
+    }
+)
+
+// Delete One - Fixed route path
+meetingRoute.route("/meeting/:id").delete(
+    async (request, response) => {
+        try {
+            let db = database.getDB()
+            let data = await db.collection("meeting").deleteOne({_id: new ObjectId(request.params.id)})
+            response.json(data)
+        } catch (error) {
+            console.error("Error deleting meeting:", error);
+            response.status(500).json({ error: "Server error" });
+        }
     }
 )
 

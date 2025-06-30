@@ -37,6 +37,7 @@ export default function CalendarDock() {
   const fetchEvents = async () => {
   try {
     // Make both API calls simultaneously
+    console.log(Id)
     const [appointmentsResponse, meetingsResponse] = await Promise.all([
       axios.get(API_ROUTES.GET_MEETING(Id)),
       axios.get(API_ROUTES.GET_APPOINTMENT(Id))
