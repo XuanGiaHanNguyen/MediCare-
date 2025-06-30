@@ -6,7 +6,10 @@ import {
   Home,
   Bed,
   ChevronLeft,
-  ChevronRight
+  ChevronRight, 
+  Clock, 
+  Users, 
+  MapPin
 } from "lucide-react";
 import DockHeader from "../../component/DockHeader"
 import { useNavigate } from "react-router-dom";
@@ -33,84 +36,86 @@ export default function CalendarDock() {
 
   const fetchEvents = async () => {
   try {
-      // Make both API calls simultaneously
-      const [appointmentsResponse, meetingsResponse] = await Promise.all([
-        axios.get(API_ROUTES.GET_MEETING(Id)), 
-        axios.get(API_ROUTES.GET_APPOINTMENT(Id))      // Adjust endpoint as needed
-      ]);
+    // Make both API calls simultaneously
+    const [appointmentsResponse, meetingsResponse] = await Promise.all([
+      axios.get(API_ROUTES.GET_MEETING(Id)),
+      axios.get(API_ROUTES.GET_APPOINTMENT(Id))
+    ]);
 
-      // Extract data from responses
-      const appointments = appointmentsResponse.data || [];
-      const meetings = meetingsResponse.data || [];
+    const appointments = appointmentsResponse.data || [];
+    const meetings = meetingsResponse.data || [];
 
-      // Transform and combine the events
-      const combinedEvents = {};
+    const combinedEvents = {};
 
-      // Process appointments
-      appointments.forEach(appointment => {
-        const eventDate = appointment.date; // Assuming date is in YYYY-MM-DD format
-        const transformedEvent = {
-          id: `${appointment.id}`, // Prefix to avoid ID conflicts
-          title: appointment.title || 'Appointment',
-          time: appointment.time || appointment.startTime,
-          description: appointment.description || appointment.notes,
-          location: appointment.location,
-          color: 'bg-blue-500', // Default color for appointments
-          type: 'appointment',
-          approved: appointment.approved || false,
-          userId: appointment.userId,
-          // Add any other fields you need
-          ...appointment // Spread original data
-        };
+    // Helper function to get user name from userId (with caching to avoid duplicate requests)
+    const userCache = {};
 
-        // Group by date
-        if (!combinedEvents[eventDate]) {
-          combinedEvents[eventDate] = [];
-        }
-        combinedEvents[eventDate].push(transformedEvent);
-      });
+    const getUserName = async (userId) => {
+      if (userCache[userId]) return userCache[userId];
+      const res = await axios.get(API_ROUTES.GET_USER(userId));
+      const name = res.data?.full_name || "Unknown";
+      userCache[userId] = name;
+      return name;
+    };
 
-      // Process meetings
-      meetings.forEach(meeting => {
-        const eventDate = meeting.date; // Assuming date is in YYYY-MM-DD format
-        const transformedEvent = {
-          id: `${meeting.id}`, // Prefix to avoid ID conflicts
-          title: meeting.title || 'Meeting',
-          time: meeting.time || meeting.startTime,
-          description: meeting.description || meeting.agenda,
-          location: meeting.location,
-          url: meeting.meetingUrl || meeting.url, // For join meeting button
-          color: 'bg-green-500', // Default color for meetings
-          type: 'meeting',
-          approved: meeting.approved || false,
-          userId: meeting.userId,
-          // Add any other fields you need
-          ...meeting // Spread original data
-        };
+    // Helper to transform event format
+    const transformEvent = async (event, type, color) => {
+      const userName = await getUserName(event.userId);
+      return {
+        id: `${event.id}`,
+        title: event.title || (type === "appointment" ? "Appointment" : "Meeting"),
+        time: event.time || event.startTime,
+        description: event.description || event.notes || event.agenda,
+        location: event.location,
+        url: event.meetingUrl || event.url,
+        color,
+        type,
+        approved: event.approved || false,
+        approval: event.userId !== Id,        // new field
+        user: userName,                       // replacing userId
+        participants: event.participants,     // if applicable
+        duration: event.duration,
+        ...event
+      };
 
-        // Group by date
-        if (!combinedEvents[eventDate]) {
-          combinedEvents[eventDate] = [];
-        }
-        combinedEvents[eventDate].push(transformedEvent);
-      });
+      
+    };
 
-      // Sort events by time for each date
-      Object.keys(combinedEvents).forEach(date => {
-        combinedEvents[date].sort((a, b) => {
-          // Assuming time is in HH:MM format
-          return a.time.localeCompare(b.time);
-        });
-      });
+    // Process all events in parallel
+    const transformedAppointments = await Promise.all(
+      appointments.map(appt =>
+        transformEvent(appt, "appointment", "bg-blue-500")
+      )
+    );
 
-      // Update state
-      setEvents(combinedEvents);
+    const transformedMeetings = await Promise.all(
+      meetings.map(meet =>
+        transformEvent(meet, "meeting", "bg-green-500")
+      )
+    );
 
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      toast.error('Failed to load events');
-    }
-  };
+    // Group events by date
+    [...transformedAppointments, ...transformedMeetings].forEach(event => {
+      const eventDate = event.date;
+      if (!combinedEvents[eventDate]) {
+        combinedEvents[eventDate] = [];
+      }
+      combinedEvents[eventDate].push(event);
+    });
+
+    // Sort by time within each date group
+    Object.keys(combinedEvents).forEach(date => {
+      combinedEvents[date].sort((a, b) => a.time.localeCompare(b.time));
+    });
+
+    // Set state
+    setEvents(combinedEvents);
+
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    toast.error('Failed to load events');
+  }
+};
 
   // Call this function when component mounts and when you need to refresh
   useEffect(() => {
@@ -200,14 +205,30 @@ export default function CalendarDock() {
         if (response.status === 200){
           toast.success("Appointment Successfully Requested.")
 
-          const dateKey = eventData.date;
-              setEvents(prevEvents => ({
-            ...prevEvents,
-            [dateKey]: [
-              ...(prevEvents[dateKey] || []),
-              modifiedEvent
-            ]
-          }));
+           const {userId, participants,... eventList} = modifiedEvent
+
+            // Fetch userId 
+            const getName = await axios.get(API_ROUTES.GET_USER(userId))
+            const name = getName.data.full_name
+
+            // Fetch if they can approve meeting or not
+            const approval = Id === userId
+
+            const updatedData = {
+              ...eventList,
+              participants, 
+              user: name, 
+              approval
+            }
+
+            const dateKey = eventData.date;
+                setEvents(prevEvents => ({
+              ...prevEvents,
+              [dateKey]: [
+                ...(prevEvents[dateKey] || []),
+                updatedData
+              ]
+            }));
 
           setSelectedDate(new Date(eventData.date));
 
@@ -222,12 +243,28 @@ export default function CalendarDock() {
           if (response.status === 200){
             toast.success("Meeting Successfully Requested.")
 
+            const {userId, participants,... eventList} = modifiedEvent
+
+            // Fetch userId 
+            const getName = await axios.get(API_ROUTES.GET_USER(userId))
+            const name = getName.data.fullname
+
+            // Fetch if they can approve meeting or not
+            const approval = Id === userId
+
+            const updatedData = {
+              ...eventList,
+              participants, 
+              user: name, 
+              approval
+            }
+
             const dateKey = eventData.date;
                 setEvents(prevEvents => ({
               ...prevEvents,
               [dateKey]: [
                 ...(prevEvents[dateKey] || []),
-                modifiedEvent
+                updatedData
               ]
             }));
 
@@ -334,8 +371,8 @@ export default function CalendarDock() {
                       className={`
                         h-32 border-r border-b border-gray-200 p-2 cursor-pointer hover:bg-gray-50 transition-colors flex flex-col
                         ${!day ? 'bg-gray-50 cursor-default' : 'bg-white'}
-                        ${isToday(day) ? 'bg-blue-50 border-blue-300' : ''}
-                        ${isSelected(day) ? 'ring-2 ring-blue-500 ring-inset' : ''}
+                        ${isToday(day) ? 'bg-sky-50 border-sky-300' : ''}
+                        ${isSelected(day) ? 'ring-2 ring-sky-500 ring-inset' : ''}
                       `}
                     >
                       {/* Date number */}
@@ -343,11 +380,11 @@ export default function CalendarDock() {
                         <>
                           <div className={`
                             text-sm font-medium mb-1 flex justify-between items-center
-                            ${isToday(day) ? 'text-blue-600' : 'text-gray-900'}
+                            ${isToday(day) ? 'text-sky-600' : 'text-gray-900'}
                           `}>
                             <span>{day.getDate()}</span>
                             {isToday(day) && (
-                              <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                              <div className="w-2 h-2 bg-sky-600 rounded-full"></div>
                             )}
                           </div>
                           
@@ -403,7 +440,7 @@ export default function CalendarDock() {
             </div>
 
             {/* Events Panel - Always visible */}
-            <div className="w-80 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div className="w-85 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-900">Events</h3>
                 <span className="text-sm text-gray-500">
@@ -418,23 +455,70 @@ export default function CalendarDock() {
                       <div key={event.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                         <div className={`w-3 h-3 rounded-full mt-1 flex-shrink-0 ${event.color}`}></div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-gray-900 mb-1 truncate">
+                        <div className="flex flex-col mb-2">
+                          <div className="text-sm font-medium text-gray-900 truncate">
                             {event.title}
                             {!event.approved && <span className="ml-1">(Scheduled)</span>}
                             {event.approved && <span className=""></span>}
+                          </div>
+                          <div className="text-xs flex mt-1">
+                            <div className="text-xs px-2  rounded-full bg-gray-300 text-gray-700">
+                              {event.session} meeting
                             </div>
-                          <div className="text-xs text-gray-500 mb-2">{event.time}</div>
-                          {event.description && (
-                            <div className="text-xs text-gray-600 mb-1 truncate">{event.description}</div>
-                          )}
-                          {event.location && (
-                            <div className="text-xs text-gray-500 truncate">{event.location}</div>
-                          )}
-                          {event.url && (
-                            <button className="text-xs text-blue-600 hover:text-blue-800 hover:underline transition-colors">
-                              Join Meeting
-                            </button>
-                          )}
+                          </div>
+                        </div>
+                          
+                          <div className="text-xs text-gray-500 mt-3 mb-1 flex flex-row ">
+                            <Clock className="w-4 h-4 mr-1"/>
+                            {(() => {
+                              const [hours, minutes] = event.time.split(":");
+                              const date = new Date();
+                              date.setHours(+hours);
+                              date.setMinutes(+minutes);
+                              return date.toLocaleTimeString("en-US", {
+                                hour: "numeric",
+                                minute: "2-digit",
+                                hour12: true
+                              });
+                            })()}  • 
+                            {(() => {
+                              const hours = Math.floor(event.duration / 60);
+                              const minutes = event.duration % 60;
+                              return `${hours > 0 ? `${hours}h ` : ""}${minutes > 0 ? `${minutes}m` : ""}`.trim();
+                            })()}
+                          </div>
+                          
+                          <div className="flex flex-row my-1">
+                            <Users className="w-4 h-4 mr-1 text-gray-500"/>
+                            {event.userId && (
+                              <div className="text-xs text-gray-500 truncate">{event.user}</div>
+                            )}
+                          </div>
+
+                          <div className="flex flex-row my-1">
+                            <MapPin className="w-4 h-4 mr-1 text-gray-500"/>
+                            {event.description && (
+                              <div className="text-xs text-gray-500 truncate">{event.location}</div>
+                            )}
+                          </div>
+
+                          <div className="flex flex-col mt-3 gap-1">
+                            {/* Confirm meeting */}
+                            {event.approved === false && event.approval === true  && (
+                              <button className={`text-xs  py-1 text-white font-medium rounded-md bg-neutral-400 transition-colors`}>
+                                Approve Session
+                              </button>
+                            )}
+
+                            {/* Join Meeting */}
+                            {event.approved === true && event.session === "online"  && (
+                              <button className={`text-xs  py-1 text-white font-medium rounded-md ${event.color === "bg-cyan-500"? "bg-sky-400" : "bg-yellow-500"} ${event.color === "bg-cyan-500"? "hover:bg-sky-600" : "hover:bg-yellow-600"} transition-colors`}>
+                                Join Meeting
+                              </button>
+                            )}
+
+                          </div>
+                          
                         </div>
                       </div>
                     ))}
