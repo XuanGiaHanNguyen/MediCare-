@@ -188,6 +188,8 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
         userId: "demo-user-id"
       };
 
+      console.log(formData)
+
       // For demo purposes, simulate API call with setTimeout
       await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -488,14 +490,6 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
               </span>
             </div>
           </div>
-
-          {/* Debug Info
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <p className="text-xs font-medium text-gray-700 mb-1">Current Selection:</p>
-            <p className="text-xs text-gray-600">
-              Type: {formData.type} | Session: {formData.session} | Participants: {formData.participants.length}
-            </p>
-          </div> */}
         </div>
 
         {/* Modal Footer */}
