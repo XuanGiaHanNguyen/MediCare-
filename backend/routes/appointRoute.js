@@ -24,7 +24,7 @@ appointRoute.route("/appointment/:id").get(
         let data = await db.collection("appointment").find({
                 $or: [
                     { userId: request.params.id },
-                    { "participants": { $elemMatch: { $eq: request.params.id } } }
+                    { participants: { $elemMatch: { $eq: request.params.id } } }
                 ]
             }).toArray();
         if (Object.keys(data).length > 0 ){

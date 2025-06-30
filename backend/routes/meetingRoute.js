@@ -27,7 +27,7 @@ meetingRoute.route("/meeting/:id").get(
             let data = await db.collection("meeting").find({
                 $or: [
                     { userId: userId },
-                    { "participants": { $elemMatch: { $eq: userId } } }
+                    { participants: { $elemMatch: { $eq: userId } } }
                 ]
             }).toArray();
 
