@@ -17,18 +17,32 @@ meetingRoute.route("/meeting").get(
     }
 )
 
-// Find One 
+// Find One for Staff
 meetingRoute.route("/meeting/:id").get(
     async (request, response) => {
-        let db = database.getDB()
-        let data = await db.collection("meeting").findOne({_id: new ObjectId(request.params.id)})
-        if (Object.keys(data).length > 0 ){
-            response.json(data)
-        } else {
-            throw new Error ("Data not found.")
+        let db = database.getDB();
+        const userId = request.params.id;
+
+        try {
+            let data = await db.collection("meeting").find({
+                $or: [
+                    { userId: userId },
+                    { "participants": { $elemMatch: { $eq: userId } } }
+                ]
+            }).toArray();
+
+            if (data.length > 0) {
+                response.json(data);
+            } else {
+                response.status(404).json({ error: "No meetings found." });
+            }
+        } catch (error) {
+            console.error("Error fetching meetings:", error);
+            response.status(500).json({ error: "Server error" });
         }
     }
-)
+);
+
 
 // Create One 
 meetingRoute.route("/meeting").post(

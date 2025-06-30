@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Calendar,
   Plus,
@@ -30,6 +30,94 @@ export default function CalendarDock() {
   ];
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const fetchEvents = async () => {
+  try {
+      // Make both API calls simultaneously
+      const [appointmentsResponse, meetingsResponse] = await Promise.all([
+        axios.get(API_ROUTES.GET_MEETING(Id)), 
+        axios.get(API_ROUTES.GET_APPOINTMENT(Id))      // Adjust endpoint as needed
+      ]);
+
+      // Extract data from responses
+      const appointments = appointmentsResponse.data || [];
+      const meetings = meetingsResponse.data || [];
+
+      // Transform and combine the events
+      const combinedEvents = {};
+
+      // Process appointments
+      appointments.forEach(appointment => {
+        const eventDate = appointment.date; // Assuming date is in YYYY-MM-DD format
+        const transformedEvent = {
+          id: `${appointment.id}`, // Prefix to avoid ID conflicts
+          title: appointment.title || 'Appointment',
+          time: appointment.time || appointment.startTime,
+          description: appointment.description || appointment.notes,
+          location: appointment.location,
+          color: 'bg-blue-500', // Default color for appointments
+          type: 'appointment',
+          approved: appointment.approved || false,
+          userId: appointment.userId,
+          // Add any other fields you need
+          ...appointment // Spread original data
+        };
+
+        // Group by date
+        if (!combinedEvents[eventDate]) {
+          combinedEvents[eventDate] = [];
+        }
+        combinedEvents[eventDate].push(transformedEvent);
+      });
+
+      // Process meetings
+      meetings.forEach(meeting => {
+        const eventDate = meeting.date; // Assuming date is in YYYY-MM-DD format
+        const transformedEvent = {
+          id: `${meeting.id}`, // Prefix to avoid ID conflicts
+          title: meeting.title || 'Meeting',
+          time: meeting.time || meeting.startTime,
+          description: meeting.description || meeting.agenda,
+          location: meeting.location,
+          url: meeting.meetingUrl || meeting.url, // For join meeting button
+          color: 'bg-green-500', // Default color for meetings
+          type: 'meeting',
+          approved: meeting.approved || false,
+          userId: meeting.userId,
+          // Add any other fields you need
+          ...meeting // Spread original data
+        };
+
+        // Group by date
+        if (!combinedEvents[eventDate]) {
+          combinedEvents[eventDate] = [];
+        }
+        combinedEvents[eventDate].push(transformedEvent);
+      });
+
+      // Sort events by time for each date
+      Object.keys(combinedEvents).forEach(date => {
+        combinedEvents[date].sort((a, b) => {
+          // Assuming time is in HH:MM format
+          return a.time.localeCompare(b.time);
+        });
+      });
+
+      // Update state
+      setEvents(combinedEvents);
+
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      toast.error('Failed to load events');
+    }
+  };
+
+  // Call this function when component mounts and when you need to refresh
+  useEffect(() => {
+    if (Id) {
+      fetchEvents();
+    }
+  }, [Id]); 
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
@@ -272,9 +360,11 @@ export default function CalendarDock() {
                                   text-xs px-2 py-1 rounded text-white truncate cursor-pointer
                                   ${event.color}
                                 `}
-                                title={`${event.time} ${event.title}`}
+                                title={`${event.time} ${event.title} - ${event.approved ? 'Approved' : 'Pending'}`}
                               >
                                 <span className="font-medium">{event.time}</span> {event.title}
+                                {!event.approved && <span className="ml-1">(Scheduled)</span>}
+                                {event.approved && <span></span>}
                               </div>
                             ))}
                             {dayEvents.length > 3 && (
@@ -328,7 +418,11 @@ export default function CalendarDock() {
                       <div key={event.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                         <div className={`w-3 h-3 rounded-full mt-1 flex-shrink-0 ${event.color}`}></div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-gray-900 mb-1 truncate">{event.title}</div>
+                          <div className="text-sm font-medium text-gray-900 mb-1 truncate">
+                            {event.title}
+                            {!event.approved && <span className="ml-1">(Scheduled)</span>}
+                            {event.approved && <span className=""></span>}
+                            </div>
                           <div className="text-xs text-gray-500 mb-2">{event.time}</div>
                           {event.description && (
                             <div className="text-xs text-gray-600 mb-1 truncate">{event.description}</div>

@@ -17,11 +17,16 @@ appointRoute.route("/appointment").get(
     }
 )
 
-// Find One 
+// Find appointment 
 appointRoute.route("/appointment/:id").get(
     async (request, response) => {
         let db = database.getDB()
-        let data = await db.collection("appointment").findOne({_id: new ObjectId(request.params.id)})
+        let data = await db.collection("appointment").find({
+                $or: [
+                    { userId: request.params.id },
+                    { "participants": { $elemMatch: { $eq: request.params.id } } }
+                ]
+            }).toArray();
         if (Object.keys(data).length > 0 ){
             response.json(data)
         } else {
