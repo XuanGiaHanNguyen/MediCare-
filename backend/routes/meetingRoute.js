@@ -49,6 +49,7 @@ meetingRoute.route("/meeting").post(
             let db = database.getDB()
             let mongoObject = {
                 approved: request.body.approved, 
+                link: request.body.link, 
                 color: request.body.color, 
                 createdAt: request.body.createdAt, 
                 date: request.body.date, 
@@ -70,7 +71,7 @@ meetingRoute.route("/meeting").post(
     }
 )
 
-// Edit One 
+// Approve one meeting 
 meetingRoute.route("/meeting/:id").put(
     async (request, response) => {
         try {
@@ -78,17 +79,6 @@ meetingRoute.route("/meeting/:id").put(
             let mongoObject = {
                 $set: {
                     approved: request.body.approved, 
-                    color: request.body.color, 
-                    createdAt: request.body.createdAt, 
-                    date: request.body.date, 
-                    description: request.body.description, 
-                    duration: request.body.duration,
-                    location: request.body.location, 
-                    participants: request.body.participants, 
-                    session: request.body.session, 
-                    time: request.body.time, 
-                    title: request.body.title, 
-                    userId: request.body.userId
                 }
             }
             let data = await db.collection("meeting").updateOne({_id: new ObjectId(request.params.id)}, mongoObject)
@@ -99,6 +89,9 @@ meetingRoute.route("/meeting/:id").put(
         }
     }
 )
+
+// Approve a meeting (after approval, send it off to google calendar)
+
 
 // Delete One - Fixed route path
 meetingRoute.route("/meeting/:id").delete(

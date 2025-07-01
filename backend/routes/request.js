@@ -76,7 +76,6 @@ requestRoute.route("/request/staff/:id").put(
         )
         
         response.json(data)
-        
     }
 )
 

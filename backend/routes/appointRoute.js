@@ -47,6 +47,7 @@ appointRoute.route("/appointment").post(
             let db = database.getDB()
             let mongoObject = {
                 approved: request.body.approved, 
+                link: request.body.link, 
                 color: request.body.color, 
                 createdAt: request.body.createdAt, 
                 date: request.body.date, 
