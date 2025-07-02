@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_ROUTES from "../constant/APIRoutes";
+import { formatDistanceToNow } from 'date-fns'
 
 const HospitalHeader = (props) => {
   const [staff, setStaff] = useState("")
@@ -86,11 +87,21 @@ const HospitalHeader = (props) => {
       response = await axios.get(API_ROUTES.GET_REQUEST(userId))
       const notifications = response.data 
 
-      let notificationData = []
-      notificationData = notifications.filter(notification => notification.isRead === false)
-
-      console.log(notificationData)
-      setNotifications(notificationData)
+      let notificationsData = []
+  
+      if (Array.isArray(response.data)) {
+        // Filter array to only include notifications where seen is false
+        notificationsData = response.data.filter(notification => notification.isRead === false)
+      } else if (response.data && typeof response.data === 'object') {
+        if (response.data.isRead === false) {
+          notificationsData = [response.data]
+        }
+      } else {
+        notificationsData = []
+      }
+      
+      console.log("Filtered notifications (unseen only):", notificationsData)
+      setNotifications(notificationsData)
 
     } catch (error) {
       console.error("Error fetching notifications:", error)
@@ -225,17 +236,17 @@ const HospitalHeader = (props) => {
                             <h4 className={`text-md font-medium ${
                               !notification.isRead ? 'text-gray-900' : 'text-gray-700'
                             }`}>
-                             {staff === "Staff" ? `Added new patient`: `Added to a Patient List`} 
+                             {notification.title} 
                             </h4>
                             {!notification.isRead && (
                               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                             )}
                           </div>
                           <p className="text-sm text-gray-600 mt-1">
-                            {staff === "Staff" ? `Added ${notification.patientName} as a new patient`: `You've been added as ${notification.staffName || 'Unknown Staff'}'s patient.`}
+                            {notification.message}
                           </p>
                           <p className="text-xs text-gray-500 mt-2">
-                            
+                            {formatDistanceToNow(new Date(notification.createdAt), {addSuffix: true})}
                           </p>
                         </div>
                         <div className="flex items-center gap-1 ml-2">
