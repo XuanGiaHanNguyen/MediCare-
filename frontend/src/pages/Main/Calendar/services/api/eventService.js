@@ -77,10 +77,47 @@ export const saveEvent = async (eventData, userId) => {
 
     if (modifiedEvent.type === "appointment") {
       const { type, ...saveObject } = modifiedEvent;
+
+      const userToNotify = saveObject.participants.map(object => object.userId)
+      console.log(userToNotify)
+
+     for (const item of userToNotify) {
+
+        const requestData = {
+          userId: item,
+          type: "scheduled_appointment",
+          title: `An appointment has been scheduled`,
+          message: `You have been added to a scheduled appointment on ${new Date(saveObject.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}. Please check your calendar to approve it.`,
+          isRead: false,
+          createdAt: new Date()
+        }
+
+        await axios.post(API_ROUTES.CREATE_REQUEST, requestData)
+
+      }
+
       const response = await appointmentService.createAppointment(saveObject);
       return response.status === 200;
+
     } else if (modifiedEvent.type === "meeting") {
       const { type, ...saveObject } = modifiedEvent;
+
+      const userToNotify = saveObject.participants.map(object => object.userId)
+
+      for (const item of userToNotify) {
+          const requestData = {
+            userId: item,
+            type: "scheduled_meeting",
+            title: `A meeting has been scheduled`,
+            message: `You have been added to a scheduled meeting on ${new Date(saveObject.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}. Please check your calendar to approve it.`,
+            isRead: false,
+            createdAt: new Date()
+          }
+
+          await axios.post(API_ROUTES.CREATE_REQUEST, requestData)
+
+        }
+
       const response = await meetingService.createMeeting(saveObject);
       return response.status === 200;
     }

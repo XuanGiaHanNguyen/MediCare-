@@ -2,12 +2,65 @@ import React from "react";
 import { Clock, Users, MapPin } from "lucide-react";
 import { formatTime, formatDuration } from "./utils/dateUtils"
 
+import API_ROUTES from "../../../constant/APIRoutes";
+import axios from "axios";
+import toast from "react-hot-toast"
+
 export default function EventCard({ event, userId, onRefreshEvents }) {
   const handleApproveEvent = async () => {
     // TODO: Implement approve event functionality
     console.log('Approving event:', event._id);
-    // Call API to approve event
-    // Refresh events after approval
+    if (event.color === "bg-amber-500"){
+      const approving = await axios.put(API_ROUTES.APPROVE_MEETING(event._id))
+      if (approving.status === 200){
+        toast.success(`${event.title} have been approved`)
+
+        const userToNotify = event.participants.map(object => object.userId)
+        const ownerToNotify = event.userId
+        userToNotify.push(ownerToNotify)
+
+        console.log(userToNotify)
+
+        for (const item of userToNotify) {
+            const requestData = {
+              userId: item,
+              type: "approved_appointment",
+              title: `An appointment has been approved`,
+              message: `One of your appointment on ${new Date(event.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} have been approved. Please check your calendar for more details.`,
+              isRead: false,
+              createdAt: new Date()
+            }
+            await axios.post(API_ROUTES.CREATE_REQUEST, requestData)
+          }  
+      } else {
+        toast.error("There was an error in the process. Please try again.")
+      }
+    } else if (event.color === "bg-cyan-500"){
+      const approving = await axios.put(API_ROUTES.APPROVE_APPOINTMENT(event._id))
+      if (approving.status === 200){
+        toast.success(`${event.title} have been approved`)
+
+        const userToNotify = event.participants.map(object => object.userId)
+        const ownerToNotify = event.userId
+        userToNotify.push(ownerToNotify)
+
+        console.log(userToNotify)
+
+        for (const item of userToNotify) {
+            const requestData = {
+              userId: item,
+              type: "approved_appointment",
+              title: `An appointment has been approved`,
+              message: `One of your appointment on ${new Date(event.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} have been approved. Please check your calendar for more details.`,
+              isRead: false,
+              createdAt: new Date()
+            }
+            await axios.post(API_ROUTES.CREATE_REQUEST, requestData)
+          }  
+      } else {
+        toast.error("There was an error in the process. Please try again.")
+      }
+    }
     onRefreshEvents();
   };
 

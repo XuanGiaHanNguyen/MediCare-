@@ -76,18 +76,7 @@ appointRoute.route("/appointment/:id").put(
             let db = database.getDB()
             let mongoObject = {
                 $set: {
-                    approved: request.body.approved, 
-                    color: request.body.color, 
-                    createdAt: request.body.createdAt, 
-                    date: request.body.date, 
-                    description: request.body.description, 
-                    duration: request.body.duration,
-                    location: request.body.location, 
-                    participants: request.body.participants, 
-                    session: request.body.session, 
-                    time: request.body.time, 
-                    title: request.body.title, 
-                    userId: request.body.userId
+                    approved: true
                 }
             }
             let data = await db.collection("appointment").updateOne({_id: new ObjectId(request.params.id)}, mongoObject)

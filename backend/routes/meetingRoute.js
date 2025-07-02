@@ -18,7 +18,7 @@ meetingRoute.route("/meeting").get(
     }
 )
 
-// Find One for Staff
+// Find One 
 meetingRoute.route("/meeting/:id").get(
     async (request, response) => {
         let db = database.getDB();
@@ -78,7 +78,7 @@ meetingRoute.route("/meeting/:id").put(
             let db = database.getDB()
             let mongoObject = {
                 $set: {
-                    approved: request.body.approved, 
+                    approved: true, 
                 }
             }
             let data = await db.collection("meeting").updateOne({_id: new ObjectId(request.params.id)}, mongoObject)

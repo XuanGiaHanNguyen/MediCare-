@@ -24,7 +24,7 @@ requestRoute.route("/request").post(
 requestRoute.route("/request/:id").get(
     async (request, response) => {
         let db = database.getDB()
-        const data = await db.collection("request").findOne({userId: request.params.id})
+        const data = await db.collection("request").find({userId: request.params.id}).toArray()
         response.json(data)
     }
 )

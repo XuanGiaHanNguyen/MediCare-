@@ -6,7 +6,7 @@ const API_ROUTES = {
     GET_APPOINTMENTS: `${BASE_API_URL}/appointment`, 
     GET_APPOINTMENT: (app_id) => `${BASE_API_URL}/appointment/${app_id}`, 
     CREATE_APPOINTMENT: `${BASE_API_URL}/appointment`, 
-    EDIT_APPOINTMENT: (app_id) => `${BASE_API_URL}/appointment/${app_id}`,
+    APPROVE_APPOINTMENT: (app_id) => `${BASE_API_URL}/appointment/${app_id}`,
     DELETE_APPOINTMENT: (app_id) => `${BASE_API_URL}/appointment/${app_id}`,
 
     // Documents
@@ -19,8 +19,7 @@ const API_ROUTES = {
     GET_MEETINGS: `${BASE_API_URL}/meeting`, 
     GET_MEETING: (meeting_id) => `${BASE_API_URL}/meeting/${meeting_id}`, 
     CREATE_MEETING: `${BASE_API_URL}/meeting`, 
-    EDIT_MEETING: (meeting_id) => `${BASE_API_URL}/meeting/${meeting_id}`,
-    DELETE_MEETING: (meeting_id) => `${BASE_API_URL}/meeting/${meeting_id}`,
+    APPROVE_MEETING: (meeting_id) => `${BASE_API_URL}/meeting/${meeting_id}`,
 
     // Patient (none-staff)
     GET_PATIENTS: `${BASE_API_URL}/patient`, 

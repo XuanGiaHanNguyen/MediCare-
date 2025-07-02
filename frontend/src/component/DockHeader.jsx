@@ -86,6 +86,7 @@ const HospitalHeader = (props) => {
       let response;
       response = await axios.get(API_ROUTES.GET_REQUEST(userId))
       const notifications = response.data 
+      console.log(notifications)
 
       let notificationsData = []
   
@@ -226,8 +227,8 @@ const HospitalHeader = (props) => {
                   notifications.map((notification) => (
                     <div
                       key={notification._id}
-                      className={`px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                        !notification.isRead ? 'bg-blue-50' : ''
+                      className={`px-4 py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors ${
+                        !notification.isRead ? 'bg-sky-50' : ''
                       }`}
                     >
                       <div className="flex items-start justify-between">
@@ -239,7 +240,7 @@ const HospitalHeader = (props) => {
                              {notification.title} 
                             </h4>
                             {!notification.isRead && (
-                              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                              <div className="w-2 h-2 bg-sky-500 rounded-full"></div>
                             )}
                           </div>
                           <p className="text-sm text-gray-600 mt-1">
@@ -248,9 +249,6 @@ const HospitalHeader = (props) => {
                           <p className="text-xs text-gray-500 mt-2">
                             {formatDistanceToNow(new Date(notification.createdAt), {addSuffix: true})}
                           </p>
-                        </div>
-                        <div className="flex items-center gap-1 ml-2">
-                          
                         </div>
                       </div>
                     </div>
