@@ -12,6 +12,7 @@ export function useEvents(userId) {
     setLoading(true);
     try {
       const eventData = await fetchAllEvents(userId);
+      console.log('Fetched events:', eventData);
       setEvents(eventData);
     } catch (error) {
       console.error('Error fetching events:', error);

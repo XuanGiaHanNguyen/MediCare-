@@ -25,14 +25,19 @@ export default function PaDock() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [patients, setPatients] = useState([]);
   const Id = localStorage.getItem("Id")
+  const [staffName, getStaffName] = useState("")
 
   useEffect(()=> {
     async function getPatients(){
+
+      const staff = await axios.get(API_ROUTES.GET_STAFF(Id))
+      getStaffName(staff.data.name)
+
       const response = await axios.get(API_ROUTES.GET_PATIENTS)
       const allPatient = response.data
       const staffPatient = allPatient.filter(patient => patient.staff_in_charge === Id)
-      console.log(staffPatient)
       setPatients(staffPatient)
+
     }
     getPatients()
   },[])
@@ -75,16 +80,15 @@ export default function PaDock() {
     
     const staffData = {
       patient: patientToAdd.Id
-    }
+    } 
 
-    //const availField = ["staff", "patient", "condition", "status", "date", "time"]
     const requestData = {
-      staff: Id,
-      patient: patientToAdd.Id, 
-      condition: patientToAdd.condition, 
-      status: patientToAdd.status, 
-      staffSeen: false, 
-      patientSeen: false
+      userId: patientToAdd.Id,
+      type: "add_patient",
+      title: `Added to Patient List`,
+      message: `You've been added as ${staffName}'s patient`,
+      isRead: false,
+      createdAt: new Date()
     }
 
     const [none, staff, request]= await Promise.all([

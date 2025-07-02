@@ -8,7 +8,7 @@ requestRoute.route("/request").post(
     async (request, response) => {
         let db = database.getDB()
 
-        const availField = ["staff", "patient", "condition", "status", "date", "time", "staffSeen", "patientSeen"]
+        const availField = ["userId", "type", "title", "message", "data", "isRead", "createdAt"]
         let mongoObject = {}
         for (let field of availField){
             mongoObject[field] = request.body[field]!== undefined ? request.body[field] : null;
@@ -24,21 +24,10 @@ requestRoute.route("/request").post(
 requestRoute.route("/request/:id").get(
     async (request, response) => {
         let db = database.getDB()
-        const data = await db.collection("request").findOne({patient: request.params.id})
+        const data = await db.collection("request").findOne({userId: request.params.id})
         response.json(data)
     }
 )
-
-//Show Staff Request 
-requestRoute.route("/request/staff/:id").get(
-    async (request, response) => {
-        let db = database.getDB()
-        const data = await db.collection("request").findOne({staff: request.params.id})
-        response.json(data)
-        
-    }
-)
-
 
 // Seen Request 
 requestRoute.route("/request/:id").put(
@@ -47,12 +36,12 @@ requestRoute.route("/request/:id").put(
 
         const updateObject = {
             $set: {
-                patientSeen: true
+                isRead: true
             }
         }
         
         let data = await db.collection("request").updateOne(
-            {patient: request.params.id}, updateObject
+            {userId: request.params.id}, updateObject
         )
         
         response.json(data)
@@ -60,23 +49,5 @@ requestRoute.route("/request/:id").put(
     }
 )
 
-// Seen Request 
-requestRoute.route("/request/staff/:id").put(
-    async (request, response) => {
-        let db = database.getDB()
-
-        const updateObject = {
-            $set: {
-                staffSeen: true
-            }
-        }
-        
-        let data = await db.collection("request").updateOne(
-            {staff: request.params.id}, updateObject
-        )
-        
-        response.json(data)
-    }
-)
 
 module.exports = requestRoute

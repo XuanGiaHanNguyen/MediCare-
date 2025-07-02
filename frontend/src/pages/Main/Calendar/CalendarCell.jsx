@@ -17,7 +17,7 @@ export default function CalendarCell({
     <div
       onClick={onSelect}
       className={`
-        h-32 border-r border-b border-gray-200 p-2 cursor-pointer hover:bg-gray-50 transition-colors flex flex-col
+        h-32 border border-gray-200 p-2 cursor-pointer hover:bg-gray-50 transition-colors flex flex-col
         ${isToday ? 'bg-sky-50 border-sky-300' : 'bg-white'}
         ${isSelected ? 'ring-2 ring-sky-500 ring-inset' : ''}
       `}

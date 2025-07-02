@@ -5,7 +5,7 @@ import { formatTime, formatDuration } from "./utils/dateUtils"
 export default function EventCard({ event, userId, onRefreshEvents }) {
   const handleApproveEvent = async () => {
     // TODO: Implement approve event functionality
-    console.log('Approving event:', event.id);
+    console.log('Approving event:', event._id);
     // Call API to approve event
     // Refresh events after approval
     onRefreshEvents();
@@ -14,7 +14,7 @@ export default function EventCard({ event, userId, onRefreshEvents }) {
   const handleJoinMeeting = () => {
     // TODO: Implement join meeting functionality
     // This could integrate with Google Meet API
-    console.log('Joining meeting:', event.id);
+    console.log('Joining meeting:', event._id);
     if (event.url) {
       window.open(event.url, '_blank');
     }
@@ -64,7 +64,7 @@ export default function EventCard({ event, userId, onRefreshEvents }) {
           {event.approved === false && event.approval === true && (
             <button 
               onClick={handleApproveEvent}
-              className="text-xs py-1 text-white font-medium rounded-md bg-green-500 hover:bg-green-600 transition-colors"
+              className="text-xs py-1 text-white font-medium rounded-md bg-gray-400 hover:bg-gray-500 transition-colors"
             >
               Approve Session
             </button>
