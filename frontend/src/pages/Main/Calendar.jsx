@@ -8,6 +8,7 @@ import NavigationSidebar from "./Calendar/Sidebar/NavigationSidebar"
 import CalendarGrid from "./Calendar/CalendarGrid"
 import EventsList from "./Calendar/EventsList"
 import AddEventModal from "./Calendar/AddEventModal"
+import ConnectGoogle from "./Calendar/Connect";
 
 import { useCalendar } from "./Calendar/Hooks/useCalendar"
 import { useEvents } from "./Calendar/Hooks/useEvents"
@@ -18,6 +19,12 @@ export default function CalendarDock() {
   const Id = localStorage.getItem("Id");
   
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConnectGoogleOpen, setIsConnectGoogleOpen] = useState(true); // Changed: Start with true to auto-open
+
+  const handleCloseConnectGoogle = () => {
+    setIsConnectGoogleOpen(false); // Changed: Close the ConnectGoogle modal
+  };
+
   
   const {
     currentDate,
@@ -114,6 +121,12 @@ export default function CalendarDock() {
         onClose={handleCloseModal}
         selectedDate={selectedDate}
         onSaveEvent={handleSaveEvent}
+      />
+      
+      {/* Changed: Pass isOpen prop and use correct close handler */}
+      <ConnectGoogle
+        isOpen={isConnectGoogleOpen}
+        onClose={handleCloseConnectGoogle}
       />
     </div>
   );
