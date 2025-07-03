@@ -8,7 +8,7 @@ export default function NavigationSidebar({ currentPage, userId }) {
   const navigationItems = [
     { id: 'home', icon: Home, path: `/dock/staff/${userId}`, label: 'Home' },
     { id: 'calendar', icon: Calendar, path: `/calendar/staff/${userId}`, label: 'Calendar' },
-    { id: 'perscription', icon: Pill, path: `/perscription/staff/${userId}`, label: 'Perscription' },
+    { id: 'perscription', icon: Pill, path: `/prescription/staff/${userId}`, label: 'Perscription' },
     { id: 'docs', icon: FileText, path: `/docs/staff/${userId}`, label: 'Documents' },
     { id: 'patients', icon: Bed, path: `/patinfo/${userId}`, label: 'Patients' }
   ];

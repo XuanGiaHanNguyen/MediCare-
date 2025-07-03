@@ -1,4 +1,5 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom"
+import OAuthHandler from "./OAthHandler"
 
 import Landing from "./pages/Landing"
 import RoleQuestionaire from "./pages/AuthSteps/RoleQuest"
@@ -35,6 +36,7 @@ function App() {
   return (
     <BrowserRouter>
     <Toaster position="top-center" />
+    <OAuthHandler />
       <Routes>
         <Route path="/" element={<Landing/>}/>
 
