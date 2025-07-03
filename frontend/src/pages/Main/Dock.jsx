@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   Calendar,
-  Plus,
+  Pill,
   Settings,
   FileText,
   Home,
@@ -123,6 +123,9 @@ export default function Dashboard() {
           </button>
           <button onClick={(e)=>navigate(`/calendar/staff/${Id}`)} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
             <Calendar className="w-5 h-5" />
+          </button>
+          <button onClick={(e)=>navigate(`/prescription/staff/${Id}`)} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <Pill className="w-5 h-5" />
           </button>
           <button onClick={(e)=>navigate(`/docs/staff/${Id}`)} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
             <FileText className="w-5 h-5" />

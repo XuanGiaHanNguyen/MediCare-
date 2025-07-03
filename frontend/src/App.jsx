@@ -12,6 +12,7 @@ import DocumentDock from "./pages/Main/Documents"
 import PaDock from "./pages/Main/PaList"
 import Profile from "./pages/Main/Profile"
 import ProfileP from "./pages/Patient/ProfileP"
+import Prescription from "./pages/Main/Perscribe"
 
 import Dockboard from "./pages/Patient/DockP"
 import CalendarPDock from "./pages/Patient/CalendarP"
@@ -45,6 +46,16 @@ function App() {
             </StaffRoute>
           }
         />
+
+        <Route 
+          path="/prescription/staff/:id" 
+          element={
+            <StaffRoute>
+                <Prescription/>
+            </StaffRoute>
+          }
+        />
+
 
         <Route 
           path="/dock/patient/:id" 

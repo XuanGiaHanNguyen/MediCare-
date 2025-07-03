@@ -1,4 +1,4 @@
-import { Calendar, FileText, Home, Bed } from "lucide-react";
+import { Calendar, FileText, Home, Bed, Pill } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function SidebarNav({ userId }) {
@@ -17,6 +17,9 @@ export default function SidebarNav({ userId }) {
         className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors"
       >
         <Calendar className="w-5 h-5" />
+      </button>
+      <button onClick={(e)=>navigate(`/prescription/staff/${userId}`)} className="w-12 h-12 text-gray-400 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <Pill className="w-5 h-5" />
       </button>
       <button 
         onClick={() => navigate(`/docs/staff/${userId}`)} 
