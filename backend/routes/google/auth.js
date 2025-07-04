@@ -4,11 +4,12 @@ const database = require("../../connect")
 
 const router = express.Router();
 
-const db = database.getDB()
+
 
 // Helper function to save tokens to MongoDB
 async function saveTokensToMongo(userId, tokens, userInfo) {
   try {
+    const db = database.getDB()
     const collection = db.collection('google');
     
     const googleAuth = {
@@ -37,6 +38,7 @@ async function saveTokensToMongo(userId, tokens, userInfo) {
 // Helper function to get tokens from MongoDB
 async function getTokensFromMongo(userId) {
   try {
+    const db = database.getDB()
     const collection = db.collection('google');
     const result = await collection.findOne({ userId: userId });
     return result;
@@ -49,6 +51,7 @@ async function getTokensFromMongo(userId) {
 // Helper function to delete tokens from MongoDB
 async function deleteTokensFromMongo(userId) {
   try {
+    const db = database.getDB()
     const collection = db.collection('google');
     await collection.deleteOne({ userId: userId });
     console.log('Tokens deleted from MongoDB for user:', userId);
@@ -134,6 +137,7 @@ router.get('/google/callback', async (req, res) => {
       const userEmail = userInfo.data.email;
 
       // Get your own user from the users collection
+      const db = database.getDB()
       const usersCollection = db.collection('user');
       const existingUser = await usersCollection.findOne({ email: userEmail });
 
@@ -229,6 +233,7 @@ router.get('/google/callback', async (req, res) => {
       }
 
       // Get your own user from the users collection
+      const db = database.getDB()
       const usersCollection = db.collection('user');
       const existingUser = await usersCollection.findOne({ email: userEmail });
 

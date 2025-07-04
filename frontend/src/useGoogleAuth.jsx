@@ -1,8 +1,6 @@
 import { useState, useEffect, useContext, createContext } from 'react';
 import axios from 'axios';
 
-import API_ROUTES from './constant/APIRoutes';
-
 // Create context for Google auth state
 const GoogleAuthContext = createContext();
 
@@ -19,7 +17,7 @@ export function GoogleAuthProvider({ children }) {
   const checkAuthStatus = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${API_ROUTES}/auth/status`, {
+      const response = await axios.get(`http://localhost:3000/auth/status`, {
         withCredentials: true
       });
       
@@ -41,7 +39,7 @@ export function GoogleAuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await axios.post(`${API_ROUTE}/auth/logout`, {}, {
+      await axios.post(`http://localhost:3000/auth/logout`, {}, {
         withCredentials: true
       });
       setIsAuthenticated(false);
@@ -88,7 +86,7 @@ export function useGoogleAuthStatus() {
   const checkAuthStatus = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${API_ROUTES}/auth/status`, {
+      const response = await axios.get(`http://localhost:3000/auth/status`, {
         withCredentials: true
       });
       
@@ -110,7 +108,7 @@ export function useGoogleAuthStatus() {
 
   const logout = async () => {
     try {
-      await axios.post(`${API_ROUTES}/auth/logout`, {}, {
+      await axios.post(`http://localhost:3000/auth/logout`, {}, {
         withCredentials: true
       });
       setIsAuthenticated(false);

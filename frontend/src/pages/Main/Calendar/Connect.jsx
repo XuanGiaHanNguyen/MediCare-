@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { X, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
+import { useGoogleAuth } from "../../../useGoogleAuth"; // Adjust path as needed
 
 import Calendar from "../../../assets/calendar.png"
 import Meet from "../../../assets/meet.png"
@@ -10,31 +11,23 @@ import toast from "react-hot-toast"
 
 export default function ConnectGoogle({ isOpen, onClose }) {
   const [isConnecting, setIsConnecting] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [userInfo, setUserInfo] = useState(null);
+  
+  // Use the global auth state instead of local state
+  const { isAuthenticated, user, isLoading, checkAuthStatus } = useGoogleAuth();
 
-  // Check if user is already connected when component mounts
+  // Check for OAuth callback parameters when component mounts
   useEffect(() => {
-    if (isOpen) {
-      checkConnectionStatus();
-    }
-  }, [isOpen]);
-
-  // Check connection status on app load (outside of modal)
-  useEffect(() => {
-    // Check on initial app load
-    checkConnectionStatus();
-    
-    // Also check URL parameters for auth callback
     const urlParams = new URLSearchParams(window.location.search);
     const authStatus = urlParams.get('auth');
     
     if (authStatus === 'success') {
-      setIsConnected(true);
       toast.success("Google account connected successfully!");
+      // Refresh the global auth state
+      checkAuthStatus();
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
+      // Close the modal
+      onClose();
     } else if (authStatus === 'error') {
       const reason = urlParams.get('reason');
       toast.error(`Failed to connect Google account: ${reason}`);
@@ -43,52 +36,21 @@ export default function ConnectGoogle({ isOpen, onClose }) {
     } else if (authStatus === 'partial') {
       const reason = urlParams.get('reason');
       toast.warning(`Partial connection: ${reason}`);
-      setIsConnected(true); // Still connected, just with warnings
+      // Refresh the global auth state
+      checkAuthStatus();
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
+      // Close the modal
+      onClose();
     }
-  }, []);
+  }, [checkAuthStatus, onClose]);
 
-  const checkConnectionStatus = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get(`http://localhost:3000/auth/status`, {
-        withCredentials: true // Important for session cookies
-      });
-      
-      if (response.data.authenticated) {
-        setIsConnected(true);
-        setUserInfo(response.data.user);
-      } else {
-        setIsConnected(false);
-        setUserInfo(null);
-      }
-    } catch (error) {
-      console.error('Error checking connection status:', error);
-      setIsConnected(false);
-      setUserInfo(null);
-    } finally {
-      setIsLoading(false);
+  // Close modal automatically if user becomes authenticated
+  useEffect(() => {
+    if (isAuthenticated && isOpen) {
+      onClose();
     }
-  };
-
-  // Function to load authentication for a specific user (if you have user management)
-  const loadAuthForUser = async (userId) => {
-    try {
-      const response = await axios.get(`${API_ROUTESS}/auth/load-auth/${userId}`, {
-        withCredentials: true
-      });
-      
-      if (response.data.authenticated) {
-        setIsConnected(true);
-        setUserInfo(response.data.user);
-        toast.success("Authentication loaded successfully!");
-      }
-    } catch (error) {
-      console.error('Error loading auth for user:', error);
-      toast.error("Failed to load authentication");
-    }
-  };
+  }, [isAuthenticated, isOpen, onClose]);
 
   const handleConnectGoogle = async () => {
     setIsConnecting(true);
@@ -118,7 +80,6 @@ export default function ConnectGoogle({ isOpen, onClose }) {
       }
       
       // Use window.location.href for full page redirect to external URL
-      // This will cause a full page navigation to your backend OAuth endpoint
       console.log('Performing full page redirect to:', oauthUrl);
       window.location.href = oauthUrl;
       
@@ -134,8 +95,8 @@ export default function ConnectGoogle({ isOpen, onClose }) {
       await axios.post(`${API_ROUTES}/auth/logout`, {}, {
         withCredentials: true
       });
-      setIsConnected(false);
-      setUserInfo(null);
+      // Refresh the global auth state
+      await checkAuthStatus();
       toast.success("Google account disconnected");
     } catch (error) {
       console.error('Error disconnecting:', error);
@@ -146,11 +107,6 @@ export default function ConnectGoogle({ isOpen, onClose }) {
   const handleSkipForNow = () => {
     onClose();
   };
-
-  // Don't show modal if user is already connected
-  if (isConnected && !isOpen) {
-    return null;
-  }
 
   // Show loading state
   if (isLoading && isOpen) {
@@ -194,15 +150,15 @@ export default function ConnectGoogle({ isOpen, onClose }) {
           </div>
 
           {/* Connection Status */}
-          {isConnected && (
+          {isAuthenticated && (
             <div className="bg-green-50 border border-green-200 rounded-xl p-4">
               <div className="flex items-center justify-center gap-2 text-green-700">
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-medium">Google Account Connected</span>
               </div>
-              {userInfo && (
+              {user && (
                 <div className="mt-2 text-sm text-green-600">
-                  Connected as: {userInfo.email}
+                  Connected as: {user.email}
                 </div>
               )}
             </div>
@@ -211,10 +167,10 @@ export default function ConnectGoogle({ isOpen, onClose }) {
           {/* Main Message */}
           <div className="space-y-3">
             <h3 className="text-2xl font-bold text-gray-700">
-              {isConnected ? "Connected Successfully!" : "Get the Best Experience"}
+              {isAuthenticated ? "Connected Successfully!" : "Get the Best Experience"}
             </h3>
             <p className="text-gray-500 leading-relaxed">
-              {isConnected 
+              {isAuthenticated 
                 ? "Your Google Calendar and Meet are now connected. You can sync events and schedule meetings seamlessly."
                 : "Connect your Google account to sync events automatically and schedule meetings seamlessly for the optimal calendar experience."
               }
@@ -223,7 +179,7 @@ export default function ConnectGoogle({ isOpen, onClose }) {
 
           {/* Action Buttons */}
           <div className="space-y-3 pt-4">
-            {!isConnected ? (
+            {!isAuthenticated ? (
               <>
                 <button
                   onClick={handleConnectGoogle}
