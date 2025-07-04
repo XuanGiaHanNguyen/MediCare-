@@ -12,14 +12,18 @@ const oauth2Client = new google.auth.OAuth2(
 const SCOPES = [
   'https://www.googleapis.com/auth/calendar',
   'https://www.googleapis.com/auth/calendar.events',
-  'https://www.googleapis.com/auth/meetings.space.created'
+  'https://www.googleapis.com/auth/meetings.space.created',
+  'https://www.googleapis.com/auth/userinfo.email',
+  'https://www.googleapis.com/auth/userinfo.profile',
+  'openid'
 ];
 
 function getAuthUrl() {
   return oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES,
-    prompt: 'consent'
+    prompt: 'consent', 
+    include_granted_scopes: true
   });
 }
 
@@ -36,5 +40,6 @@ module.exports = {
   oauth2Client,
   getAuthUrl,
   getAccessToken,
-  setCredentials
+  setCredentials, 
+  SCOPES
 };
