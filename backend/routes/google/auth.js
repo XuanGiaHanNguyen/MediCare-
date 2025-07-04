@@ -139,12 +139,34 @@ router.get('/google/callback', async (req, res) => {
 
       if (!existingUser) {
         console.error("User not found in internal database");
-        return res.redirect(`${process.env.FRONTEND_URL}?auth=error&reason=user_not_found`);
+        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth=error&reason=user_not_found`);
       }
 
-      const userId = existingUser._id.toString(); // This is your internal userId
+      // Debug the _id field
+      console.log('Raw _id:', existingUser._id);
+      console.log('_id type:', typeof existingUser._id);
+      console.log('_id constructor:', existingUser._id?.constructor?.name);
+
+      // Ensure proper string conversion
+      let userId;
+      if (existingUser._id) {
+        if (typeof existingUser._id === 'string') {
+          userId = existingUser._id;
+        } else if (existingUser._id.toString) {
+          userId = existingUser._id.toString();
+        } else {
+          userId = String(existingUser._id);
+        }
+      }
+      
       const isStaff = existingUser.is_staff;
-      console.log(userId)
+      console.log('User ID:', userId, 'Is Staff:', isStaff);
+      
+      // Validate userId is a string
+      if (typeof userId !== 'string' || !userId) {
+        console.error('Invalid userId:', userId, 'Type:', typeof userId);
+        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth=error&reason=invalid_user_id`);
+      }
       
       // Save tokens to MongoDB
       const saveResult = await saveTokensToMongo(userId, tokens, req.session.user);
@@ -157,15 +179,27 @@ router.get('/google/callback', async (req, res) => {
       
       console.log('Session data stored, redirecting to frontend...');
       
-      // Redirect to frontend with success
-      if (isStaff === true){
-        res.redirect(`${process.env.FRONTEND_URL || `http://localhost:5173/calendar/staff/${userId}`}?auth=success`);
-      } else if (isStaff === false){
-        res.redirect(`${process.env.FRONTEND_URL || `http://localhost:5173/calendar/patient/${userId}`}?auth=success`);
-      } else {
-        res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth=error`);
-      }
+      // Fixed redirect URLs
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
       
+      console.log('About to redirect with:', {
+        frontendUrl,
+        userId,
+        isStaff,
+        userIdType: typeof userId
+      });
+      
+      if (isStaff === true) {
+        const redirectUrl = `${frontendUrl}/calendar/staff/${userId}?auth=success`;
+        console.log('Staff redirect URL:', redirectUrl);
+        res.redirect(redirectUrl);
+      } else if (isStaff === false) {
+        const redirectUrl = `${frontendUrl}/calendar/patient/${userId}?auth=success`;
+        console.log('Patient redirect URL:', redirectUrl);
+        res.redirect(redirectUrl);
+      } else {
+        res.redirect(`${frontendUrl}?auth=error&reason=invalid_user_type`);
+      }
       
     } catch (userInfoError) {
       console.error('Error getting user info or testing calendar access:', userInfoError);
@@ -178,28 +212,78 @@ router.get('/google/callback', async (req, res) => {
       // Still store tokens but redirect with warning
       req.session.tokens = tokens;
 
+      // Declare userEmail here since we need it in the catch block
+      let userEmail;
+      try {
+        // Try to get user email from the stored user info in session
+        userEmail = req.session.user?.email;
+        
+        // If not available, we might need to get it from the tokens
+        if (!userEmail) {
+          console.error('Cannot determine user email for database lookup');
+          return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth=error&reason=no_user_email`);
+        }
+      } catch (emailError) {
+        console.error('Error getting user email:', emailError);
+        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth=error&reason=no_user_email`);
+      }
+
       // Get your own user from the users collection
       const usersCollection = db.collection('user');
       const existingUser = await usersCollection.findOne({ email: userEmail });
 
       if (!existingUser) {
         console.error("User not found in internal database");
-        return res.redirect(`${process.env.FRONTEND_URL}?auth=error&reason=user_not_found`);
+        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth=error&reason=user_not_found`);
       }
 
-      const userId = existingUser._id.toString(); // This is your internal userId
+      // Debug the _id field
+      console.log('Raw _id (catch block):', existingUser._id);
+      console.log('_id type (catch block):', typeof existingUser._id);
+      console.log('_id constructor (catch block):', existingUser._id?.constructor?.name);
+
+      // Ensure proper string conversion
+      let userId;
+      if (existingUser._id) {
+        if (typeof existingUser._id === 'string') {
+          userId = existingUser._id;
+        } else if (existingUser._id.toString) {
+          userId = existingUser._id.toString();
+        } else {
+          userId = String(existingUser._id);
+        }
+      }
+
       const isStaff = existingUser.is_staff;
-      console.log(userId)
+      console.log('User ID (partial auth):', userId, 'Is Staff:', isStaff);
       
-      // Redirect to frontend with success
-      if (isStaff === true){
-        res.redirect(`${process.env.FRONTEND_URL || `http://localhost:5173/calendar/staff/${userId}`}?auth=partial&reason=userinfo_failed`);
-      } else if (isStaff === false){
-        res.redirect(`${process.env.FRONTEND_URL || `http://localhost:5173/calendar/patient/${userId}`}?auth=partial&reason=userinfo_failed`);
-      } else {
-        res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth=error`);
+      // Validate userId is a string
+      if (typeof userId !== 'string' || !userId) {
+        console.error('Invalid userId in catch block:', userId, 'Type:', typeof userId);
+        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth=error&reason=invalid_user_id`);
       }
       
+      // Fixed redirect URLs for partial auth
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      
+      console.log('About to redirect (partial auth) with:', {
+        frontendUrl,
+        userId,
+        isStaff,
+        userIdType: typeof userId
+      });
+      
+      if (isStaff === true) {
+        const redirectUrl = `${frontendUrl}/calendar/staff/${userId}?auth=partial&reason=userinfo_failed`;
+        console.log('Staff partial redirect URL:', redirectUrl);
+        res.redirect(redirectUrl);
+      } else if (isStaff === false) {
+        const redirectUrl = `${frontendUrl}/calendar/patient/${userId}?auth=partial&reason=userinfo_failed`;
+        console.log('Patient partial redirect URL:', redirectUrl);
+        res.redirect(redirectUrl);
+      } else {
+        res.redirect(`${frontendUrl}?auth=error&reason=invalid_user_type`);
+      }
     }
     
   } catch (error) {

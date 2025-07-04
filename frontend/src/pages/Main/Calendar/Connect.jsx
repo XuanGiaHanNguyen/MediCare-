@@ -5,7 +5,7 @@ import Calendar from "../../../assets/calendar.png"
 import Meet from "../../../assets/meet.png"
 
 import axios from "axios"
-import API_ROUTE from "../../../constant/APIRoutes"
+import API_ROUTES from "../../../constant/APIRoutes"
 import toast from "react-hot-toast"
 
 export default function ConnectGoogle({ isOpen, onClose }) {
@@ -40,13 +40,19 @@ export default function ConnectGoogle({ isOpen, onClose }) {
       toast.error(`Failed to connect Google account: ${reason}`);
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (authStatus === 'partial') {
+      const reason = urlParams.get('reason');
+      toast.warning(`Partial connection: ${reason}`);
+      setIsConnected(true); // Still connected, just with warnings
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
 
   const checkConnectionStatus = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${API_ROUTE}/auth/status`, {
+      const response = await axios.get(`http://localhost:3000/auth/status`, {
         withCredentials: true // Important for session cookies
       });
       
@@ -69,7 +75,7 @@ export default function ConnectGoogle({ isOpen, onClose }) {
   // Function to load authentication for a specific user (if you have user management)
   const loadAuthForUser = async (userId) => {
     try {
-      const response = await axios.get(`${API_ROUTE}/auth/load-auth/${userId}`, {
+      const response = await axios.get(`${API_ROUTESS}/auth/load-auth/${userId}`, {
         withCredentials: true
       });
       
@@ -88,8 +94,33 @@ export default function ConnectGoogle({ isOpen, onClose }) {
     setIsConnecting(true);
     
     try {
-      // Redirect to backend OAuth route
-      window.location.href = `${API_ROUTE}/auth/google`;
+      // Build the complete OAuth URL
+      const oauthUrl = `http://localhost:3000/auth/google`;
+      
+      // Debug: Log the URL being used
+      console.log('Redirecting to OAuth URL:', oauthUrl);
+      console.log('API_ROUTES value:', API_ROUTES);
+      
+      // Validate the URL format
+      if (!oauthUrl.startsWith('http://') && !oauthUrl.startsWith('https://')) {
+        console.error('Invalid OAuth URL format:', oauthUrl);
+        toast.error("Invalid OAuth URL configuration - check API_ROUTES");
+        setIsConnecting(false);
+        return;
+      }
+      
+      // Additional validation - make sure we're not creating a relative URL
+      if (oauthUrl.includes('undefined') || oauthUrl.includes('null')) {
+        console.error('OAuth URL contains undefined/null values:', oauthUrl);
+        toast.error("OAuth URL configuration error");
+        setIsConnecting(false);
+        return;
+      }
+      
+      // Use window.location.href for full page redirect to external URL
+      // This will cause a full page navigation to your backend OAuth endpoint
+      console.log('Performing full page redirect to:', oauthUrl);
+      window.location.href = oauthUrl;
       
     } catch (error) {
       console.error('Error connecting to Google:', error);
@@ -100,7 +131,7 @@ export default function ConnectGoogle({ isOpen, onClose }) {
 
   const handleDisconnect = async () => {
     try {
-      await axios.post(`${API_ROUTE}/auth/logout`, {}, {
+      await axios.post(`${API_ROUTES}/auth/logout`, {}, {
         withCredentials: true
       });
       setIsConnected(false);
