@@ -11,6 +11,8 @@ import toast from "react-hot-toast"
 export default function ConnectGoogle({ isOpen, onClose }) {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState(null);
 
   // Check if user is already connected when component mounts
   useEffect(() => {
@@ -19,18 +21,66 @@ export default function ConnectGoogle({ isOpen, onClose }) {
     }
   }, [isOpen]);
 
+  // Check connection status on app load (outside of modal)
+  useEffect(() => {
+    // Check on initial app load
+    checkConnectionStatus();
+    
+    // Also check URL parameters for auth callback
+    const urlParams = new URLSearchParams(window.location.search);
+    const authStatus = urlParams.get('auth');
+    
+    if (authStatus === 'success') {
+      setIsConnected(true);
+      toast.success("Google account connected successfully!");
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (authStatus === 'error') {
+      const reason = urlParams.get('reason');
+      toast.error(`Failed to connect Google account: ${reason}`);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   const checkConnectionStatus = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get(`${API_ROUTE}/auth/status`, {
         withCredentials: true // Important for session cookies
       });
       
       if (response.data.authenticated) {
         setIsConnected(true);
+        setUserInfo(response.data.user);
+      } else {
+        setIsConnected(false);
+        setUserInfo(null);
       }
     } catch (error) {
       console.error('Error checking connection status:', error);
-      // User is not connected, which is fine for this modal
+      setIsConnected(false);
+      setUserInfo(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Function to load authentication for a specific user (if you have user management)
+  const loadAuthForUser = async (userId) => {
+    try {
+      const response = await axios.get(`${API_ROUTE}/auth/load-auth/${userId}`, {
+        withCredentials: true
+      });
+      
+      if (response.data.authenticated) {
+        setIsConnected(true);
+        setUserInfo(response.data.user);
+        toast.success("Authentication loaded successfully!");
+      }
+    } catch (error) {
+      console.error('Error loading auth for user:', error);
+      toast.error("Failed to load authentication");
     }
   };
 
@@ -38,45 +88,8 @@ export default function ConnectGoogle({ isOpen, onClose }) {
     setIsConnecting(true);
     
     try {
-      // Option 1: Redirect to backend OAuth route
-      // This is the simpler approach
-      window.location.href = `http://127.0.0.1:3000/auth/google`;
-      
-      // Option 2: Open popup window (more complex but better UX)
-      // Uncomment the code below if you prefer popup approach
-      /*
-      const popup = window.open(
-        `${API_ROUTE}/auth/google`,
-        'google-auth',
-        'width=500,height=600,scrollbars=yes,resizable=yes'
-      );
-
-      // Listen for popup completion
-      const checkClosed = setInterval(() => {
-        if (popup.closed) {
-          clearInterval(checkClosed);
-          setIsConnecting(false);
-          // Check if connection was successful
-          checkConnectionStatus();
-        }
-      }, 1000);
-
-      // Handle popup message (if you implement postMessage in your backend)
-      window.addEventListener('message', (event) => {
-        if (event.origin !== window.location.origin) return;
-        
-        if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-          popup.close();
-          setIsConnected(true);
-          setIsConnecting(false);
-          toast.success("Google account connected successfully!");
-        } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
-          popup.close();
-          setIsConnecting(false);
-          toast.error("Failed to connect Google account");
-        }
-      });
-      */
+      // Redirect to backend OAuth route
+      window.location.href = `${API_ROUTE}/auth/google`;
       
     } catch (error) {
       console.error('Error connecting to Google:', error);
@@ -91,6 +104,7 @@ export default function ConnectGoogle({ isOpen, onClose }) {
         withCredentials: true
       });
       setIsConnected(false);
+      setUserInfo(null);
       toast.success("Google account disconnected");
     } catch (error) {
       console.error('Error disconnecting:', error);
@@ -102,7 +116,25 @@ export default function ConnectGoogle({ isOpen, onClose }) {
     onClose();
   };
 
-  // Move the early return AFTER all hooks
+  // Don't show modal if user is already connected
+  if (isConnected && !isOpen) {
+    return null;
+  }
+
+  // Show loading state
+  if (isLoading && isOpen) {
+    return (
+      <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-8">
+          <div className="flex items-center justify-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-sky-600" />
+            <span className="text-gray-600">Checking authentication status...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!isOpen) return null;
 
   return (
@@ -137,6 +169,11 @@ export default function ConnectGoogle({ isOpen, onClose }) {
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-medium">Google Account Connected</span>
               </div>
+              {userInfo && (
+                <div className="mt-2 text-sm text-green-600">
+                  Connected as: {userInfo.email}
+                </div>
+              )}
             </div>
           )}
 

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useGoogleAuth } from "../../useGoogleAuth";
 
 import DockHeader from "../../component/DockHeader"
 import NavigationSidebar from "./Calendar/Sidebar/NavigationSidebar"
@@ -15,16 +16,36 @@ import { useEvents } from "./Calendar/Hooks/useEvents"
 import { saveEvent } from "./Calendar/services/api/eventService";
 
 export default function CalendarDock() {
-  
+
   const Id = localStorage.getItem("Id");
   
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isConnectGoogleOpen, setIsConnectGoogleOpen] = useState(true); // Changed: Start with true to auto-open
 
-  const handleCloseConnectGoogle = () => {
-    setIsConnectGoogleOpen(false); // Changed: Close the ConnectGoogle modal
-  };
+  const { isAuthenticated, user, isLoading } = useGoogleAuth();
+  const [showConnectModal, setShowConnectModal] = useState(false);
 
+  useEffect(() => {
+    // Show connect modal only if user is not authenticated and not loading
+    if (!isLoading && !isAuthenticated) {
+      setShowConnectModal(true);
+    }
+  }, [isLoading, isAuthenticated]);
+
+  // Show loading screen while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-sky-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't show connect modal if user is already authenticated
+  const shouldShowModal = showConnectModal && !isAuthenticated;
+  
   
   const {
     currentDate,
@@ -124,9 +145,9 @@ export default function CalendarDock() {
       />
       
       {/* Changed: Pass isOpen prop and use correct close handler */}
-      <ConnectGoogle
-        isOpen={isConnectGoogleOpen}
-        onClose={handleCloseConnectGoogle}
+      <ConnectGoogle 
+        isOpen={shouldShowModal} 
+        onClose={() => setShowConnectModal(false)} 
       />
     </div>
   );

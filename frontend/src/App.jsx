@@ -1,5 +1,6 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom"
 import OAuthHandler from "./OAthHandler"
+import { GoogleAuthProvider } from "./useGoogleAuth"
 
 import Landing from "./pages/Landing"
 import RoleQuestionaire from "./pages/AuthSteps/RoleQuest"
@@ -34,6 +35,7 @@ import PatientRoute from "./component/Protected/PatientRoute"
 function App() {
 
   return (
+    <GoogleAuthProvider>
     <BrowserRouter>
     <Toaster position="top-center" />
     <OAuthHandler />
@@ -146,6 +148,7 @@ function App() {
 
       </Routes>
     </BrowserRouter>
+    </GoogleAuthProvider>
   )
 }
 
