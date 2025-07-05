@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useGoogleAuth } from "../../useGoogleAuth";
 
@@ -45,7 +44,6 @@ export default function CalendarDock() {
 
   // Don't show connect modal if user is already authenticated
   const shouldShowModal = showConnectModal && !isAuthenticated;
-  
   
   const {
     currentDate,
