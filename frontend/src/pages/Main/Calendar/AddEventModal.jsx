@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { X, Calendar, Clock, Users, FileText, MapPin, UserCheck } from "lucide-react";
 
 import axios from "axios"
 import API_ROUTE from "../../../constant/APIRoutes"
-import toast from "react-hot-toast"
 
 export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEvent }) {
   const [formData, setFormData] = useState({
@@ -31,6 +30,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
   const [participantsList, setParticipantsList] = useState([]);
   const [email, setEmail] = useState([])
   const [loadingParticipants, setLoadingParticipants] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("")
   const Id = localStorage.getItem("Id")
 
   const eventTypes = [
@@ -225,7 +225,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">Schedule Event</h2>
@@ -319,7 +319,32 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100">
-                    {participantsList.map((participant) => {
+                    <div className="p-4">
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Search attendants..."
+                          className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    {participantsList.filter(participant => {
+                      if (!searchTerm.trim()) return true;
+                      const searchLower = searchTerm.toLowerCase();
+                      return participant.name?.toLowerCase().includes(searchLower) ||
+                            participant.email?.toLowerCase().includes(searchLower) ||
+                            participant.phone?.toLowerCase().includes(searchLower) ||
+                            participant.role?.toLowerCase().includes(searchLower) ||
+                            participant.diagnosis?.toLowerCase().includes(searchLower) ||
+                            participant.language?.toLowerCase().includes(searchLower);
+                    }).map((participant) => {
                       const participantId = participant.id || participant.userId; // Use consistent ID
                       const isSelected = formData.participants.some(p => 
                         (p.id || p.userId) === participantId
@@ -359,7 +384,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
                               
                               {formData.type === "meeting" ? (
                                 <div className="flex-shrink-0 ml-4 text-right">
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"> 
+                                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-100 text-sky-800"> 
                                     {participant.role}
                                   </span>
                                   <p className="text-xs text-gray-500 mt-1">
@@ -382,7 +407,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
                           
                           {isSelected && (
                             <div className="flex-shrink-0 ml-2">
-                             
+                            
                             </div>
                           )}
                         </label>
