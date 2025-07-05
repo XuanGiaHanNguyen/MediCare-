@@ -36,7 +36,7 @@ app.use(session({
   } 
 }));
 
-// CORS configuration - THIS IS THE FIX!
+// CORS configuration
 app.use(cors({
   origin: ['http://localhost:5173', 'http://localhost:3000'], // Your frontend URLs
   credentials: true, // Allow cookies/sessions

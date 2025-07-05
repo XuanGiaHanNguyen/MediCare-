@@ -128,15 +128,8 @@ const HospitalHeader = (props) => {
       setIsNotificationOpen(false);
 
       if (unreadNotificationIds.length > 0) {
-        if (staff === "Staff"){
-          await axios.put(API_ROUTES.SEEN_REQUEST_STAFF(userId));
-
-          // Update local state after successful API call
-          setNotifications(prev => 
-            prev.map(notif => ({ ...notif, isRead: true }))
-          );
-
-        }else if ( staff === "Patient"){
+        if (staff){
+          
           await axios.put(API_ROUTES.SEEN_REQUEST(userId));
 
           // Update local state after successful API call

@@ -43,9 +43,7 @@ const API_ROUTES = {
     //Request
     CREATE_REQUEST: `${BASE_API_URL}/request`,
     GET_REQUEST: (user_id)=> `${BASE_API_URL}/request/${user_id}`, 
-    GET_REQUEST_STAFF: (user_id)=> `${BASE_API_URL}/request/staff/${user_id}`,
     SEEN_REQUEST: (user_id)=> `${BASE_API_URL}/request/${user_id}`, 
-    SEEN_REQUEST_STAFF: (user_id)=> `${BASE_API_URL}/request/staff/${user_id}`
 }
 
 export default API_ROUTES
