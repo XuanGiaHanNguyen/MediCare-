@@ -13,7 +13,6 @@ const staff = require("./routes/staffRoute")
 const user = require("./routes/userRoute")
 const request = require("./routes/request")
 
-
 const authRoutes = require('./routes/google/auth');
 const calendarRoutes = require('./routes/google/calendar');
 
@@ -23,30 +22,44 @@ const app = express()
 const PORT = 3000
 
 //MiddleWare
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session configuration BEFORE CORS
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // Set to true in production with HTTPS
+  cookie: { 
+    secure: false, // Set to true in production with HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  } 
 }));
 
-app.use(cors())
+// CORS configuration - THIS IS THE FIX!
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000'], // Your frontend URLs
+  credentials: true, // Allow cookies/sessions
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
 app.use(express.json())
 
-// app.get('/api/auth/status', (req, res) => {
-//   res.json({ 
-//     authenticated: !!req.session.tokens,
-//     user: req.session.user || null 
-//   });
-// });
+// Your auth status routes
+app.get('/api/auth/status', (req, res) => {
+  res.json({ 
+    authenticated: !!req.session.tokens,
+    user: req.session.user || null 
+  });
+});
 
-// app.get('/api/auth/logout', (req, res) => {
-//   req.session.destroy();
-//   res.json({ message: 'Logged out successfully' });
-// });
+app.get('/api/auth/logout', (req, res) => {
+  req.session.destroy();
+  res.json({ message: 'Logged out successfully' });
+});
 
+// Routes
 app.use(appointment)
 app.use(document)
 app.use(meeting)
