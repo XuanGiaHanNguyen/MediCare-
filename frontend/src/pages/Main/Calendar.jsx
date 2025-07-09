@@ -73,6 +73,7 @@ export default function CalendarDock() {
   const handleSaveEvent = async (eventData) => {
     try {
       const success = await saveEvent(eventData, Id);
+      
       if (success) {
         toast.success(`${eventData.type === 'appointment' ? 'Appointment' : 'Meeting'} Successfully Requested.`);
         await refreshEvents();

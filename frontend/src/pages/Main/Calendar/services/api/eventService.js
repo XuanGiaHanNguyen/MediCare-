@@ -65,6 +65,7 @@ export const fetchAllEvents = async (userId) => {
   }
 };
 
+// Save Event 
 export const saveEvent = async (eventData, userId) => {
   try {
     const { attendees, id, ...eventToStore } = eventData;
@@ -96,6 +97,7 @@ export const saveEvent = async (eventData, userId) => {
 
       }
 
+      console.log(saveObject)
       const response = await appointmentService.createAppointment(saveObject);
       return response.status === 200;
 
@@ -118,6 +120,7 @@ export const saveEvent = async (eventData, userId) => {
 
         }
 
+      console.log(saveObject)
       const response = await meetingService.createMeeting(saveObject);
       return response.status === 200;
     }

@@ -1,3 +1,4 @@
+// Figuring Gooogle Calendar Parse 
 import React from "react";
 import { Clock, Users, MapPin } from "lucide-react";
 import { formatTime, formatDuration } from "./utils/dateUtils"
@@ -7,6 +8,7 @@ import axios from "axios";
 import toast from "react-hot-toast"
 
 export default function EventCard({ event, userId, onRefreshEvents }) {
+
   const handleApproveEvent = async () => {
     // TODO: Implement approve event functionality
     console.log('Approving event:', event._id);
@@ -15,7 +17,10 @@ export default function EventCard({ event, userId, onRefreshEvents }) {
       if (approving.status === 200){
         toast.success(`${event.title} have been approved`)
 
+        console.log(event)
+
         const userToNotify = event.participants.map(object => object.userId)
+        const googleNotify = event.participants.map(object => object.email)
         const ownerToNotify = event.userId
         userToNotify.push(ownerToNotify)
 
@@ -31,7 +36,25 @@ export default function EventCard({ event, userId, onRefreshEvents }) {
               createdAt: new Date()
             }
             await axios.post(API_ROUTES.CREATE_REQUEST, requestData)
-          }  
+        } 
+        
+        for (const item of googleNotify){
+          const eventData = {
+            title: event.title,
+            description: event.description,
+            date: event.date,
+            time: event.time,
+            duration: event.duration,
+            location: event.session== "online"? event.link : event.location,
+            participants: googleNotify,
+            session: event.session
+          };
+
+          console.log(eventData)
+
+          await axios.post(API_ROUTES.CREATE_GOOGLE_EVENT(), eventData)
+        }
+
       } else {
         toast.error("There was an error in the process. Please try again.")
       }

@@ -1,6 +1,7 @@
 const express = require('express');
 
 const GoogleMeetService = require("../../google/googleMeet")
+const GoogleCalendarService = require("../../google/googleCalendar"); 
 const {setCredentials} = require("../../google/googleAuth")
 const database = require("../../connect")
 
@@ -112,234 +113,74 @@ router.post('/create/:userId', authMiddleware, async (req, res) => {
   }
 });
 
-// Create a quick meeting (starts now, 60 minutes duration)
-router.post('/quick/:userId', authMiddleware, async (req, res) => {
-  try {
-    const { title, duration = 60 } = req.body;
-    const startTime = new Date().toISOString();
-
-    const result = await req.meetService.createQuickMeet(title, startTime, duration);
-    res.json(result);
-  } catch (error) {
-    console.error('Error creating quick meeting:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to create quick meeting',
-      details: error.message
-    });
-  }
-});
-
-// Get upcoming meetings
-router.get('/upcoming/:userId', authMiddleware, async (req, res) => {
-  try {
-    const maxResults = parseInt(req.query.maxResults) || 10;
-    const result = await req.meetService.getUpcomingMeetings(maxResults);
-    res.json(result);
-  } catch (error) {
-    console.error('Error getting upcoming meetings:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to get upcoming meetings',
-      details: error.message
-    });
-  }
-});
-
-// Get all events (with optional filters)
-router.get('/events/:userId', authMiddleware, async (req, res) => {
+// Create Google Calendar event from your event data
+router.post('/calendar-event/:userId', authMiddleware, async (req, res) => {
   try {
     const {
-      timeMin,
-      timeMax,
-      maxResults = 10,
-      orderBy = 'startTime',
-      q
-    } = req.query;
+      title,
+      description,
+      date,
+      time,
+      duration,
+      location,
+      participants = [],
+      session
+    } = req.body;
 
-    const options = {
-      timeMin,
-      timeMax,
-      maxResults: parseInt(maxResults),
-      orderBy,
-      q
+    if (!title || !date || !time || !duration) {
+      return res.status(400).json({
+        success: false,
+        error: 'Title, date, time, and duration are required'
+      });
+    }
+
+    // Parse the date and time to create start and end DateTime
+    const startDateTime = new Date(`${date}T${time}:00`);
+    const endDateTime = new Date(startDateTime.getTime() + (parseInt(duration) * 60000)); // Add duration in minutes
+
+    // Transform participants to Google Calendar attendees format
+    const attendees = participants.map(participant => ({
+      email: participant.email || participant, // Handle both object and string formats
+      displayName: participant.name || participant.displayName || undefined
+    }));
+
+    // Create calendar service instance
+    const calendarService = new GoogleCalendarService(req.meetService.auth);
+
+    // Prepare event data for Google Calendar
+    const eventData = {
+      title,
+      description: description || `${title} - ${session === 'online' ? 'Online Session' : 'In-Person Session'}`,
+      startDateTime: startDateTime.toISOString(),
+      endDateTime: endDateTime.toISOString(),
+      timeZone: 'UTC', // You can make this configurable
+      attendees
     };
 
-    const result = await req.meetService.listEvents(options);
-    res.json(result);
-  } catch (error) {
-    console.error('Error listing events:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to list events',
-      details: error.message
-    });
-  }
-});
-
-// Get specific event
-router.get('/event/:userId/:eventId', authMiddleware, async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const result = await req.meetService.getEvent(eventId);
-    res.json(result);
-  } catch (error) {
-    console.error('Error getting event:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to get event',
-      details: error.message
-    });
-  }
-});
-
-// Update event
-router.put('/event/:userId/:eventId', authMiddleware, async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const updateData = req.body;
-
-    const result = await req.meetService.updateEvent(eventId, updateData);
-    res.json(result);
-  } catch (error) {
-    console.error('Error updating event:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to update event',
-      details: error.message
-    });
-  }
-});
-
-// Delete event
-router.delete('/event/:userId/:eventId', authMiddleware, async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const result = await req.meetService.deleteEvent(eventId);
-    res.json(result);
-  } catch (error) {
-    console.error('Error deleting event:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to delete event',
-      details: error.message
-    });
-  }
-});
-
-// Add attendee to event
-router.post('/event/:userId/:eventId/attendee', authMiddleware, async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        error: 'Email is required'
-      });
+    // Add location if provided
+    if (location && location !== 'Google Meet') {
+      eventData.location = location;
     }
 
-    const result = await req.meetService.addAttendeeToEvent(eventId, email);
-    res.json(result);
-  } catch (error) {
-    console.error('Error adding attendee:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to add attendee',
-      details: error.message
-    });
-  }
-});
+    const result = await calendarService.createEvent(eventData);
 
-// Remove attendee from event
-router.delete('/event/:userId/:eventId/attendee', authMiddleware, async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        error: 'Email is required'
-      });
-    }
-
-    const result = await req.meetService.removeAttendeeFromEvent(eventId, email);
-    res.json(result);
-  } catch (error) {
-    console.error('Error removing attendee:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to remove attendee',
-      details: error.message
-    });
-  }
-});
-
-// Get Meet link for event
-router.get('/event/:userId/:eventId/meet-link', authMiddleware, async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const result = await req.meetService.getEventMeetLink(eventId);
-    res.json(result);
-  } catch (error) {
-    console.error('Error getting meet link:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to get meet link',
-      details: error.message
-    });
-  }
-});
-
-// Reschedule event
-router.put('/event/:userId/:eventId/reschedule', authMiddleware, async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const { newStartTime, newEndTime } = req.body;
-
-    if (!newStartTime || !newEndTime) {
-      return res.status(400).json({
-        success: false,
-        error: 'New start time and end time are required'
-      });
-    }
-
-    const result = await req.meetService.rescheduleEvent(eventId, newStartTime, newEndTime);
-    res.json(result);
-  } catch (error) {
-    console.error('Error rescheduling event:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to reschedule event',
-      details: error.message
-    });
-  }
-});
-
-// Health check endpoint
-router.get('/health/:userId', authMiddleware, async (req, res) => {
-  try {
-    // Try to list calendars to test the connection
-    const { google } = require('googleapis');
-    const calendar = google.calendar({ version: 'v3', auth: req.meetService.auth });
-    await calendar.calendarList.list({ maxResults: 1 });
-    
     res.json({
       success: true,
-      message: 'Google Meet service is healthy',
-      user: req.userInfo?.email || 'Unknown',
-      timestamp: new Date().toISOString()
+      message: 'Calendar event created successfully',
+      event: result,
+      eventId: result.id,
+      htmlLink: result.htmlLink
     });
+    
   } catch (error) {
-    console.error('Health check failed:', error);
+    console.error('Error creating calendar event:', error);
     res.status(500).json({
       success: false,
-      error: 'Health check failed',
+      error: 'Failed to create calendar event',
       details: error.message
     });
   }
 });
+
 
 module.exports = router;
