@@ -65,11 +65,9 @@ export default function EventCard({ event, userId, onRefreshEvents }) {
   };
 
   const handleJoinMeeting = () => {
-    // TODO: Implement join meeting functionality
-    // This could integrate with Google Meet API
-    console.log('Joining meeting:', event._id);
-    if (event.url) {
-      window.open(event.url, '_blank');
+    console.log(event)
+    if (event.link) {
+      window.open(event.link, '_blank');
     }
   };
 

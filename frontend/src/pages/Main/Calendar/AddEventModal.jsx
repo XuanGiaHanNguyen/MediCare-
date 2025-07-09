@@ -193,7 +193,7 @@ export default function AddEventModal({ isOpen, onClose, selectedDate, onSaveEve
         const meetResult = await createMeetEvent(meetEventData);
         
         if (meetResult.success) {
-          eventData.location = meetResult.meetLink;
+          eventData.location = "Google Meet";
           eventData.link = meetResult.meetLink;
           setMeetLink(meetResult.meetLink);
 
