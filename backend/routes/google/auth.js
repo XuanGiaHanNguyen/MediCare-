@@ -4,8 +4,6 @@ const database = require("../../connect")
 
 const router = express.Router();
 
-
-
 // Helper function to save tokens to MongoDB
 async function saveTokensToMongo(userId, tokens, userInfo) {
   try {

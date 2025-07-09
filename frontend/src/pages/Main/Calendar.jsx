@@ -76,7 +76,6 @@ export default function CalendarDock() {
       if (success) {
         toast.success(`${eventData.type === 'appointment' ? 'Appointment' : 'Meeting'} Successfully Requested.`);
         await refreshEvents();
-        setSelectedDate(new Date(eventData.date));
       } else {
         toast.error("Error occurred during the requesting process.");
       }
