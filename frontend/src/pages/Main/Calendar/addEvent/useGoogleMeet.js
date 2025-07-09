@@ -19,7 +19,7 @@ export function useGoogleMeet() {
       if (response.data.success) {
         return {
           success: true,
-          meetLink: response.data.hangoutLink,
+          meetLink: response.data.meetLink,
           eventId: response.data.id,
           event: response.data
         };
