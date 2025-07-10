@@ -20,7 +20,6 @@ export default function EventCard({ event, userId, onRefreshEvents }) {
         console.log(event)
 
         const userToNotify = event.participants.map(object => object.userId)
-        const googleNotify = event.participants.map(object => object.email)
         const ownerToNotify = event.userId
         userToNotify.push(ownerToNotify)
 
@@ -38,6 +37,17 @@ export default function EventCard({ event, userId, onRefreshEvents }) {
             await axios.post(API_ROUTES.CREATE_REQUEST, requestData)
         } 
         
+        // Include owner's email in Google notifications
+        const googleNotify = event.participants.map(object => ({ email: object.email, userId: object.userId }))
+        
+        // Add owner's email and userId to Google notifications
+        // Assuming you have access to owner's email - you might need to fetch it or have it in the event object
+        const owerInfo = await axios.get(API_ROUTES.GET_USER(ownerToNotify))
+        const ownerEmail = owerInfo.data.email 
+        googleNotify.push({ email: ownerEmail, userId: event.userId })
+
+        console.log(googleNotify)
+        
         for (const item of googleNotify){
           const eventData = {
             title: event.title,
@@ -46,13 +56,14 @@ export default function EventCard({ event, userId, onRefreshEvents }) {
             time: event.time,
             duration: event.duration,
             location: event.session== "online"? event.link : event.location,
-            participants: googleNotify,
+            participants: googleNotify.map(p => p.email), // Extract emails for participants
             session: event.session
           };
 
           console.log(eventData)
+          const participantIds = googleNotify.map(p => p.userId)
 
-          await axios.post(API_ROUTES.CREATE_GOOGLE_EVENT(), eventData)
+          await axios.post(API_ROUTES.CREATE_GOOGLE_EVENT(participantIds), eventData)
         }
 
       } else {
@@ -79,7 +90,33 @@ export default function EventCard({ event, userId, onRefreshEvents }) {
               createdAt: new Date()
             }
             await axios.post(API_ROUTES.CREATE_REQUEST, requestData)
-          }  
+        }
+        
+        // Include owner's email in Google notifications for appointments too
+        const googleNotify = event.participants.map(object => ({ email: object.email, userId: object.userId }))
+        
+        const owerInfo = await axios.get(API_ROUTES.GET_USER(ownerToNotify))
+        const ownerEmail = owerInfo.data.email 
+        googleNotify.push({ email: ownerEmail, userId: event.userId })
+        
+        for (const item of googleNotify){
+          const eventData = {
+            title: event.title,
+            description: event.description,
+            date: event.date,
+            time: event.time,
+            duration: event.duration,
+            location: event.session== "online"? event.link : event.location,
+            participants: googleNotify.map(p => p.email), // Extract emails for participants
+            session: event.session
+          };
+
+          console.log(eventData)
+          const participantIds = googleNotify.map(p => p.userId)
+
+          await axios.post(API_ROUTES.CREATE_GOOGLE_EVENT(participantIds), eventData)
+        }
+        
       } else {
         toast.error("There was an error in the process. Please try again.")
       }

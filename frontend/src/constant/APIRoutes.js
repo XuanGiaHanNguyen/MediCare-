@@ -46,7 +46,7 @@ const API_ROUTES = {
     SEEN_REQUEST: (user_id)=> `${BASE_API_URL}/request/${user_id}`, 
 
     //Google Calendar
-    CREATE_GOOGLE_EVENT: (user_id)=> `${BASE_API_URL}/calendar-event/${user_id}`
+    CREATE_GOOGLE_EVENT: (user_id)=> `${BASE_API_URL}/api/calendar/calendar-event/${user_id}`
 }
 
 export default API_ROUTES
